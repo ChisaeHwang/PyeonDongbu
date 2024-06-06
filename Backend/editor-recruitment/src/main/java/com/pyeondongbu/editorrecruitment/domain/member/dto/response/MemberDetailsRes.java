@@ -1,5 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.member.dto.response;
 
+import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
+import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import lombok.*;
 
@@ -12,11 +14,11 @@ import java.util.List;
 public class MemberDetailsRes {
 
     private int maxSubs;
-    private String videoType;
+    private List<VideoType> videoType;
     private List<String> editedChannels;
     private List<String> currentChannels;
     private String portfolio;
-    private List<String> skills;
+    private List<Skill> skills;
     private String remarks;
 
     public static MemberDetailsRes from(MemberDetails memberDetails) {
