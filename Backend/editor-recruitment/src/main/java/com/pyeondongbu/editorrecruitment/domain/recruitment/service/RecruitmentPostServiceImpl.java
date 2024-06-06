@@ -60,6 +60,8 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
         validationUtils.validatePostView(postId, request);
+        post.incrementViewCount();
+        postRepository.save(post);
         return RecruitmentPostRes.of(post);
     }
 
@@ -95,7 +97,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         final Set<Payment> payments = validationUtils.validatePayments(req.getPayments());
         post.update(req.getTitle(), req.getContent(), tags, payments);
         postImagesHandler(req, post);
-        RecruitmentPostDetails postDetails = RecruitmentPostDetails.of(post, req.getRecruitmentPostDetailsReq());
+        final RecruitmentPostDetails postDetails = RecruitmentPostDetails.of(post, req.getRecruitmentPostDetailsReq());
         recruitmentPostDetailsRepository.save(postDetails);
         post.setDetails(postDetails);
         postRepository.save(post);

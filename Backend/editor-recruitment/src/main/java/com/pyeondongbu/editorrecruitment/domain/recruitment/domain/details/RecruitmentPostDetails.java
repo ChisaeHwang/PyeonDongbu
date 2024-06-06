@@ -46,5 +46,9 @@ public class RecruitmentPostDetails extends Details {
                 .videoTypes(req.getVideoTypes())
                 .build();
     }
+
+    public void setRecruitmentPost(RecruitmentPost recruitmentPost) {
+        this.recruitmentPost = recruitmentPost;
+    }
 }
 

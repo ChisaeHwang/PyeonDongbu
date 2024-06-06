@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecruitmentPostRes {
+
     private Long id;
     private String title;
     private String content;
@@ -24,7 +25,7 @@ public class RecruitmentPostRes {
     private List<String> images;
     private List<String> tagNames;
     private List<PaymentDTO> payments;
-    private RecruitmentPostDetailsRes recruitmentPostDetailsReq;
+    private RecruitmentPostDetailsRes recruitmentPostDetailsRes;
 
     public static RecruitmentPostRes of(
             final RecruitmentPost post
