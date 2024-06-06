@@ -1,0 +1,15 @@
+package com.pyeondongbu.editorrecruitment.global.exception;
+
+import lombok.Getter;
+
+@Getter
+public class MemberException extends RuntimeException{
+
+    private final int status;
+    private final String message;
+
+    public MemberException(final ErrorCode errorCode) {
+        this.status = errorCode.getStatus();
+        this.message = errorCode.getMessage();
+    }
+}
