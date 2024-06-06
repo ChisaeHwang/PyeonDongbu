@@ -4,8 +4,7 @@ import com.pyeondongbu.editorrecruitment.domain.auth.annotation.Auth;
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.MemberOnly;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.access.Accessor;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +26,7 @@ public class RecruitmentPostController {
 
     @PostMapping
     @MemberOnly
-    public ResponseEntity<ApiResponse<PostRes>> createPost(
+    public ResponseEntity<ApiResponse<RecruitmentPostRes>> createPost(
             @Auth final Accessor accessor,
             @RequestBody @Valid final RecruitmentPostReq request) {
         return ResponseEntity.ok(
@@ -36,18 +35,18 @@ public class RecruitmentPostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostRes>> getPost(
+    public ResponseEntity<ApiResponse<RecruitmentPostRes>> getPost(
             @PathVariable("postId") Long postId,
             HttpServletRequest request) {
-        PostRes postResponseDTO = postService.getPost(postId, request);
+        RecruitmentPostRes postResponseDTO = postService.getPost(postId, request);
         return ResponseEntity.ok(
                 ApiResponse.success(postResponseDTO, 200)
         );
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<PostRes>>> listPosts() {
-        List<PostRes> posts = postService.listPosts();
+    public ResponseEntity<ApiResponse<List<RecruitmentPostRes>>> listPosts() {
+        List<RecruitmentPostRes> posts = postService.listPosts();
         return ResponseEntity.ok(
                 ApiResponse.success(posts, 200)
         );
@@ -55,11 +54,11 @@ public class RecruitmentPostController {
 
     @PutMapping("/{postId}")
     @MemberOnly
-    public ResponseEntity<ApiResponse<PostRes>> updatePost(
+    public ResponseEntity<ApiResponse<RecruitmentPostRes>> updatePost(
             @Auth final Accessor accessor,
             @PathVariable("postId") Long postId,
-            @RequestBody @Valid RecruitmentPostUpdateReq request) {
-        PostRes updatedPost = postService.update(postId, request, accessor.getMemberId());
+            @RequestBody @Valid RecruitmentPostReq request) {
+        RecruitmentPostRes updatedPost = postService.update(postId, request, accessor.getMemberId());
         return ResponseEntity.ok(
                 ApiResponse.success(updatedPost, 200)
         );

@@ -7,7 +7,7 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentT
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
 import jakarta.servlet.http.Cookie;
@@ -86,7 +86,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
 
         Long memberId = 1L; // 적절한 멤버 ID 설정 필요
 
-        PostRes response = PostRes.builder()
+        RecruitmentPostRes response = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("샘플 게시글 제목")
                 .content("이것은 샘플 게시글 내용입니다.")
@@ -109,7 +109,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 null
         );
 
-        PostRes response = PostRes.builder()
+        RecruitmentPostRes response = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("샘플 게시글 제목")
                 .content("이것은 샘플 게시글 내용입니다.")
@@ -240,7 +240,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 null
         );
 
-        PostRes updateResponse = PostRes.builder()
+        RecruitmentPostRes updateResponse = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("수정된 게시글 제목")
                 .content("수정된 내용입니다.")

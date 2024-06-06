@@ -8,14 +8,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostRes {
+public class RecruitmentPostRes {
     private Long id;
     private String title;
     private String content;
@@ -25,12 +24,13 @@ public class PostRes {
     private List<String> images;
     private List<String> tagNames;
     private List<PaymentDTO> payments;
+    private RecruitmentPostDetailsRes recruitmentPostDetailsReq;
 
-    public static PostRes of(
+    public static RecruitmentPostRes of(
             final RecruitmentPost post
     ) {
 
-        return new PostRes(
+        return new RecruitmentPostRes(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
@@ -39,7 +39,8 @@ public class PostRes {
                 post.getModifiedAt(),
                 getImagesUrlList(post),
                 getTagsNameList(post),
-                getPaymentsList(post)
+                getPaymentsList(post),
+                RecruitmentPostDetailsRes.of(post.getDetails())
         );
     }
 

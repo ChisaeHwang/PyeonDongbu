@@ -31,7 +31,7 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPo
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.TagException;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -103,7 +103,7 @@ class RecruitmentServiceImplTest {
         given(postRepository.save(any())).willReturn(expectedPost);
 
         // when
-        PostRes actualPostResDTO = postService.create(testPostReqDTO, member.getId());
+        RecruitmentPostRes actualPostResDTO = postService.create(testPostReqDTO, member.getId());
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(expectedPost.getTitle());
@@ -192,7 +192,7 @@ class RecruitmentServiceImplTest {
                 .willReturn(updatedTags);
 
         // when
-        PostRes actualPostResDTO = postService.update(postId, updateReqDTO, memberId);
+        RecruitmentPostRes actualPostResDTO = postService.update(postId, updateReqDTO, memberId);
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(updateReqDTO.getTitle());
@@ -264,7 +264,7 @@ class RecruitmentServiceImplTest {
         given(postViewRepository.existsById(postId + ":192.168.0.1")).willReturn(false);
 
         // when
-        PostRes actualPostResDTO = postService.getPost(postId, request);
+        RecruitmentPostRes actualPostResDTO = postService.getPost(postId, request);
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(post.getTitle());
@@ -303,11 +303,11 @@ class RecruitmentServiceImplTest {
         given(postRepository.findAll()).willReturn(List.of(post1, post2));
 
         // when
-        List<PostRes> actualPosts = postService.listPosts();
+        List<RecruitmentPostRes> actualPosts = postService.listPosts();
 
         // then
         assertThat(actualPosts).hasSize(2);
-        assertThat(actualPosts).extracting(PostRes::getTitle).containsExactlyInAnyOrder("title1", "title2");
+        assertThat(actualPosts).extracting(RecruitmentPostRes::getTitle).containsExactlyInAnyOrder("title1", "title2");
     }
 
 

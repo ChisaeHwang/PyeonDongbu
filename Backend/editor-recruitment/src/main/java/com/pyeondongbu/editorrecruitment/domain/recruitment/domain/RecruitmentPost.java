@@ -92,6 +92,9 @@ public class RecruitmentPost {
         this.modifiedAt = LocalDateTime.now();
     }
 
+    public RecruitmentPost(final Member member) {
+        this.member = member;
+    }
 
     public static RecruitmentPost of(
             final String title,

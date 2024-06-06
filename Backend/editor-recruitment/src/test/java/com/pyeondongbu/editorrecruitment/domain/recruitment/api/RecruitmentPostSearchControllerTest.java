@@ -3,7 +3,7 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -49,13 +49,13 @@ class RecruitmentPostSearchControllerTest extends ControllerTest {
     @Test
     void searchPosts() throws Exception {
         // given
-        final List<PostRes> res = Arrays.asList(
-                PostRes.builder()
+        final List<RecruitmentPostRes> res = Arrays.asList(
+                RecruitmentPostRes.builder()
                         .id(1L)
                         .title("샘플 제목 1")
                         .content("샘플 내용 1")
                         .build(),
-                PostRes.builder()
+                RecruitmentPostRes.builder()
                         .id(2L)
                         .title("샘플 제목 2")
                         .content("샘플 내용 2")
@@ -127,13 +127,13 @@ class RecruitmentPostSearchControllerTest extends ControllerTest {
     @Test
     void searchPostsByTags() throws Exception {
         // given
-        final List<PostRes> res = Arrays.asList(
-                PostRes.builder()
+        final List<RecruitmentPostRes> res = Arrays.asList(
+                RecruitmentPostRes.builder()
                         .id(1L)
                         .title("샘플 제목 1")
                         .content("샘플 내용 1")
                         .build(),
-                PostRes.builder().id(2L)
+                RecruitmentPostRes.builder().id(2L)
                         .title("샘플 제목 2")
                         .content("샘플 내용 2")
                         .build()
