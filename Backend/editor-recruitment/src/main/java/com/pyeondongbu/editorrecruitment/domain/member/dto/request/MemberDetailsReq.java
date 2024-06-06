@@ -1,7 +1,5 @@
 package com.pyeondongbu.editorrecruitment.domain.member.dto.request;
 
-import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.common.dto.request.DetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import jakarta.validation.constraints.NotNull;
@@ -25,8 +23,8 @@ public class MemberDetailsReq extends DetailsReq {
     @Builder
     public MemberDetailsReq(
             final int maxSubs,
-            final List<VideoType> videoTypes,
-            final List<Skill> skills,
+            final List<String> videoTypes,
+            final List<String> skills,
             final String remarks,
             final List<String> editedChannels,
             final List<String> currentChannels,

@@ -29,17 +29,17 @@ public abstract class Details {
 
     @ElementCollection
     @Column(name = "video_type")
-    private List<VideoType> videoTypes;
+    private List<String> videoTypes;
 
     @ElementCollection
     @Column(name = "skill")
-    private List<Skill> skills;
+    private List<String> skills;
 
     public Details(
             int maxSubs,
             String remarks,
-            List<Skill> skills,
-            List<VideoType> videoTypes
+            List<String> skills,
+            List<String> videoTypes
     ) {
         this.maxSubs = maxSubs;
         this.remarks = remarks;

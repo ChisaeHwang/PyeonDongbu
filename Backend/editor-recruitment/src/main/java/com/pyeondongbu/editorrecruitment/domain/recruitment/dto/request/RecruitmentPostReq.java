@@ -28,7 +28,7 @@ public class RecruitmentPostReq implements PostReq {
     private List<String> tagNames;
 
     @Valid
-    private Set<PaymentDTO> payments;
+    private List<PaymentDTO> payments;
 
     private RecruitmentPostDetailsReq recruitmentPostDetailsReq;
 

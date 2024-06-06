@@ -1,7 +1,5 @@
 package com.pyeondongbu.editorrecruitment.domain.common.domain.specification;
 
-import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,16 +11,10 @@ public class RecruitmentPostDetailsSpecification {
     }
 
     public static Specification<RecruitmentPostDetails> containsSkill(String skill) {
-        return (root, query, criteriaBuilder) -> {
-            Join<RecruitmentPostDetails, Skill> skillsJoin = root.join("skills");
-            return criteriaBuilder.equal(skillsJoin.get("name"), skill);
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isMember(skill, root.get("skills"));
     }
 
     public static Specification<RecruitmentPostDetails> containsVideoType(String videoType) {
-        return (root, query, criteriaBuilder) -> {
-            Join<RecruitmentPostDetails, VideoType> videoTypesJoin = root.join("videoTypes");
-            return criteriaBuilder.equal(videoTypesJoin.get("name"), videoType);
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isMember(videoType, root.get("videoTypes"));
     }
 }

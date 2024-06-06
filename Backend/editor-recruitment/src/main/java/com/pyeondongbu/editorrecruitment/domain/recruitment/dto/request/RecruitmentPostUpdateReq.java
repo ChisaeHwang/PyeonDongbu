@@ -25,7 +25,7 @@ public class RecruitmentPostUpdateReq implements PostReq {
     private RecruitmentPostDetailsReq recruitmentPostDetailsReq;
 
     @Valid
-    private Set<PaymentDTO> payments;
+    private List<PaymentDTO> payments;
 
     public static RecruitmentPostUpdateReq of(final RecruitmentPost recruitmentPost) {
         return  RecruitmentPostUpdateReq.builder()

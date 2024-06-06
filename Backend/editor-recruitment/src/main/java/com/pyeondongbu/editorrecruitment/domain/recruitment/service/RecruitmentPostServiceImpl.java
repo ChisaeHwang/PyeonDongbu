@@ -67,6 +67,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 req.getRecruitmentPostDetailsReq()
         );
         recruitmentPostDetailsRepository.save(postDetails);
+        post.setDetails(postDetails);
         postRepository.save(post);
         return PostRes.of(post);
     }
@@ -105,6 +106,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 req.getRecruitmentPostDetailsReq()
         );
         recruitmentPostDetailsRepository.save(postDetails);
+        post.setDetails(postDetails);
         postRepository.save(post);
         return PostRes.of(post);
     }
@@ -155,6 +157,11 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 .map(PostRes::of)
                 .collect(Collectors.toList());
     }
+
+
+    /**
+     * Private 함수들
+     */
 
     @Transactional
     private void postImagesHandler(PostReq req, RecruitmentPost post) {
@@ -229,7 +236,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         return tags;
     }
 
-    private Set<Payment> validatePayments(Set<PaymentDTO> paymentDTOs) {
+    private Set<Payment> validatePayments(List<PaymentDTO> paymentDTOs) {
         if (paymentDTOs == null || paymentDTOs.isEmpty()) {
             throw new InvalidDomainException(INVALID_PAYMENT);
         }

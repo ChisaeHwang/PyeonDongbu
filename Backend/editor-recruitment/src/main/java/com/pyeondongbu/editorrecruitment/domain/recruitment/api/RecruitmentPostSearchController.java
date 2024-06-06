@@ -38,10 +38,10 @@ public class RecruitmentPostSearchController {
 
     @GetMapping("/by-details")
     public ResponseEntity<ApiResponse<List<PostRes>>> searchRecruitmentPosts(
-            @RequestParam(required = false) Integer maxSubs,
-            @RequestParam(required = false) String skill,
-            @RequestParam(required = false) String videoType,
-            @RequestParam(required = false) String tagName
+            @RequestParam(name = "maxSubs", required = false) Integer maxSubs,
+            @RequestParam(name = "skill", required = false) String skill,
+            @RequestParam(name = "videoType", required = false) String videoType,
+            @RequestParam(name = "tagName", required = false) String tagName
     ) {
         List<PostRes> posts = postService.searchRecruitmentPosts(maxSubs, skill, videoType, tagName);
         return ResponseEntity.ok(

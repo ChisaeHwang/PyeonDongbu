@@ -24,7 +24,7 @@ public class PostRes {
     private LocalDateTime modifiedAt;
     private List<String> images;
     private List<String> tagNames;
-    private Set<PaymentDTO> payments;
+    private List<PaymentDTO> payments;
 
     public static PostRes of(
             final RecruitmentPost post
@@ -54,8 +54,8 @@ public class PostRes {
                 .collect(Collectors.toList());
     }
 
-    private static Set<PaymentDTO> getPaymentsList(RecruitmentPost post) {
-        return (Set<PaymentDTO>) post.getPayments().stream()
+    private static List<PaymentDTO> getPaymentsList(RecruitmentPost post) {
+        return post.getPayments().stream()
                 .map(payment -> new PaymentDTO(payment.getType(), payment.getAmount()))
                 .collect(Collectors.toList());
     }

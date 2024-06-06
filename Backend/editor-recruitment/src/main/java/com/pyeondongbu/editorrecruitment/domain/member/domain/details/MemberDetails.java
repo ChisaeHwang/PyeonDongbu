@@ -1,8 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.member.domain.details;
 
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import jakarta.persistence.*;
@@ -38,8 +36,8 @@ public class MemberDetails extends Details {
     public MemberDetails(
             int maxSubs,
             String remarks,
-            List<Skill> skills,
-            List<VideoType> videoTypes,
+            List<String> skills,
+            List<String> videoTypes,
             List<String> editedChannels,
             List<String> currentChannels,
             String portfolio,

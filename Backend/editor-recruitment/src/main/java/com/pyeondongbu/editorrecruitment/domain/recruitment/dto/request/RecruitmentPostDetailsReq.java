@@ -1,7 +1,5 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request;
 
-import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.common.dto.request.DetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import lombok.*;
@@ -15,8 +13,8 @@ public class RecruitmentPostDetailsReq extends DetailsReq {
     @Builder
     public RecruitmentPostDetailsReq(
             final int maxSubs,
-            final List<VideoType> videoTypes,
-            final List<Skill> skills,
+            final List<String> videoTypes,
+            final List<String> skills,
             final String remarks
     ) {
         super(maxSubs, videoTypes, skills, remarks);
