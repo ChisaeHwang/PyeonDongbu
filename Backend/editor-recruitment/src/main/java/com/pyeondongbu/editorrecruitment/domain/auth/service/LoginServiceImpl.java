@@ -21,7 +21,6 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostR
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;

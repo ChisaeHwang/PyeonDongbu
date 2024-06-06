@@ -6,8 +6,7 @@ import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
 import jakarta.servlet.http.Cookie;
@@ -29,6 +28,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;
@@ -86,7 +86,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
 
         Long memberId = 1L; // 적절한 멤버 ID 설정 필요
 
-        PostRes response = PostRes.builder()
+        RecruitmentPostRes response = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("샘플 게시글 제목")
                 .content("이것은 샘플 게시글 내용입니다.")
@@ -95,7 +95,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 .modifiedAt(LocalDateTime.now())
                 .images(Arrays.asList("image1.jpg", "image2.jpg"))
                 .tagNames(Arrays.asList("태그1", "태그2"))
-                .payments(createPaymentDTOSet()) // payments 필드 추가
+                .payments((List<PaymentDTO>) createPaymentDTOSet()) // payments 필드 추가
                 .build();
 
         when(postService.create(request, memberId)).thenReturn(response);
@@ -109,7 +109,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 null
         );
 
-        PostRes response = PostRes.builder()
+        RecruitmentPostRes response = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("샘플 게시글 제목")
                 .content("이것은 샘플 게시글 내용입니다.")
@@ -118,7 +118,7 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 .modifiedAt(LocalDateTime.now())
                 .images(Arrays.asList("image1.jpg", "image2.jpg"))
                 .tagNames(Arrays.asList("태그1", "태그2"))
-                .payments(createPaymentDTOSet()) // payments 필드 추가
+                .payments((List<PaymentDTO>) createPaymentDTOSet()) // payments 필드 추가
                 .build();
 
         when(postService.create(any(RecruitmentPostReq.class), any())).thenReturn(response);
@@ -236,11 +236,11 @@ class RecruitmentPostControllerTest extends ControllerTest {
     @Test
     void updatePost() throws Exception {
         // given
-        RecruitmentPostUpdateReq updateRequest = RecruitmentPostUpdateReq.of(
+        RecruitmentPostReq updateRequest = RecruitmentPostReq.of(
                 null
         );
 
-        PostRes updateResponse = PostRes.builder()
+        RecruitmentPostRes updateResponse = RecruitmentPostRes.builder()
                 .id(1L)
                 .title("수정된 게시글 제목")
                 .content("수정된 내용입니다.")
@@ -249,10 +249,10 @@ class RecruitmentPostControllerTest extends ControllerTest {
                 .modifiedAt(LocalDateTime.now())
                 .images(Arrays.asList("image3.jpg", "image4.jpg"))
                 .tagNames(Arrays.asList("태그3", "태그4"))
-                .payments(createPaymentDTOSet()) // payments 필드 추가
+                .payments((List<PaymentDTO>) createPaymentDTOSet()) // payments 필드 추가
                 .build();
 
-        when(postService.update(any(Long.class), any(RecruitmentPostUpdateReq.class), any())).thenReturn(updateResponse);
+        when(postService.update(any(Long.class), any(RecruitmentPostReq.class), any())).thenReturn(updateResponse);
 
         // when
         final ResultActions resultActions = mockMvc.perform(put("/api/recruitment/posts/{postId}", 1L)

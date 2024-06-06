@@ -1,10 +1,8 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.service;
 
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import jakarta.servlet.http.HttpServletRequest;
 
 
@@ -12,24 +10,17 @@ import java.util.List;
 
 public interface RecruitmentPostService {
 
-    PostRes create(RecruitmentPostReq request, Long memberId);
+    RecruitmentPostRes create(RecruitmentPostReq request, Long memberId);
 
-    PostRes getPost(Long postId, HttpServletRequest request);
+    RecruitmentPostRes getPost(Long postId, HttpServletRequest request);
 
-    List<PostRes> listPosts();
+    List<RecruitmentPostRes> listPosts();
 
-    PostRes update(Long postId, RecruitmentPostUpdateReq request, Long memberId);
+    RecruitmentPostRes update(Long postId, RecruitmentPostReq request, Long memberId);
 
     void deletePost(Long postId, Long memberId);
 
-    List<PostRes> searchPosts(String keyword);
 
-    List<PostRes> searchRecruitmentPosts(
-            Integer maxSubs,
-            String skill,
-            String videoType,
-            String tagName
-    );
+    List<RecruitmentPostRes> searchRecruitmentPosts(Integer maxSubs, String title, List<String> skills, List<String> videoTypes, List<String> tagNames);
 
-    List<PostRes> searchPostsByTags(RecruitmentPostTagReq req);
 }

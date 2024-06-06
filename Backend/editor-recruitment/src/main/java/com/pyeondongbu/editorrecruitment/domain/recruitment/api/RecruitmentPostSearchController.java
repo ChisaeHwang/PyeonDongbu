@@ -1,7 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
 
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import jakarta.validation.Valid;
@@ -18,32 +18,22 @@ public class RecruitmentPostSearchController {
 
     private final RecruitmentPostService postService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<PostRes>>> searchPosts(
-            @RequestParam(name = "keyword") String keyword) {
-        List<PostRes> posts = postService.searchPosts(keyword);
-        return ResponseEntity.ok(
-                ApiResponse.success(posts, 200)
-        );
-    }
-
-    @GetMapping("/tags")
-    public ResponseEntity<ApiResponse<List<PostRes>>> searchPostsByTags(
-            @RequestBody @Valid RecruitmentPostTagReq request) {
-        List<PostRes> posts = postService.searchPostsByTags(request);
-        return ResponseEntity.ok(
-                ApiResponse.success(posts, 200)
-        );
-    }
 
     @GetMapping("/by-details")
-    public ResponseEntity<ApiResponse<List<PostRes>>> searchRecruitmentPosts(
-            @RequestParam(required = false) Integer maxSubs,
-            @RequestParam(required = false) String skill,
-            @RequestParam(required = false) String videoType,
-            @RequestParam(required = false) String tagName
+    public ResponseEntity<ApiResponse<List<RecruitmentPostRes>>> searchRecruitmentPosts(
+            @RequestParam(name = "maxSubs", required = false) Integer maxSubs,
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "skill", required = false) List<String> skills,
+            @RequestParam(name = "videoType", required = false) List<String> videoTypes,
+            @RequestParam(name = "tagName", required = false) List<String> tagNames
     ) {
-        List<PostRes> posts = postService.searchRecruitmentPosts(maxSubs, skill, videoType, tagName);
+        List<RecruitmentPostRes> posts = postService.searchRecruitmentPosts(
+                maxSubs,
+                title,
+                skills,
+                videoTypes,
+                tagNames
+        );
         return ResponseEntity.ok(
                 ApiResponse.success(posts, 200)
         );

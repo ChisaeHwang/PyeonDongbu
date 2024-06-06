@@ -1,24 +1,36 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ThemeProvider } from "styled-components";
+import { GlobalStyle, theme } from "./App.styles";
+import HomePage from "./pages/HomePage";
 import GoogleAuthRedirectHandler from "./auth/GoogleAuthRedirectHandler";
-import HomePage from "./home/HomePage";
-import GoogleAuthRefreshToken from "./auth/GoogleAuthRefreshToken"; // Import 추가
+import GoogleAuthRefreshToken from "./auth/GoogleAuthRefreshToken";
+import CreatePost from "./pages/Blog/CreatePost";
+import Header from "./components/Header";
+import AccessTokenProvider from "./providers/AccessTokenProvider";
 
-function App() {
+const queryClient = new QueryClient();
+
+const App = (): JSX.Element => {
   return (
-    <Router>
-      <Routes>
-        {/* 라우트 설정 */}
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/login/oauth2/code/google"
-          element={<GoogleAuthRedirectHandler />}
-        />
-        <Route path="/home" element={<GoogleAuthRefreshToken />} />
-        {/* 기타 라우트 */}
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <AccessTokenProvider>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <Router>
+            <Header />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login/oauth2/code/google" element={<GoogleAuthRedirectHandler />} />
+              <Route path="/home" element={<GoogleAuthRefreshToken />} />
+              <Route path="/create-post" element={<CreatePost />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </AccessTokenProvider>
+    </QueryClientProvider>
   );
-}
+};
 
 export default App;

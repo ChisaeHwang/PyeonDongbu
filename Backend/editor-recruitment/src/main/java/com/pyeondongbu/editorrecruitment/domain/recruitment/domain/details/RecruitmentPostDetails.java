@@ -1,8 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details;
 
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.Skill;
-import com.pyeondongbu.editorrecruitment.domain.common.domain.VideoType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostDetailsReq;
 import jakarta.persistence.*;
@@ -28,8 +26,8 @@ public class RecruitmentPostDetails extends Details {
     public RecruitmentPostDetails(
             int maxSubs,
             String remarks,
-            List<Skill> skills,
-            List<VideoType> videoTypes,
+            List<String> skills,
+            List<String> videoTypes,
             RecruitmentPost recruitmentPost
     ) {
         super(maxSubs, remarks, skills, videoTypes);
@@ -47,6 +45,10 @@ public class RecruitmentPostDetails extends Details {
                 .skills(req.getSkills())
                 .videoTypes(req.getVideoTypes())
                 .build();
+    }
+
+    public void setRecruitmentPost(RecruitmentPost recruitmentPost) {
+        this.recruitmentPost = recruitmentPost;
     }
 }
 

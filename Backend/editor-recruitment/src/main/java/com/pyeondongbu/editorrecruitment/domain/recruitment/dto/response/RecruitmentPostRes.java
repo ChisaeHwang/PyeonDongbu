@@ -8,14 +8,14 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PostRes {
+public class RecruitmentPostRes {
+
     private Long id;
     private String title;
     private String content;
@@ -24,13 +24,14 @@ public class PostRes {
     private LocalDateTime modifiedAt;
     private List<String> images;
     private List<String> tagNames;
-    private Set<PaymentDTO> payments;
+    private List<PaymentDTO> payments;
+    private RecruitmentPostDetailsRes recruitmentPostDetailsRes;
 
-    public static PostRes of(
+    public static RecruitmentPostRes of(
             final RecruitmentPost post
     ) {
 
-        return new PostRes(
+        return new RecruitmentPostRes(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
@@ -39,7 +40,8 @@ public class PostRes {
                 post.getModifiedAt(),
                 getImagesUrlList(post),
                 getTagsNameList(post),
-                getPaymentsList(post)
+                getPaymentsList(post),
+                RecruitmentPostDetailsRes.of(post.getDetails())
         );
     }
 
@@ -54,8 +56,8 @@ public class PostRes {
                 .collect(Collectors.toList());
     }
 
-    private static Set<PaymentDTO> getPaymentsList(RecruitmentPost post) {
-        return (Set<PaymentDTO>) post.getPayments().stream()
+    private static List<PaymentDTO> getPaymentsList(RecruitmentPost post) {
+        return post.getPayments().stream()
                 .map(payment -> new PaymentDTO(payment.getType(), payment.getAmount()))
                 .collect(Collectors.toList());
     }

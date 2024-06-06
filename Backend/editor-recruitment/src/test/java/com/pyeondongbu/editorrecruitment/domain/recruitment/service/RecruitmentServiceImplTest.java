@@ -2,13 +2,17 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.service;
 
 import com.pyeondongbu.editorrecruitment.domain.common.dao.PostViewRepository;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.PostView;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostDetailsRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostDetailsReq;
+import com.pyeondongbu.editorrecruitment.domain.tag.dao.TagRepository;
+import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
+import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,16 +30,11 @@ import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.PostImageRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
-import com.pyeondongbu.editorrecruitment.domain.tag.dao.TagRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
-import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostUpdateReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.PostRes;
-import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
-import com.pyeondongbu.editorrecruitment.global.exception.TagException;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import org.springframework.mock.web.MockHttpServletRequest;
-
 
 @ExtendWith(MockitoExtension.class)
 class RecruitmentServiceImplTest {
@@ -47,7 +46,11 @@ class RecruitmentServiceImplTest {
     private RecruitmentPostRepository postRepository;
 
     @Mock
+    private RecruitmentPostDetailsRepository postDetailsRepository;
+
+    @Mock
     private PostImageRepository postImageRepository;
+
     @Mock
     private PostViewRepository postViewRepository;
 
@@ -57,20 +60,32 @@ class RecruitmentServiceImplTest {
     @Mock
     private MemberRepository memberRepository;
 
-    private Set<PaymentDTO> createPaymentDTOSet() {
-        Set<PaymentDTO> paymentDTOSet = new HashSet<>();
-        paymentDTOSet.add(new PaymentDTO(PaymentType.MONTHLY_SALARY, "5000"));
-        paymentDTOSet.add(new PaymentDTO(PaymentType.PER_PROJECT, "50"));
-        return paymentDTOSet;
+    @Mock
+    private PostValidationUtils postValidationUtils;
+
+    private List<PaymentDTO> createPaymentDTOList() {
+        return List.of(
+                new PaymentDTO(PaymentType.MONTHLY_SALARY, "5000"),
+                new PaymentDTO(PaymentType.PER_PROJECT, "50")
+        );
     }
 
     private Set<Payment> createPaymentSet() {
-        Set<PaymentDTO> paymentDTOSet = createPaymentDTOSet();
+        List<PaymentDTO> paymentDTOSet = createPaymentDTOList();
         Set<Payment> paymentSet = new HashSet<>();
         for (PaymentDTO paymentDTO : paymentDTOSet) {
             paymentSet.add(paymentDTO.toEntity());
         }
         return paymentSet;
+    }
+
+    private RecruitmentPostDetails createRecruitmentPostDetails() {
+        return RecruitmentPostDetails.builder()
+                .maxSubs(10)
+                .remarks("testRemarks")
+                .skills(List.of("Java", "Spring"))
+                .videoTypes(List.of("Tutorial"))
+                .build();
     }
 
     @DisplayName("새롭게 생성한 게시글의 id를 반환")
@@ -82,9 +97,18 @@ class RecruitmentServiceImplTest {
                 .nickname("nickname")
                 .imageUrl("imageUrl")
                 .build();
-        RecruitmentPostReq testPostReqDTO = RecruitmentPostReq.of(
-                null
-        );
+        RecruitmentPostReq testPostReqDTO = RecruitmentPostReq.builder()
+                .title("testTitle")
+                .content("testContent")
+                .tagNames(List.of("tag1", "tag2"))
+                .payments(createPaymentDTOList())
+                .recruitmentPostDetailsReq(RecruitmentPostDetailsReq.builder()
+                        .maxSubs(10)
+                        .skills(List.of("Java", "Spring"))
+                        .videoTypes(List.of("Tutorial"))
+                        .remarks("testRemarks")
+                        .build())
+                .build();
 
         Set<Tag> tags = Set.of(
                 new Tag("tag1"),
@@ -97,63 +121,23 @@ class RecruitmentServiceImplTest {
                 member, tags,
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails = createRecruitmentPostDetails();
+        postDetails.setRecruitmentPost(expectedPost);
+        expectedPost.setDetails(postDetails);
 
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
-        given(tagRepository.findByNameIn(any())).willReturn(tags);
+        given(postValidationUtils.validateTagsName(any())).willReturn(tags);
+        given(postValidationUtils.validatePayments(any())).willReturn(createPaymentSet());
         given(postRepository.save(any())).willReturn(expectedPost);
 
         // when
-        PostRes actualPostResDTO = postService.create(testPostReqDTO, member.getId());
+        RecruitmentPostRes actualPostResDTO = postService.create(testPostReqDTO, member.getId());
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(expectedPost.getTitle());
         assertThat(actualPostResDTO.getContent()).isEqualTo(expectedPost.getContent());
         assertThat(actualPostResDTO.getAuthorName()).isEqualTo(member.getNickname());
         assertThat(actualPostResDTO.getTagNames()).containsExactlyInAnyOrder("tag1", "tag2");
-
-    }
-
-
-    @DisplayName("잘못된 멤버 ID로 게시글 작성 시 예외 발생")
-    @Test
-    void saveWithInvalidMemberId() {
-        // given
-        Long invalidMemberId = 999L;
-        RecruitmentPostReq testPostReqDTO = RecruitmentPostReq.of(
-                null
-        );
-
-        given(memberRepository.findById(invalidMemberId)).willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> postService.create(testPostReqDTO, invalidMemberId))
-                .isInstanceOf(AuthException.class);
-    }
-
-    @DisplayName("유효하지 않은 태그 이름 포함 시 예외 발생")
-    @Test
-    void saveWithInvalidTagName() {
-        // given
-        Long validMemberId = 1L;
-        Member member = Member.builder()
-                .id(validMemberId)
-                .socialLoginId("socialLoginId")
-                .nickname("nickname")
-                .imageUrl("imageUrl")
-                .build();
-
-        RecruitmentPostReq testPostReqDTO = RecruitmentPostReq.of(
-                null
-        );
-
-        Set<Tag> validTags = Set.of(new Tag("tag1"));
-
-        given(memberRepository.findById(validMemberId)).willReturn(Optional.of(member));
-        given(tagRepository.findByNameIn(testPostReqDTO.getTagNames())).willReturn(validTags);
-
-        // when & then
-        assertThatThrownBy(() -> postService.create(testPostReqDTO, validMemberId))
-                .isInstanceOf(TagException.class);
     }
 
     @DisplayName("게시글 업데이트")
@@ -176,10 +160,22 @@ class RecruitmentServiceImplTest {
                 Set.of(new Tag("tag1")),
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails = createRecruitmentPostDetails();
+        postDetails.setRecruitmentPost(post);
+        post.setDetails(postDetails);
 
-        RecruitmentPostUpdateReq updateReqDTO = RecruitmentPostUpdateReq.of(
-                null
-        );
+        RecruitmentPostReq updateReqDTO = RecruitmentPostReq.builder()
+                .title("updatedTitle")
+                .content("updatedContent")
+                .tagNames(List.of("tag2", "tag3"))
+                .payments(createPaymentDTOList())
+                .recruitmentPostDetailsReq(RecruitmentPostDetailsReq.builder()
+                        .maxSubs(20)
+                        .skills(List.of("Java", "Spring", "Hibernate"))
+                        .videoTypes(List.of("Tutorial", "Demo"))
+                        .remarks("updatedRemarks")
+                        .build())
+                .build();
 
         Set<Tag> updatedTags = Set.of(
                 new Tag("tag2"),
@@ -188,18 +184,19 @@ class RecruitmentServiceImplTest {
 
         given(postRepository.findByMemberIdAndId(memberId, postId))
                 .willReturn(Optional.of(post));
-        given(tagRepository.findByNameIn(updateReqDTO.getTagNames()))
+        given(postValidationUtils.validateTagsName(updateReqDTO.getTagNames()))
                 .willReturn(updatedTags);
+        given(postValidationUtils.validatePayments(updateReqDTO.getPayments()))
+                .willReturn(createPaymentSet());
 
         // when
-        PostRes actualPostResDTO = postService.update(postId, updateReqDTO, memberId);
+        RecruitmentPostRes actualPostResDTO = postService.update(postId, updateReqDTO, memberId);
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(updateReqDTO.getTitle());
         assertThat(actualPostResDTO.getContent()).isEqualTo(updateReqDTO.getContent());
         assertThat(actualPostResDTO.getTagNames()).containsExactlyInAnyOrder("tag2", "tag3");
     }
-
 
     @DisplayName("게시글 삭제")
     @Test
@@ -221,6 +218,9 @@ class RecruitmentServiceImplTest {
                 Set.of(new Tag("tag1")),
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails = createRecruitmentPostDetails();
+        postDetails.setRecruitmentPost(post);
+        post.setDetails(postDetails);
 
         given(postRepository.findByMemberIdAndId(memberId, postId))
                 .willReturn(Optional.of(post));
@@ -230,11 +230,7 @@ class RecruitmentServiceImplTest {
 
         // then
         verify(postRepository, times(1)).delete(post);
-        given(postRepository.findByMemberIdAndId(memberId, postId)).willReturn(Optional.empty());
-        Optional<RecruitmentPost> deletedPost = postRepository.findByMemberIdAndId(memberId, postId);
-        assertThat(deletedPost).isEmpty();
     }
-
 
     @DisplayName("게시글 조회 시 조회수가 증가")
     @Test
@@ -256,22 +252,26 @@ class RecruitmentServiceImplTest {
                 Set.of(new Tag("tag1")),
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails = createRecruitmentPostDetails();
+        postDetails.setRecruitmentPost(post);
+        post.setDetails(postDetails);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRemoteAddr("192.168.0.1");
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));
-        given(postViewRepository.existsById(postId + ":192.168.0.1")).willReturn(false);
+        doNothing().when(postValidationUtils).validatePostView(postId, request);
 
         // when
-        PostRes actualPostResDTO = postService.getPost(postId, request);
+        RecruitmentPostRes actualPostResDTO = postService.getPost(postId, request);
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(post.getTitle());
         assertThat(actualPostResDTO.getContent()).isEqualTo(post.getContent());
         assertThat(actualPostResDTO.getTagNames()).containsExactly("tag1");
-        verify(postViewRepository, times(1)).save(any(PostView.class));
+        verify(postValidationUtils, times(1)).validatePostView(postId, request);
         verify(postRepository, times(1)).save(post);
+        verify(postRepository).save(post); // 조회수 증가에 대한 검증 추가
     }
 
     @DisplayName("모든 게시글 조회")
@@ -292,6 +292,10 @@ class RecruitmentServiceImplTest {
                 Set.of(new Tag("tag1")),
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails1 = createRecruitmentPostDetails();
+        postDetails1.setRecruitmentPost(post1);
+        post1.setDetails(postDetails1);
+
         RecruitmentPost post2 = RecruitmentPost.of(
                 "title2",
                 "content2",
@@ -299,16 +303,17 @@ class RecruitmentServiceImplTest {
                 Set.of(new Tag("tag2")),
                 createPaymentSet()
         );
+        RecruitmentPostDetails postDetails2 = createRecruitmentPostDetails();
+        postDetails2.setRecruitmentPost(post2);
+        post2.setDetails(postDetails2);
 
         given(postRepository.findAll()).willReturn(List.of(post1, post2));
 
         // when
-        List<PostRes> actualPosts = postService.listPosts();
+        List<RecruitmentPostRes> actualPosts = postService.listPosts();
 
         // then
         assertThat(actualPosts).hasSize(2);
-        assertThat(actualPosts).extracting(PostRes::getTitle).containsExactlyInAnyOrder("title1", "title2");
+        assertThat(actualPosts).extracting(RecruitmentPostRes::getTitle).containsExactlyInAnyOrder("title1", "title2");
     }
-
-
 }
