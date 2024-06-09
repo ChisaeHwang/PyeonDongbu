@@ -26,4 +26,7 @@ public abstract class DetailsReq {
 
     @Size(max = 1000, message = "비고란은 1000자를 초과할 수 없습니다.")
     private String remarks;
+
+
+
 }

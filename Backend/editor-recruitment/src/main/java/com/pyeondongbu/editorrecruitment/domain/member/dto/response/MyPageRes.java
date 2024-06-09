@@ -7,7 +7,6 @@ import lombok.*;
 @Getter // 어노테이션 선택 정리
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class MyPageRes {
 
     private String nickname;
@@ -15,26 +14,16 @@ public class MyPageRes {
     private Role role;
     private MemberDetailsRes memberDetailsRes;
 
+
     public static MyPageRes from(
             final Member member
     ) {
-        return MyPageRes.builder()
-                .nickname(member.getNickname())
-                .imageUrl(member.getImageUrl())
-                .role(member.getRole())
-                .build();
-    }
-
-    public static MyPageRes from(
-            final Member member,
-            final MemberDetailsRes memberDetailsRes
-    ) {
-        return MyPageRes.builder()
-                .nickname(member.getNickname())
-                .imageUrl(member.getImageUrl())
-                .role(member.getRole())
-                .memberDetailsRes(memberDetailsRes)
-                .build();
+        return new MyPageRes(
+                member.getNickname(),
+                member.getImageUrl(),
+                member.getRole(),
+                MemberDetailsRes.from(member.getDetails())
+        );
     }
 
 }

@@ -4,6 +4,8 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 
+import java.util.List;
+
 public interface MemberService {
 
     Member getMember(final Long memberId);
@@ -12,5 +14,11 @@ public interface MemberService {
 
     MyPageRes updateMyPage(final Long memberId, final MyPageReq myPageReq);
 
+    List<MyPageRes> searchMembers(
+            Integer maxSubs,
+            String role,
+            List<String> skills,
+            List<String> videoTypes
+    );
 
 }

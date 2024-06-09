@@ -28,12 +28,14 @@ public abstract class Details {
     private String remarks;
 
     @ElementCollection
-    @Column(name = "video_type")
-    private List<String> videoTypes;
-
-    @ElementCollection
+    @CollectionTable(name = "recruitment_post_details_skills", joinColumns = @JoinColumn(name = "recruitment_post_details_id"))
     @Column(name = "skill")
     private List<String> skills;
+
+    @ElementCollection
+    @CollectionTable(name = "recruitment_post_details_video_types", joinColumns = @JoinColumn(name = "recruitment_post_details_id"))
+    @Column(name = "video_type")
+    private List<String> videoTypes;
 
     public Details(
             int maxSubs,

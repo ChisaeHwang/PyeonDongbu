@@ -4,7 +4,7 @@ import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
-public class DetailsSpecification { // 이거 인터페이스로 빼서 관리
+public class DetailsSpecification { // 이거 인터페이스로 빼서 나중에 관리 보류
 
     public static Specification<Details> equalMaxSubs(int maxSubs) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("maxSubs"), maxSubs);

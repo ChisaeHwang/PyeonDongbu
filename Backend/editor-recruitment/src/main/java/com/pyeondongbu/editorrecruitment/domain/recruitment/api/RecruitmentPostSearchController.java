@@ -23,16 +23,16 @@ public class RecruitmentPostSearchController {
     public ResponseEntity<ApiResponse<List<RecruitmentPostRes>>> searchRecruitmentPosts(
             @RequestParam(name = "maxSubs", required = false) Integer maxSubs,
             @RequestParam(name = "title", required = false) String title,
-            @RequestParam(name = "skill", required = false) List<String> skills,
-            @RequestParam(name = "videoType", required = false) List<String> videoTypes,
-            @RequestParam(name = "tagName", required = false) List<String> tagNames
+            @RequestParam(name = "skill", required = false) List<String> skill,
+            @RequestParam(name = "videoType", required = false) List<String> videoType,
+            @RequestParam(name = "tagName", required = false) List<String> tagName
     ) {
         List<RecruitmentPostRes> posts = postService.searchRecruitmentPosts(
                 maxSubs,
                 title,
-                skills,
-                videoTypes,
-                tagNames
+                skill,
+                videoType,
+                tagName
         );
         return ResponseEntity.ok(
                 ApiResponse.success(posts, 200)

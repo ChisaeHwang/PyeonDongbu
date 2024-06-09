@@ -24,18 +24,4 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
     @Modifying
     @Query("DELETE FROM RecruitmentPost p WHERE p.id IN :postIds")
     void deleteByPostIds(@Param("postIds") final List<Long> postIds);
-
-    @Query("""
-           SELECT DISTINCT p FROM RecruitmentPost p
-           JOIN p.tags t
-           WHERE t.id IN :tagIds
-           """)
-    List<RecruitmentPost> findByTagIds(@Param("tagIds") final Set<Long> tagIds);
-
-    @Query("""
-           SELECT p FROM RecruitmentPost p
-           WHERE p.title LIKE %:keyword% 
-           OR p.content LIKE %:keyword%
-           """)
-    List<RecruitmentPost> searchByKeyword(@Param("keyword") String keyword);
 }

@@ -47,4 +47,7 @@ public class MemberDetailsReq extends DetailsReq {
                 .remarks(memberDetails.getRemarks())
                 .build();
     }
+
+
+
 }
