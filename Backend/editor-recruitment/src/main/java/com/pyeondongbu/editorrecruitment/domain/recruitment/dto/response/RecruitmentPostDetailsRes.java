@@ -21,7 +21,7 @@ public class RecruitmentPostDetailsRes {
     private List<String> skills;
     private String remarks;
 
-    public static RecruitmentPostDetailsRes of(
+    public static RecruitmentPostDetailsRes from(
             final Details details
     ) {
         return new RecruitmentPostDetailsRes(

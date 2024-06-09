@@ -62,13 +62,13 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         validationUtils.validatePostView(postId, request);
         post.incrementViewCount();
         postRepository.save(post);
-        return RecruitmentPostRes.of(post);
+        return RecruitmentPostRes.from(post);
     }
 
     @Override
     public List<RecruitmentPostRes> listPosts() {
         return postRepository.findAll().stream()
-                .map(RecruitmentPostRes::of)
+                .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }
 
@@ -80,11 +80,24 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
-    public List<RecruitmentPostRes> searchRecruitmentPosts(Integer maxSubs, String title, List<String> skills, List<String> videoTypes, List<String> tagNames) {
-        Specification<RecruitmentPost> spec = createSpecification(maxSubs, title, skills, videoTypes, tagNames);
-        List<RecruitmentPost> posts = postRepository.findAll(spec);
-        return posts.stream()
-                .map(RecruitmentPostRes::of)
+    @Transactional(readOnly = true)
+    public List<RecruitmentPostRes> searchRecruitmentPosts(
+            Integer maxSubs,
+            String title,
+            List<String> skills,
+            List<String> videoTypes,
+            List<String> tagNames
+    ) {
+        Specification<RecruitmentPost> spec = RecruitmentPostSpecification.combineSpecifications(
+                maxSubs,
+                title,
+                skills,
+                videoTypes,
+                tagNames
+        );
+
+        return postRepository.findAll(spec).stream()
+                .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +114,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         recruitmentPostDetailsRepository.save(postDetails);
         post.setDetails(postDetails);
         postRepository.save(post);
-        return RecruitmentPostRes.of(post);
+        return RecruitmentPostRes.from(post);
     }
 
     @Transactional

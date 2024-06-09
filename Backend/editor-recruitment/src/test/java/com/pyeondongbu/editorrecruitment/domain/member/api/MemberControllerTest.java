@@ -110,7 +110,8 @@ class MemberControllerTest extends ControllerTest {
         final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
         final Member member = createMember();
         final MemberDetails memberDetails = createMemberDetails();
-        final MyPageRes expectedResponse = MyPageRes.from(member, MemberDetailsRes.from(memberDetails));
+        member.setDetails(memberDetails);
+        final MyPageRes expectedResponse = MyPageRes.from(member);
         when(memberService.getMyPage(any()))
                 .thenReturn(expectedResponse);
 
@@ -197,8 +198,9 @@ class MemberControllerTest extends ControllerTest {
         final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
         final Member member = createMember();
         final MemberDetails memberDetails = createMemberDetails();
+        member.setDetails(memberDetails);
         final MyPageReq request = MyPageReq.of(member);
-        final MyPageRes expectedResponse = MyPageRes.from(member,  MemberDetailsRes.from(memberDetails));
+        final MyPageRes expectedResponse = MyPageRes.from(member);
 
         when(memberService.updateMyPage(any(), any()))
                 .thenReturn(expectedResponse);

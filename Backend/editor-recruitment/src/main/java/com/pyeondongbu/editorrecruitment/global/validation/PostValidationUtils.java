@@ -30,12 +30,6 @@ public class PostValidationUtils {
     private final TagRepository tagRepository;
     private final PostViewRepository postViewRepository;
 
-    public void validateSearchKeyword(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty() || keyword.trim().length() < 2) {
-            throw new SearchException(INVALID_SEARCH_CONTENT);
-        }
-    }
-
     @Transactional
     public void validatePostView(Long postId, HttpServletRequest request) {
         isValidIp(request.getRemoteAddr());

@@ -151,7 +151,8 @@ class RecruitmentServiceImplBadTest {
         request.setRemoteAddr("999.999.999.999"); // invalid IP
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));
-        doThrow(new BadRequestException(INVALID_IP_ADDRESS)).when(postValidationUtils).validatePostView(eq(postId), eq(request));
+        doThrow(new BadRequestException(INVALID_IP_ADDRESS))
+                .when(postValidationUtils).validatePostView(eq(postId), eq(request));
 
         // when & then
         assertThatThrownBy(() -> postService.getPost(postId, request))
