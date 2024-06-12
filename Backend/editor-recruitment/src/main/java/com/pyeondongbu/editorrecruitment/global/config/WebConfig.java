@@ -29,10 +29,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${cors.allowed-origin}")
     private String allowedOrigin;
 
-    @Value("${skills.list}")
+    @Value("${allSkills}")
     private List<String> allSkills;
 
-    @Value("${video-types.list}")
+    @Value("${allVideoTypes}")
     private List<String> allVideoTypes;
 
     @Bean
@@ -74,8 +74,12 @@ public class WebConfig implements WebMvcConfigurer {
         return validator();
     }
 
+
     @Bean
     public Vectorizer vectorizer() {
+        List<String> allSkills = Arrays.asList("Java", "Spring Boot", "React", "MySQL", "Python", "Django", "JavaScript", "C++", "SQL", "Kotlin", "Android", "Swift", "iOS", "Ruby", "Rails", "PHP", "Laravel", "Node.js", "MongoDB", "AWS", "DevOps");
+        List<String> allVideoTypes = Arrays.asList("튜토리얼", "라이브 코딩", "코드 리뷰", "강의", "세미나", "워크샵", "코딩 챌린지", "기술 토크", "앱 개발", "웹 개발", "기술 데모", "DevOps");
+
         return new Vectorizer(allSkills, allVideoTypes);
     }
 

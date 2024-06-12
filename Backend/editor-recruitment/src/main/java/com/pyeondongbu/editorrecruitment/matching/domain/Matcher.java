@@ -31,9 +31,8 @@ public class Matcher {
             double[] postVector = vectorizer.vectorize(post.getDetails());
             double similarity = CosineSimilarity.compute(memberVector, postVector);
 
-            
 
-            if (similarity > 0.1) {
+            if (similarity > 0.1 && (postMaxSubs >= memberMaxSubs * 0.25)) {
                 results.add(new MatchingResult(
                         MyPageRes.from(member),
                         RecruitmentPostRes.from(post),
