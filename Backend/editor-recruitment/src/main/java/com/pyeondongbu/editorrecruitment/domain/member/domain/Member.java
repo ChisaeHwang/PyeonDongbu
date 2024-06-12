@@ -1,5 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.global.exception.MemberException;

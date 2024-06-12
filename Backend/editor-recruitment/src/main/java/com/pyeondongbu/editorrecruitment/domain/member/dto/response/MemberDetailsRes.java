@@ -22,6 +22,7 @@ public class MemberDetailsRes {
     public static MemberDetailsRes from(MemberDetails memberDetails) {
         return MemberDetailsRes.builder()
                 .maxSubs(memberDetails.getMaxSubs())
+                .videoType(memberDetails.getVideoTypes())
                 .editedChannels(memberDetails.getEditedChannels())
                 .currentChannels(memberDetails.getCurrentChannels())
                 .portfolio(memberDetails.getPortfolio())

@@ -22,6 +22,7 @@ public class MyPageRes {
                 .nickname(member.getNickname())
                 .imageUrl(member.getImageUrl())
                 .role(member.getRole())
+                .memberDetailsRes(MemberDetailsRes.from(member.getDetails()))
                 .build();
     }
 

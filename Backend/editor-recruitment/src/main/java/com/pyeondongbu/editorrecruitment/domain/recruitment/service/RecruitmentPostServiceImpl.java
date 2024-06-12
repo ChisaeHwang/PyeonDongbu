@@ -62,13 +62,13 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         validationUtils.validatePostView(postId, request);
         post.incrementViewCount();
         postRepository.save(post);
-        return RecruitmentPostRes.of(post);
+        return RecruitmentPostRes.from(post);
     }
 
     @Override
     public List<RecruitmentPostRes> listPosts() {
         return postRepository.findAll().stream()
-                .map(RecruitmentPostRes::of)
+                .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +84,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         Specification<RecruitmentPost> spec = createSpecification(maxSubs, title, skills, videoTypes, tagNames);
         List<RecruitmentPost> posts = postRepository.findAll(spec);
         return posts.stream()
-                .map(RecruitmentPostRes::of)
+                .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +101,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         recruitmentPostDetailsRepository.save(postDetails);
         post.setDetails(postDetails);
         postRepository.save(post);
-        return RecruitmentPostRes.of(post);
+        return RecruitmentPostRes.from(post);
     }
 
     @Transactional

@@ -27,7 +27,7 @@ public class RecruitmentPostRes {
     private List<PaymentDTO> payments;
     private RecruitmentPostDetailsRes recruitmentPostDetailsRes;
 
-    public static RecruitmentPostRes of(
+    public static RecruitmentPostRes from(
             final RecruitmentPost post
     ) {
 
@@ -41,7 +41,7 @@ public class RecruitmentPostRes {
                 getImagesUrlList(post),
                 getTagsNameList(post),
                 getPaymentsList(post),
-                RecruitmentPostDetailsRes.of(post.getDetails())
+                RecruitmentPostDetailsRes.from(post.getDetails())
         );
     }
 

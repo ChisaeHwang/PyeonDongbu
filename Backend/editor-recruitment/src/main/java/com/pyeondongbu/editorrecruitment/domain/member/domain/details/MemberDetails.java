@@ -1,5 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.member.domain.details;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;

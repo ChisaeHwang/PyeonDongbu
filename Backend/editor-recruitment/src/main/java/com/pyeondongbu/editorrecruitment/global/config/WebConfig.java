@@ -3,6 +3,7 @@ package com.pyeondongbu.editorrecruitment.global.config;
 import com.pyeondongbu.editorrecruitment.domain.auth.configuration.AccessorResolver;
 import com.pyeondongbu.editorrecruitment.domain.auth.configuration.AuthenticationInterceptor;
 import com.pyeondongbu.editorrecruitment.domain.auth.configuration.UserAuthorityInterceptor;
+import com.pyeondongbu.editorrecruitment.matching.domain.Vectorizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -26,6 +28,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${cors.allowed-origin}")
     private String allowedOrigin;
+
+    @Value("${skills.list}")
+    private List<String> allSkills;
+
+    @Value("${video-types.list}")
+    private List<String> allVideoTypes;
 
     @Bean
     public LocalValidatorFactoryBean validator() {
@@ -64,6 +72,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public Validator getValidator() {
         return validator();
+    }
+
+    @Bean
+    public Vectorizer vectorizer() {
+        return new Vectorizer(allSkills, allVideoTypes);
     }
 
 }
