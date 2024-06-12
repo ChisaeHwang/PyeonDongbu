@@ -4,7 +4,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import lombok.*;
 
-@Getter // 어노테이션 선택 정리
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MyPageRes {
@@ -23,6 +23,18 @@ public class MyPageRes {
                 member.getImageUrl(),
                 member.getRole(),
                 MemberDetailsRes.from(member.getDetails())
+        );
+    }
+
+    public static MyPageRes from(
+            final Member member,
+            final MemberDetailsRes memberDetailsRes
+    ) {
+        return new MyPageRes(
+                member.getNickname(),
+                member.getImageUrl(),
+                member.getRole(),
+                memberDetailsRes
         );
     }
 
