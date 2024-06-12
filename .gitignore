@@ -15,4 +15,7 @@ Backend/editor-recruitment/build.gradle
 Backend/editor-recruitment/.env
 
 .env 
+
 *.yml 
+
+*.properties

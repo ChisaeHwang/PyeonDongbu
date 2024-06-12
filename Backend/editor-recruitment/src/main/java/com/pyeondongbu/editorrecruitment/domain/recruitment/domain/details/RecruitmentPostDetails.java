@@ -1,5 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostDetailsReq;
