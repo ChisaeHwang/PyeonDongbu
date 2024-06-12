@@ -83,8 +83,6 @@ public class RecruitmentPost {
             final Set<Tag> tags,
             final Set<Payment> payments
     ) {
-        validateTitle(title);
-        validateContent(content);
         this.title = title;
         this.content = content;
         this.member = member;
@@ -113,7 +111,7 @@ public class RecruitmentPost {
                 .payments(payments)
                 .build();
     }
-    // 게시글 업데이트
+
     public RecruitmentPost update(
             final String title,
             final String content,
@@ -128,7 +126,6 @@ public class RecruitmentPost {
         return this;
     }
 
-    // 이미지 추가
     public void addImages(List<PostImage> images) {
         this.images.addAll(images);
         images.forEach(image -> image.setPost(this));
@@ -148,16 +145,5 @@ public class RecruitmentPost {
 
     public void addPayments(Set<Payment> payments) {
         this.payments.addAll(payments);
-    }
-    private void validateTitle(String title) {
-        if (title == null || title.trim().isEmpty()) {
-            throw new InvalidDomainException(INVALID_TITLE_NAME);
-        }
-    }
-
-    private void validateContent(String content) {
-        if (content == null || content.trim().isEmpty()) {
-            throw new InvalidDomainException(INVALID_CONTENT_NULL);
-        }
     }
 }

@@ -32,6 +32,9 @@ public class MemberValidationUtils {
         if (myPageReq.getImageUrl() == null || myPageReq.getImageUrl().trim().isEmpty()) {
             throw new BadRequestException(INVALID_IMAGE_URL);
         }
+        if (myPageReq.getNickname() == null || myPageReq.getNickname().trim().isEmpty()) {
+            throw new BadRequestException(INVALID_NICK_NAME);
+        }
         try {
             new URL(myPageReq.getImageUrl());
         } catch (MalformedURLException e) {
@@ -58,5 +61,7 @@ public class MemberValidationUtils {
         if (!violations.isEmpty()) {
             throw new BadRequestException(INVALID_MEMBER_DETAILS);
         }
+
+
     }
 }

@@ -17,7 +17,7 @@ public class MemberSpecification {
     public static Specification<Member> hasMaxSubs(Integer maxSubs) {
         return (root, query, cb) -> {
             Join<Member, MemberDetails> detailsJoin = root.join("details", JoinType.INNER);
-            return cb.lessThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
+            return cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
         };
     }
 
@@ -52,7 +52,7 @@ public class MemberSpecification {
 
             if (maxSubs != null) {
                 Join<Member, MemberDetails> detailsJoin = root.join("details", JoinType.INNER);
-                predicates.add(cb.lessThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
+                predicates.add(cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
             }
 
             if (role != null) {

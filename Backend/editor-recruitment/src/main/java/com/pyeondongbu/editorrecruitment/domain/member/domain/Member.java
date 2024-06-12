@@ -45,7 +45,7 @@ public class Member {
     private String imageUrl;
 
     @Enumerated(value = STRING)
-    private MemberState status = ACTIVE; // 기본값 설정 예시
+    private MemberState status = ACTIVE;
 
     @Column(nullable = false)
     private LocalDateTime lastLoginDate;
@@ -69,10 +69,6 @@ public class Member {
             final String nickname,
             final String imageUrl
     ) {
-        validateSocialLoginId(socialLoginId);
-        validateNickname(nickname);
-        validateImageUrl(imageUrl);
-
         this.id = id;
         this.role = role;
         this.socialLoginId = socialLoginId;
@@ -110,24 +106,6 @@ public class Member {
 
     public void setDetails(MemberDetails details) {
         this.details = details;
-    }
-
-    private void validateSocialLoginId(String socialLoginId) {
-        if (socialLoginId == null || socialLoginId.trim().isEmpty() || socialLoginId.length() > 30) {
-            throw new MemberException(INVALID_SOCIAL_LOGIN_ID);
-        }
-    }
-
-    private void validateNickname(String nickname) {
-        if (nickname == null || nickname.trim().isEmpty() || nickname.length() > 20) {
-            throw new MemberException(INVALID_NICK_NAME);
-        }
-    }
-
-    private void validateImageUrl(String imageUrl) {
-        if (imageUrl == null || imageUrl.trim().isEmpty()) {
-            throw new MemberException(INVALID_IMAGE_URL);
-        }
     }
 }
 

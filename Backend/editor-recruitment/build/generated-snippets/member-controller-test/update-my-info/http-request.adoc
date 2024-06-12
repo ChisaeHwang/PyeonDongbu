@@ -1,0 +1,22 @@
+[source,http,options="nowrap"]
+----
+PUT /api/member HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken
+
+{
+  "nickname" : "testNickname",
+  "imageUrl" : "https://pyeondongbu.s3.ap-northeast-2.amazonaws.com/testImage.jpg",
+  "role" : "CLIENT",
+  "memberDetails" : {
+    "maxSubs" : 1000,
+    "videoTypes" : [ "Gaming" ],
+    "skills" : [ "Skill1", "Skill2" ],
+    "remarks" : "Test Remarks",
+    "editedChannels" : [ "Channel1", "Channel2" ],
+    "currentChannels" : [ "CurrentChannel1" ],
+    "portfolio" : "Test Portfolio"
+  }
+}
+----

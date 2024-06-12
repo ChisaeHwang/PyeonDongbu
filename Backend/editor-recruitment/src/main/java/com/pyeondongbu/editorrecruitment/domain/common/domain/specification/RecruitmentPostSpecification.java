@@ -43,7 +43,7 @@ public class RecruitmentPostSpecification {
     public static Specification<RecruitmentPost> withMaxSubs(Integer maxSubs) {
         return (root, query, cb) -> {
             Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-            return cb.lessThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
+            return cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
         };
     }
 
@@ -59,7 +59,7 @@ public class RecruitmentPostSpecification {
 
             if (maxSubs != null) {
                 Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-                predicates.add(cb.lessThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
+                predicates.add(cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
             }
 
             if (title != null && !title.isEmpty()) {
