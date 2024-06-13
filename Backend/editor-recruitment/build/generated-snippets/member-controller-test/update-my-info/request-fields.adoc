@@ -1,0 +1,44 @@
+|===
+|Path|Type|Description
+
+|`+nickname+`
+|`+String+`
+|멤버 닉네임
+
+|`+imageUrl+`
+|`+String+`
+|멤버 프로필사진 URL
+
+|`+role+`
+|`+String+`
+|멤버 역할
+
+|`+memberDetails.maxSubs+`
+|`+Number+`
+|구독자 수
+
+|`+memberDetails.videoTypes+`
+|`+Array+`
+|비디오 타입
+
+|`+memberDetails.editedChannels+`
+|`+Array+`
+|편집한 채널
+
+|`+memberDetails.currentChannels+`
+|`+Array+`
+|현재 채널
+
+|`+memberDetails.portfolio+`
+|`+String+`
+|포트폴리오
+
+|`+memberDetails.skills+`
+|`+Array+`
+|스킬 리스트
+
+|`+memberDetails.remarks+`
+|`+String+`
+|비고
+
+|===

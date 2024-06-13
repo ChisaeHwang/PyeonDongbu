@@ -1,0 +1,7 @@
+[source,bash]
+----
+$ http GET 'http://localhost:8080/api/member' \
+    'Content-Type:application/json;charset=UTF-8' \
+    'Authorization:accessToken' \
+    'Cookie:refresh-token=refreshToken'
+----

@@ -158,11 +158,10 @@ class MemberControllerTest extends ControllerTest {
                                         .type(JsonFieldType.NUMBER)
                                         .description("구독자 수")
                                         .attributes(field("constraint", "숫자")),
-                                fieldWithPath("data.memberDetailsRes.videoType")
-                                        .type(JsonFieldType.STRING)
+                                fieldWithPath("data.memberDetailsRes.videoTypes")
+                                        .type(JsonFieldType.ARRAY)
                                         .description("비디오 타입")
-                                        .optional()
-                                        .attributes(field("constraint", "문자열")),
+                                        .attributes(field("constraint", "문자열 배열")),
                                 fieldWithPath("data.memberDetailsRes.editedChannels")
                                         .type(JsonFieldType.ARRAY)
                                         .description("편집한 채널")
@@ -241,11 +240,10 @@ class MemberControllerTest extends ControllerTest {
                                         .type(JsonFieldType.NUMBER)
                                         .description("구독자 수")
                                         .attributes(field("constraint", "숫자")),
-                                fieldWithPath("memberDetails.videoType")
-                                        .type(JsonFieldType.STRING)
+                                fieldWithPath("memberDetails.videoTypes")
+                                        .type(JsonFieldType.ARRAY)
                                         .description("비디오 타입")
-                                        .optional()
-                                        .attributes(field("constraint", "문자열")),
+                                        .attributes(field("constraint", "문자열 배열")),
                                 fieldWithPath("memberDetails.editedChannels")
                                         .type(JsonFieldType.ARRAY)
                                         .description("편집한 채널")
@@ -292,11 +290,10 @@ class MemberControllerTest extends ControllerTest {
                                         .type(JsonFieldType.NUMBER)
                                         .description("구독자 수")
                                         .attributes(field("constraint", "숫자")),
-                                fieldWithPath("data.memberDetailsRes.videoType")
-                                        .type(JsonFieldType.STRING)
+                                fieldWithPath("data.memberDetailsRes.videoTypes")
+                                        .type(JsonFieldType.ARRAY)
                                         .description("비디오 타입")
-                                        .optional()
-                                        .attributes(field("constraint", "문자열")),
+                                        .attributes(field("constraint", "문자열 배열")),
                                 fieldWithPath("data.memberDetailsRes.editedChannels")
                                         .type(JsonFieldType.ARRAY)
                                         .description("편집한 채널")

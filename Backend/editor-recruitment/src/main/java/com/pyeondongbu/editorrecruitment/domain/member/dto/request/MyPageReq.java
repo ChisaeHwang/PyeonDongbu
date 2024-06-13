@@ -35,5 +35,11 @@ public class MyPageReq {
                 .build();
     }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

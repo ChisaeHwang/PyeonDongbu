@@ -18,6 +18,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetails
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
 import com.pyeondongbu.editorrecruitment.global.exception.BadRequestException;
 import com.pyeondongbu.editorrecruitment.global.exception.MemberException;
+import com.pyeondongbu.editorrecruitment.global.validation.MemberValidationUtils;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -50,6 +51,9 @@ public class MemberServiceImplBadTest {
     @Mock
     private MemberDetailsRepository memberDetailsRepository;
 
+    @Mock
+    private MemberValidationUtils validationUtils;
+
     private Validator validator;
 
     private Member createMember() {
@@ -78,8 +82,22 @@ public class MemberServiceImplBadTest {
         return MemberDetailsReq.of(createMemberDetails());
     }
 
-    private MyPageReq createMyPageReq(String nickname, String imageUrl, Role role, MemberDetailsReq memberDetailsReq) {
-        return MyPageReq.of(createMember());
+    private MyPageReq createMyPageReq(
+            String nickname,
+            String imageUrl,
+            Role role,
+            MemberDetailsReq memberDetailsReq
+    ) {
+        Member member = Member.of(
+                "socialLoginId",
+                nickname,
+                imageUrl,
+                role
+        );
+
+        member.setDetails(MemberDetails.of(member, memberDetailsReq));
+
+        return MyPageReq.of(member);
     }
 
     @BeforeEach
@@ -87,7 +105,12 @@ public class MemberServiceImplBadTest {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
 
-        memberService = new MemberServiceImpl(memberRepository, memberDetailsRepository, publisher, validator);
+        memberService = new MemberServiceImpl(
+                memberRepository,
+                memberDetailsRepository,
+                publisher,
+                new MemberValidationUtils(memberRepository, validator)
+        );
 
         given(memberRepository.findById(any()))
                 .willReturn(Optional.of(createMember()));
@@ -126,7 +149,7 @@ public class MemberServiceImplBadTest {
 
         // when & then
         assertThatThrownBy(() -> memberService.updateMyPage(1L, request))
-                .isInstanceOf(MemberException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasFieldOrPropertyWithValue("status", INVALID_NICK_NAME.getStatus());
     }
 

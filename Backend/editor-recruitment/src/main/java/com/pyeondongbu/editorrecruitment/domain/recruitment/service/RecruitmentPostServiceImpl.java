@@ -1,21 +1,17 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.service;
 
-
 import com.pyeondongbu.editorrecruitment.domain.common.domain.specification.RecruitmentPostSpecification;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostDetailsRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
-import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
-import com.pyeondongbu.editorrecruitment.global.exception.*;
+import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
+import com.pyeondongbu.editorrecruitment.global.exception.PostException;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +39,9 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     public RecruitmentPostRes create(final RecruitmentPostReq req, final Long memberId) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
+        final PostValidationUtils.ValidationResult validationResult = validationUtils.validateRecruitmentPostReq(req);
         final RecruitmentPost post = new RecruitmentPost(member);
-        return createOrUpdatePost(post, req);
+        return createOrUpdatePost(post, req, validationResult);
     }
 
     @Override
@@ -52,14 +49,17 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     public RecruitmentPostRes update(Long postId, RecruitmentPostReq req, Long memberId) {
         final RecruitmentPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
-        return createOrUpdatePost(post, req);
+        final PostValidationUtils.ValidationResult validationResult = validationUtils.validateRecruitmentPostReq(req);
+        return createOrUpdatePost(post, req, validationResult);
     }
 
     @Override
     public RecruitmentPostRes getPost(Long postId, HttpServletRequest request) {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
+
         validationUtils.validatePostView(postId, request);
+
         post.incrementViewCount();
         postRepository.save(post);
         return RecruitmentPostRes.from(post);
@@ -101,23 +101,28 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Private 함수들
-     */
-
-    private RecruitmentPostRes createOrUpdatePost(RecruitmentPost post, RecruitmentPostReq req) {
-        final Set<Tag> tags = validationUtils.validateTagsName(req.getTagNames());
-        final Set<Payment> payments = validationUtils.validatePayments(req.getPayments());
-        post.update(req.getTitle(), req.getContent(), tags, payments);
+    private RecruitmentPostRes createOrUpdatePost(
+            RecruitmentPost post,
+            RecruitmentPostReq req,
+            PostValidationUtils.ValidationResult validationResult
+    ) {
+        post.update(
+                req.getTitle(),
+                req.getContent(),
+                validationResult.tags(),
+                validationResult.payments()
+        );
         postImagesHandler(req, post);
-        final RecruitmentPostDetails postDetails = RecruitmentPostDetails.of(post, req.getRecruitmentPostDetailsReq());
+        final RecruitmentPostDetails postDetails = RecruitmentPostDetails.of(
+                post,
+                req.getRecruitmentPostDetailsReq()
+        );
         recruitmentPostDetailsRepository.save(postDetails);
         post.setDetails(postDetails);
         postRepository.save(post);
         return RecruitmentPostRes.from(post);
     }
 
-    @Transactional
     private void postImagesHandler(RecruitmentPostReq req, RecruitmentPost post) {
         post.getImages().clear();
         if (req.getImages() != null && !req.getImages().isEmpty()) {
@@ -126,27 +131,5 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                     .collect(Collectors.toList());
             post.addImages(images);
         }
-    }
-
-    private Specification<RecruitmentPost> createSpecification(Integer maxSubs, String title, List<String> skills, List<String> videoTypes, List<String> tagNames) {
-        Specification<RecruitmentPost> spec = Specification.where(null);
-
-        if (maxSubs != null) {
-            spec = spec.and(RecruitmentPostSpecification.withMaxSubs(maxSubs));
-        }
-        if (title != null && !title.trim().isEmpty()) {
-            spec = spec.and(RecruitmentPostSpecification.containsTitle(title));
-        }
-        if (skills != null && !skills.isEmpty()) {
-            spec = spec.and(RecruitmentPostSpecification.containsSkills(skills));
-        }
-        if (videoTypes != null && !videoTypes.isEmpty()) {
-            spec = spec.and(RecruitmentPostSpecification.containsVideoTypes(videoTypes));
-        }
-        if (tagNames != null && !tagNames.isEmpty()) {
-            spec = spec.and(RecruitmentPostSpecification.withTags(tagNames));
-        }
-
-        return spec;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class MemberDetailsRes {
 
     private int maxSubs;
-    private List<String> videoType;
+    private List<String> videoTypes;
     private List<String> editedChannels;
     private List<String> currentChannels;
     private String portfolio;

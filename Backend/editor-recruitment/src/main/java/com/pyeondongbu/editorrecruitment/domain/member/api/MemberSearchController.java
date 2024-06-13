@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/api/members/search")
 public class MemberSearchController {
 
     private final MemberService memberService;
 
-    @GetMapping("/search")
+    @GetMapping("/by-details")
     public ResponseEntity<ApiResponse<List<MyPageRes>>> searchMembers(
             @RequestParam(name = "maxSubs", required = false) Integer maxSubs,
             @RequestParam(name = "role", required = false) String role,
