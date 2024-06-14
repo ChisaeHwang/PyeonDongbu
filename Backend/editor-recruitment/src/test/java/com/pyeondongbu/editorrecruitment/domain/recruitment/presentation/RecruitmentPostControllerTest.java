@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
+package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.MemberTokens;

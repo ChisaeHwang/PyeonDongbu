@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.tag.api;
+package com.pyeondongbu.editorrecruitment.domain.tag.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
 import com.pyeondongbu.editorrecruitment.domain.tag.service.TagService;

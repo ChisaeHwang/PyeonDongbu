@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.auth.api;
+package com.pyeondongbu.editorrecruitment.domain.auth.presentation;
 
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;;

@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.auth.api;
+package com.pyeondongbu.editorrecruitment.domain.auth.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.Auth;
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.MemberOnly;
@@ -70,7 +70,8 @@ public class LoginController {
 
     @DeleteMapping("/account")
     @MemberOnly
-    public ResponseEntity<ApiResponse<Void>> deleteAccount(@Auth final Accessor accessor) {
+    public ResponseEntity<ApiResponse<Void>> deleteAccount(
+            @Auth final Accessor accessor) {
         loginService.deleteAccount(accessor.getMemberId());
         return ResponseEntity.status(204).body(
                 ApiResponse.success(null, 204)

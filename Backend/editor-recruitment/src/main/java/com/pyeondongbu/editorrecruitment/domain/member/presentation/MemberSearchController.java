@@ -1,6 +1,5 @@
-package com.pyeondongbu.editorrecruitment.domain.member.api;
+package com.pyeondongbu.editorrecruitment.domain.member.presentation;
 
-import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MemberRes;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 import com.pyeondongbu.editorrecruitment.domain.member.service.MemberService;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;

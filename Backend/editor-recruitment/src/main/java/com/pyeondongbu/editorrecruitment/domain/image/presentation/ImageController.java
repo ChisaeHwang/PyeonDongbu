@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.image.api;
+package com.pyeondongbu.editorrecruitment.domain.image.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.image.dto.response.ImageRes;
 import com.pyeondongbu.editorrecruitment.domain.image.service.ImageService;

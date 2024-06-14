@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
+package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;

@@ -34,14 +34,14 @@ public class PostValidationUtils {
     private final Validator validator;
 
     @Transactional
-    public void validatePostView(Long postId, HttpServletRequest request) {
-        isValidIp(request.getRemoteAddr());
+    public void validatePostView(Long postId, String remoteAddr) {
+        isValidIp(remoteAddr);
 
-        String postViewId = postId + ":" + request.getRemoteAddr();
+        String postViewId = postId + ":" + remoteAddr;
         boolean isFirstView = !postViewRepository.existsById(postViewId);
 
         if (isFirstView) {
-            postViewRepository.save(new PostView(postViewId, postId, request.getRemoteAddr()));
+            postViewRepository.save(new PostView(postViewId, postId, remoteAddr));
         }
     }
 

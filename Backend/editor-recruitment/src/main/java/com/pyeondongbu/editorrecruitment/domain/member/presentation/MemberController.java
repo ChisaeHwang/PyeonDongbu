@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.member.api;
+package com.pyeondongbu.editorrecruitment.domain.member.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.Auth;
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.MemberOnly;

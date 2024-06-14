@@ -1,8 +1,7 @@
-package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
+package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostDetailsRes;

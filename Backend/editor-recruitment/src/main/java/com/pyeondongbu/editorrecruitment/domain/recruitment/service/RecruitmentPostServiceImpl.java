@@ -54,11 +54,11 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
-    public RecruitmentPostRes getPost(Long postId, HttpServletRequest request) {
+    public RecruitmentPostRes getPost(Long postId, String remoteAddr) {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
-        validationUtils.validatePostView(postId, request);
+        validationUtils.validatePostView(postId, remoteAddr);
 
         post.incrementViewCount();
         postRepository.save(post);

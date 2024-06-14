@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.recruitment.api;
+package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.Auth;
 import com.pyeondongbu.editorrecruitment.domain.auth.annotation.MemberOnly;
@@ -38,7 +38,8 @@ public class RecruitmentPostController {
     public ResponseEntity<ApiResponse<RecruitmentPostRes>> getPost(
             @PathVariable("postId") Long postId,
             HttpServletRequest request) {
-        RecruitmentPostRes postResponseDTO = postService.getPost(postId, request);
+        final String remoteAddr = request.getRemoteAddr();
+        RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr);
         return ResponseEntity.ok(
                 ApiResponse.success(postResponseDTO, 200)
         );

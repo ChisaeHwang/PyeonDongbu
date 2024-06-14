@@ -126,8 +126,13 @@ class RecruitmentServiceImplTest {
         expectedPost.setDetails(postDetails);
 
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
-        given(postValidationUtils.validateTagsName(any())).willReturn(tags);
-        given(postValidationUtils.validatePayments(any())).willReturn(createPaymentSet());
+        given(postValidationUtils.validateRecruitmentPostReq(testPostReqDTO))
+                .willReturn(
+                        new PostValidationUtils.ValidationResult(
+                                tags,
+                                createPaymentSet()
+                        )
+                );
         given(postRepository.save(any())).willReturn(expectedPost);
 
         // when
@@ -184,10 +189,13 @@ class RecruitmentServiceImplTest {
 
         given(postRepository.findByMemberIdAndId(memberId, postId))
                 .willReturn(Optional.of(post));
-        given(postValidationUtils.validateTagsName(updateReqDTO.getTagNames()))
-                .willReturn(updatedTags);
-        given(postValidationUtils.validatePayments(updateReqDTO.getPayments()))
-                .willReturn(createPaymentSet());
+        given(postValidationUtils.validateRecruitmentPostReq(updateReqDTO))
+                .willReturn(
+                        new PostValidationUtils.ValidationResult(
+                                updatedTags,
+                                createPaymentSet()
+                        )
+                );
 
         // when
         RecruitmentPostRes actualPostResDTO = postService.update(postId, updateReqDTO, memberId);
