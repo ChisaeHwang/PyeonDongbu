@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.auth.api;
+package com.pyeondongbu.editorrecruitment.domain.auth.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.infra.provider.GoogleOauthProvider;
 import jakarta.servlet.http.HttpServletResponse;

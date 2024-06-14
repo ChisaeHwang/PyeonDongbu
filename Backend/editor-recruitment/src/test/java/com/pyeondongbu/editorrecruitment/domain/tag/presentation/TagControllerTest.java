@@ -1,11 +1,10 @@
-package com.pyeondongbu.editorrecruitment.domain.tag.api;
+package com.pyeondongbu.editorrecruitment.domain.tag.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
 import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
 import com.pyeondongbu.editorrecruitment.domain.tag.service.TagService;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.util.Arrays;
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;

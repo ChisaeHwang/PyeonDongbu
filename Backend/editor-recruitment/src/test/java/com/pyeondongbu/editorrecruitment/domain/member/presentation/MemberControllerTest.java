@@ -1,8 +1,7 @@
-package com.pyeondongbu.editorrecruitment.domain.member.api;
+package com.pyeondongbu.editorrecruitment.domain.member.presentation;
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -13,7 +12,6 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWit
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -24,16 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.pyeondongbu.editorrecruitment.domain.auth.api.LoginController;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.MemberTokens;
-import com.pyeondongbu.editorrecruitment.domain.auth.service.LoginService;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
-import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
-import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MemberDetailsRes;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 import com.pyeondongbu.editorrecruitment.domain.member.service.MemberServiceImpl;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;

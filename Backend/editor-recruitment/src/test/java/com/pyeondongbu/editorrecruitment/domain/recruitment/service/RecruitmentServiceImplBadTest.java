@@ -93,7 +93,7 @@ class RecruitmentServiceImplBadTest {
                 .build();
 
         given(memberRepository.findById(validMemberId)).willReturn(Optional.of(member));
-        doThrow(new TagException(INVALID_PAYMENT)).when(postValidationUtils).validateTagsName(testPostReqDTO.getTagNames());
+        doThrow(new TagException(INVALID_PAYMENT)).when(postValidationUtils).validateRecruitmentPostReq(testPostReqDTO);
 
         // when & then
         assertThatThrownBy(() -> postService.create(testPostReqDTO, validMemberId))
@@ -119,7 +119,7 @@ class RecruitmentServiceImplBadTest {
                 .build();
 
         given(memberRepository.findById(validMemberId)).willReturn(Optional.of(member));
-        doThrow(new InvalidDomainException(INVALID_PAYMENT)).when(postValidationUtils).validatePayments(testPostReqDTO.getPayments());
+        doThrow(new InvalidDomainException(INVALID_PAYMENT)).when(postValidationUtils).validateRecruitmentPostReq(testPostReqDTO);
 
         // when & then
         assertThatThrownBy(() -> postService.create(testPostReqDTO, validMemberId))
@@ -134,7 +134,7 @@ class RecruitmentServiceImplBadTest {
         given(postRepository.findById(postId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> postService.getPost(postId, new MockHttpServletRequest()))
+        assertThatThrownBy(() -> postService.getPost(postId, new MockHttpServletRequest().getRemoteAddr()))
                 .isInstanceOf(PostException.class);
     }
 
@@ -152,10 +152,10 @@ class RecruitmentServiceImplBadTest {
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));
         doThrow(new BadRequestException(INVALID_IP_ADDRESS))
-                .when(postValidationUtils).validatePostView(eq(postId), eq(request));
+                .when(postValidationUtils).validatePostView(eq(postId), eq(request.getRemoteAddr()));
 
         // when & then
-        assertThatThrownBy(() -> postService.getPost(postId, request))
+        assertThatThrownBy(() -> postService.getPost(postId, request.getRemoteAddr()))
                 .isInstanceOf(BadRequestException.class);
     }
 
@@ -177,7 +177,7 @@ class RecruitmentServiceImplBadTest {
                 .build();
 
         given(postRepository.findByMemberIdAndId(memberId, postId)).willReturn(Optional.of(post));
-        doThrow(new TagException(INVALID_PAYMENT)).when(postValidationUtils).validateTagsName(updateReqDTO.getTagNames());
+        doThrow(new TagException(INVALID_PAYMENT)).when(postValidationUtils).validateRecruitmentPostReq(updateReqDTO);
 
         // when & then
         assertThatThrownBy(() -> postService.update(postId, updateReqDTO, memberId))

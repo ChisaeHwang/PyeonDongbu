@@ -12,7 +12,7 @@ public interface RecruitmentPostService {
 
     RecruitmentPostRes create(RecruitmentPostReq request, Long memberId);
 
-    RecruitmentPostRes getPost(Long postId, HttpServletRequest request);
+    RecruitmentPostRes getPost(Long postId, String remoteAddr);
 
     List<RecruitmentPostRes> listPosts();
 
@@ -21,6 +21,12 @@ public interface RecruitmentPostService {
     void deletePost(Long postId, Long memberId);
 
 
-    List<RecruitmentPostRes> searchRecruitmentPosts(Integer maxSubs, String title, List<String> skills, List<String> videoTypes, List<String> tagNames);
+    List<RecruitmentPostRes> searchRecruitmentPosts(
+            Integer maxSubs
+            , String title,
+            List<String> skills,
+            List<String> videoTypes,
+            List<String> tagNames
+    );
 
 }
