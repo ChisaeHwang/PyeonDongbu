@@ -58,10 +58,11 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
-        validationUtils.validatePostView(postId, remoteAddr);
+        if (validationUtils.validatePostView(postId, remoteAddr)) {
+            post.incrementViewCount();
+            postRepository.save(post);
+        }
 
-        post.incrementViewCount();
-        postRepository.save(post);
         return RecruitmentPostRes.from(post);
     }
 

@@ -25,6 +25,7 @@ public class RecruitmentPostRes {
     private String authorName;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private int viewCount;
     private List<String> images;
     private List<String> tagNames;
     private List<PaymentDTO> payments;
@@ -41,6 +42,7 @@ public class RecruitmentPostRes {
                 post.getMember().getNickname(),
                 post.getCreatedAt(),
                 post.getModifiedAt(),
+                post.getViewCount(),
                 getImagesUrlList(post),
                 getTagsNameList(post),
                 getPaymentsList(post),

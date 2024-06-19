@@ -268,16 +268,16 @@ class RecruitmentServiceImplTest {
         request.setRemoteAddr("192.168.0.1");
 
         given(postRepository.findById(postId)).willReturn(Optional.of(post));
-        doNothing().when(postValidationUtils).validatePostView(postId, request);
+        doNothing().when(postValidationUtils).validatePostView(postId, request.getRemoteAddr());
 
         // when
-        RecruitmentPostRes actualPostResDTO = postService.getPost(postId, request);
+        RecruitmentPostRes actualPostResDTO = postService.getPost(postId, request.getRemoteAddr());
 
         // then
         assertThat(actualPostResDTO.getTitle()).isEqualTo(post.getTitle());
         assertThat(actualPostResDTO.getContent()).isEqualTo(post.getContent());
         assertThat(actualPostResDTO.getTagNames()).containsExactly("tag1");
-        verify(postValidationUtils, times(1)).validatePostView(postId, request);
+        verify(postValidationUtils, times(1)).validatePostView(postId, request.getRemoteAddr());
         verify(postRepository, times(1)).save(post);
         verify(postRepository).save(post); // 조회수 증가에 대한 검증 추가
     }

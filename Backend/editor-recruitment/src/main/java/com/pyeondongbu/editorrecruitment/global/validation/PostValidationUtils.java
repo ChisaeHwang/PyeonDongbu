@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PostValidationUtils {
 
     private final TagRepository tagRepository;
@@ -34,7 +36,7 @@ public class PostValidationUtils {
     private final Validator validator;
 
     @Transactional
-    public void validatePostView(Long postId, String remoteAddr) {
+    public Boolean validatePostView(Long postId, String remoteAddr) {
         isValidIp(remoteAddr);
 
         String postViewId = postId + ":" + remoteAddr;
@@ -42,7 +44,10 @@ public class PostValidationUtils {
 
         if (isFirstView) {
             postViewRepository.save(new PostView(postViewId, postId, remoteAddr));
+            return true;
         }
+
+        return false;
     }
 
     public ValidationResult validateRecruitmentPostReq(RecruitmentPostReq postReq) {
