@@ -1,5 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response;
 
+import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
@@ -8,6 +10,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -43,6 +46,21 @@ public class RecruitmentPostRes {
                 getPaymentsList(post),
                 RecruitmentPostDetailsRes.from(post.getDetails())
         );
+    }
+
+    public RecruitmentPost toEntity(Member member) {
+        return RecruitmentPost.builder()
+                .id(this.id)
+                .title(this.title)
+                .content(this.content)
+                .member(member)
+                .tags(this.tagNames.stream()
+                        .map(tagName -> new Tag(tagName))
+                        .collect(Collectors.toSet()))
+                .payments(this.payments.stream()
+                        .map(paymentDTO -> new Payment(paymentDTO.getType(), paymentDTO.getAmount()))
+                        .collect(Collectors.toSet()))
+                .build();
     }
 
     private static List<String> getImagesUrlList(RecruitmentPost post) {
