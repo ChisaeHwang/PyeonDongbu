@@ -4,18 +4,19 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
-@Slf4j
 public class Matcher {
 
     private final Vectorizer vectorizer;
+
+    @Value("${recruitment.maxSubs.default}")
+    private Double defaultMaxSubs;
 
     public Matcher(Vectorizer vectorizer) {
         this.vectorizer = vectorizer;
@@ -32,7 +33,7 @@ public class Matcher {
             double similarity = CosineSimilarity.compute(memberVector, postVector);
 
 
-            if (similarity > 0.1 && (postMaxSubs >= memberMaxSubs * 0.25)) {
+            if (similarity > 0.1 && (postMaxSubs >= memberMaxSubs * defaultMaxSubs)) {
                 results.add(new MatchingResult(
                         MyPageRes.from(member),
                         RecruitmentPostRes.from(post),
