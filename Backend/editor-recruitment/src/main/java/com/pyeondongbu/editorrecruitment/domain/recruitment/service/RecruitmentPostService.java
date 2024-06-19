@@ -29,4 +29,8 @@ public interface RecruitmentPostService {
             List<String> tagNames
     );
 
+    List<RecruitmentPostRes> searchRecruitmentPostsByTags(
+            List<String> tagNames
+    );
+
 }

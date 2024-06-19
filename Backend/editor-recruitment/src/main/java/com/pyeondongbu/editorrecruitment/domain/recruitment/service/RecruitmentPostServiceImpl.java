@@ -101,6 +101,20 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<RecruitmentPostRes> searchRecruitmentPostsByTags(
+            List<String> tagNames
+    ) {
+        Specification<RecruitmentPost> spec = RecruitmentPostSpecification.withTags(
+                tagNames
+        );
+
+        return postRepository.findAll(spec).stream()
+                .map(RecruitmentPostRes::from)
+                .collect(Collectors.toList());
+    }
+
     private RecruitmentPostRes createOrUpdatePost(
             RecruitmentPost post,
             RecruitmentPostReq req,

@@ -1,9 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.member.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
-import com.pyeondongbu.editorrecruitment.global.exception.MemberException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +14,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 import static com.pyeondongbu.editorrecruitment.domain.member.domain.MemberState.ACTIVE;
-import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
