@@ -39,6 +39,7 @@ public enum ErrorCode {
 
     INVALID_SHARE_CODE(7002, "공유가 허용되지 않은 코드입니다."),
     FAIL_SHARE_CODE_HASH(7101, "공유 코드를 해싱하는 데 실패했습니다."),
+    INVALID_METHOD_LOCK_KEY(7102, "유효하지 않은 메서드 이름입니다."),
 
     INVALID_USER_NAME(8001, "존재하지 않는 사용자입니다."),
     INVALID_PASSWORD(8002, "비밀번호가 일치하지 않습니다."),
