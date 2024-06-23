@@ -10,8 +10,12 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
+import com.pyeondongbu.editorrecruitment.global.annotation.DistributedLock;
+import com.pyeondongbu.editorrecruitment.global.config.redis.RedisKey;
+import com.pyeondongbu.editorrecruitment.global.dto.ExecuteWithLockParam;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.PostException;
+import com.pyeondongbu.editorrecruitment.global.service.RedisLockService;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
@@ -33,6 +38,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     private final MemberRepository memberRepository;
     private final RecruitmentPostDetailsRepository recruitmentPostDetailsRepository;
     private final PostValidationUtils validationUtils;
+    private final RedisLockService redisLockService;
 
     @Override
     @Transactional
@@ -54,6 +60,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
+    @DistributedLock
     public RecruitmentPostRes getPost(Long postId, String remoteAddr) {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));

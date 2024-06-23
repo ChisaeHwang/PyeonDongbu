@@ -37,13 +37,15 @@ public class RecruitmentPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<RecruitmentPostRes>> getPost(
             @PathVariable("postId") Long postId,
-            HttpServletRequest request) {
-        final String remoteAddr = request.getRemoteAddr();
-        RecruitmentPostRes postResponseDTO = postService.getPost(postId, "192.168.0.1");
-        // 내 컴퓨터라서.. 일단은 임의로 아이피 주소 설정해놔야함
-        return ResponseEntity.ok(
-                ApiResponse.success(postResponseDTO, 200)
-        );
+            HttpServletRequest request,
+            @RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor) {
+        String remoteAddr = request.getRemoteAddr();
+        if (forwardedFor != null && !forwardedFor.isEmpty()) {
+            remoteAddr = forwardedFor.split(",")[0].trim();
+        } // Ip 주소 받아오기,
+
+        RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr);
+        return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
     }
 
     @GetMapping

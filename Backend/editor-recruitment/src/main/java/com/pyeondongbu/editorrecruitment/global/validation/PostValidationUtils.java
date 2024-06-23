@@ -35,7 +35,7 @@ public class PostValidationUtils {
     private final PostViewRepository postViewRepository;
     private final Validator validator;
 
-    @Transactional
+
     public Boolean validatePostView(Long postId, String remoteAddr) {
         isValidIp(remoteAddr);
 

@@ -141,6 +141,10 @@ public class RecruitmentPost {
         this.details = details;
     }
 
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
     public void incrementViewCount() {
         this.viewCount++;
     }
