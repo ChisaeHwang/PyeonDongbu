@@ -52,7 +52,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
 
     @Override
     @Transactional
-    public RecruitmentPostRes update(Long postId, RecruitmentPostReq req, Long memberId) {
+    public RecruitmentPostRes update(final Long postId, final RecruitmentPostReq req, final Long memberId) {
         final RecruitmentPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
         final PostValidationUtils.ValidationResult validationResult = validationUtils.validateRecruitmentPostReq(req);
@@ -61,7 +61,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
 
     @Override
     @DistributedLock
-    public RecruitmentPostRes getPost(Long postId, String remoteAddr) {
+    public RecruitmentPostRes getPost(final Long postId, final String remoteAddr) {
         final RecruitmentPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
@@ -81,7 +81,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
-    public void deletePost(Long postId, Long memberId) {
+    public void deletePost(final Long postId, final Long memberId) {
         final RecruitmentPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
         postRepository.delete(post);
@@ -90,11 +90,11 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     @Override
     @Transactional(readOnly = true)
     public List<RecruitmentPostRes> searchRecruitmentPosts(
-            Integer maxSubs,
-            String title,
-            List<String> skills,
-            List<String> videoTypes,
-            List<String> tagNames
+            final Integer maxSubs,
+            final String title,
+            final List<String> skills,
+            final List<String> videoTypes,
+            final List<String> tagNames
     ) {
         Specification<RecruitmentPost> spec = RecruitmentPostSpecification.combineSpecifications(
                 maxSubs,
@@ -112,7 +112,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     @Override
     @Transactional(readOnly = true)
     public List<RecruitmentPostRes> searchRecruitmentPostsByTags(
-            List<String> tagNames
+            final List<String> tagNames
     ) {
         Specification<RecruitmentPost> spec = RecruitmentPostSpecification.withTags(
                 tagNames
@@ -124,28 +124,25 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     private RecruitmentPostRes createOrUpdatePost(
-            RecruitmentPost post,
-            RecruitmentPostReq req,
-            PostValidationUtils.ValidationResult validationResult
+            final RecruitmentPost post,
+            final RecruitmentPostReq req,
+            final PostValidationUtils.ValidationResult validationResult
     ) {
-        post.update(
-                req.getTitle(),
-                req.getContent(),
-                validationResult.tags(),
-                validationResult.payments()
-        );
+        post.update(req, validationResult);
         postImagesHandler(req, post);
-        final RecruitmentPostDetails postDetails = RecruitmentPostDetails.of(
-                post,
-                req.getRecruitmentPostDetailsReq()
-        );
+        RecruitmentPostDetails postDetails = post.getDetails();
+        if (postDetails == null) {
+            postDetails = RecruitmentPostDetails.of(post, req.getRecruitmentPostDetailsReq());
+            post.setDetails(postDetails);
+        } else {
+            postDetails.update(req.getRecruitmentPostDetailsReq());
+        }
         recruitmentPostDetailsRepository.save(postDetails);
-        post.setDetails(postDetails);
         postRepository.save(post);
         return RecruitmentPostRes.from(post);
     }
 
-    private void postImagesHandler(RecruitmentPostReq req, RecruitmentPost post) {
+    private void postImagesHandler(final RecruitmentPostReq req, final RecruitmentPost post) {
         post.getImages().clear();
         if (req.getImages() != null && !req.getImages().isEmpty()) {
             List<PostImage> images = req.getImages().stream()

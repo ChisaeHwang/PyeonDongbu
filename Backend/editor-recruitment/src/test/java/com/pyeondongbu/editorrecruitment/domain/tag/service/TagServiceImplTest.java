@@ -2,14 +2,12 @@ package com.pyeondongbu.editorrecruitment.domain.tag.service;
 
 import com.pyeondongbu.editorrecruitment.domain.tag.dao.TagRepository;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
-import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
-import org.junit.jupiter.api.BeforeEach;
+import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagRes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -42,7 +40,7 @@ class TagServiceImplTest {
         when(tagRepository.findAll()).thenReturn(tags);
 
         // when
-        TagResDTO tagResDTO = tagService.getAllTags();
+        TagRes tagResDTO = tagService.getAllTags();
 
         // then
         assertThat(tagResDTO.getTagNames()).containsExactly("태그1", "태그2", "태그3");
@@ -61,7 +59,7 @@ class TagServiceImplTest {
         when(tagRepository.findByPostId(anyLong())).thenReturn(tags);
 
         // when
-        TagResDTO tagResDTO = tagService.getTagsByPostId(1L);
+        TagRes tagResDTO = tagService.getTagsByPostId(1L);
 
         // then
         assertThat(tagResDTO.getTagNames()).containsExactlyInAnyOrder("태그1", "태그2", "태그3");

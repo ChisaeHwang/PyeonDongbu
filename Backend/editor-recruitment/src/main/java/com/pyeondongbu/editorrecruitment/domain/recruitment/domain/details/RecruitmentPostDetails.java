@@ -3,6 +3,7 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
+import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostDetailsReq;
 import jakarta.persistence.*;
@@ -51,6 +52,13 @@ public class RecruitmentPostDetails extends Details {
 
     public void setRecruitmentPost(RecruitmentPost recruitmentPost) {
         this.recruitmentPost = recruitmentPost;
+    }
+
+    public void update(RecruitmentPostDetailsReq req) {
+        this.maxSubs = req.getMaxSubs();
+        this.remarks = req.getRemarks();
+        this.skills = req.getSkills();
+        this.videoTypes = req.getVideoTypes();
     }
 }
 

@@ -44,6 +44,8 @@ public class WebConfig implements WebMvcConfigurer {
         resolvers.add(accessorResolver);
     }
 
+
+
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry

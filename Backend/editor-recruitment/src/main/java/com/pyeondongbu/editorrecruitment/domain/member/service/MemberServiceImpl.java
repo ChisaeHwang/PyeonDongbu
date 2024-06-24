@@ -7,15 +7,11 @@ import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
-import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
-import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MemberDetailsRes;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.BadRequestException;
 import com.pyeondongbu.editorrecruitment.global.validation.MemberValidationUtils;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
@@ -42,52 +37,39 @@ public class MemberServiceImpl implements MemberService {
     private final MemberValidationUtils validationUtils;
 
     @Override
-    public Member getMember(Long memberId) {
+    public Member getMember(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
     }
 
     @Override
     @Transactional
-    public MyPageRes getMyPage(Long memberId) {
+    public MyPageRes getMyPage(final Long memberId) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
         return MyPageRes.from(member);
     }
 
     @Override
-    public MyPageRes updateMyPage(Long memberId, MyPageReq myPageReq) {
+    public MyPageRes updateMyPage(final Long memberId, final MyPageReq myPageReq) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
 
         validationUtils.validateMyPageReq(myPageReq, member);
+        deletePrevImage(member.getImageUrl(), myPageReq.getImageUrl());
+        final Member updatedMember = updateMember(myPageReq, member);
 
-        final Member updateMember = new Member(
-                memberId,
-                myPageReq.getRole(),
-                member.getSocialLoginId(),
-                myPageReq.getNickname(),
-                myPageReq.getImageUrl()
-        );
-        MemberDetails memberDetails = MemberDetails.of(
-                member,
-                myPageReq.getMemberDetails()
-        );
-        updateMember.setDetails(memberDetails);
-        deletePrevImage(member.getImageUrl(), updateMember.getImageUrl());
-        memberDetailsRepository.save(memberDetails);
-        memberRepository.save(updateMember);
-
-        return MyPageRes.from(updateMember);
+        return MyPageRes.from(updatedMember);
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public List<MyPageRes> searchMembers(
-            Integer maxSubs,
-            String role,
-            List<String> skills,
-            List<String> videoTypes
+            final Integer maxSubs,
+            final String role,
+            final List<String> skills,
+            final List<String> videoTypes
     ) {
         Role roleEnum = Role.isValidRole(role) ? Role.valueOf(role) : null;
         Specification<Member> spec = MemberSpecification.combineSpecifications(
@@ -119,5 +101,21 @@ public class MemberServiceImpl implements MemberService {
         } catch (final MalformedURLException e) {
             throw new BadRequestException(INVALID_IMAGE_URL);
         }
+    }
+
+    private Member updateMember(
+            final MyPageReq myPageReq,
+            final Member member
+    ) {
+        member.update(myPageReq);
+        MemberDetails memberDetails = member.getDetails();
+        if (memberDetails == null) {
+            memberDetails = MemberDetails.of(member, myPageReq.getMemberDetails());
+            member.setDetails(memberDetails);
+        } else {
+            memberDetails.update(myPageReq.getMemberDetails());
+        }
+        memberDetailsRepository.save(memberDetails);
+        return memberRepository.save(member);
     }
 }

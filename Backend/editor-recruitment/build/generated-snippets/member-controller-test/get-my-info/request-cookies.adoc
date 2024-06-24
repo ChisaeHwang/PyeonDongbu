@@ -1,7 +1,0 @@
-|===
-|Name|Description
-
-|`+refresh-token+`
-|갱신 토큰
-
-|===

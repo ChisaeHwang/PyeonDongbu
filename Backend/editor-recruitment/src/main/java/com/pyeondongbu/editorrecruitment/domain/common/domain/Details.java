@@ -22,20 +22,18 @@ public abstract class Details {
     @Min(0)
     @Max(10000000)
     @Column(nullable = false)
-    private int maxSubs;
+    protected int maxSubs;
 
     @Column(length = 1000)
-    private String remarks;
+    protected String remarks;
 
     @ElementCollection
-    @CollectionTable(name = "recruitment_post_details_skills", joinColumns = @JoinColumn(name = "recruitment_post_details_id"))
     @Column(name = "skill")
-    private List<String> skills;
+    protected List<String> skills;
 
     @ElementCollection
-    @CollectionTable(name = "recruitment_post_details_video_types", joinColumns = @JoinColumn(name = "recruitment_post_details_id"))
     @Column(name = "video_type")
-    private List<String> videoTypes;
+    protected List<String> videoTypes;
 
     public Details(
             int maxSubs,
