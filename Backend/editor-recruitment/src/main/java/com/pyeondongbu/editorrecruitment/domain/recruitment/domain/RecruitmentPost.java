@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import com.pyeondongbu.editorrecruitment.global.exception.InvalidDomainException;
+import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -96,6 +98,8 @@ public class RecruitmentPost {
 
     public RecruitmentPost(final Member member) {
         this.member = member;
+        this.createdAt = LocalDateTime.now();
+        this.modifiedAt = LocalDateTime.now();
     }
 
     public static RecruitmentPost of(
@@ -115,15 +119,13 @@ public class RecruitmentPost {
     }
 
     public RecruitmentPost update(
-            final String title,
-            final String content,
-            final Set<Tag> tags,
-            final Set<Payment> payments
-    ) {
-        this.title = title;
-        this.content = content;
-        this.tags = tags;
-        this.payments = payments;
+            final RecruitmentPostReq req,
+            final PostValidationUtils.ValidationResult validationResult
+            ) {
+        this.title = req.getTitle();
+        this.content = req.getContent();
+        this.tags = validationResult.tags();
+        this.payments = validationResult.payments();
         this.modifiedAt = LocalDateTime.now();
         return this;
     }

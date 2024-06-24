@@ -1,6 +1,5 @@
 package com.pyeondongbu.editorrecruitment.domain.member.domain.details;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.Details;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
@@ -65,5 +64,15 @@ public class MemberDetails extends Details {
                 .skills(req.getSkills())
                 .videoTypes(req.getVideoTypes())
                 .build();
+    }
+
+    public void update(MemberDetailsReq req) {
+        this.maxSubs = req.getMaxSubs();
+        this.remarks = req.getRemarks();
+        this.skills = req.getSkills();
+        this.videoTypes = req.getVideoTypes();
+        this.editedChannels = req.getEditedChannels();
+        this.currentChannels = req.getCurrentChannels();
+        this.portfolio = req.getPortfolio();
     }
 }

@@ -2,6 +2,7 @@ package com.pyeondongbu.editorrecruitment.domain.member.domain;
 
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
+import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,6 +59,9 @@ public class Member {
     @JoinColumn(name = "details_id")
     private MemberDetails details;
 
+    @Version
+    private Long version;
+
     @Builder
     public Member(
             final Long id,
@@ -92,6 +96,13 @@ public class Member {
                 .build();
     }
 
+    public void update(
+            final MyPageReq myPageReq
+    ) {
+        this.role = myPageReq.getRole();
+        this.nickname = myPageReq.getNickname();
+        this.imageUrl = myPageReq.getImageUrl();
+    }
 
     public void updateLastLoginDate() {
         this.lastLoginDate = LocalDateTime.now();

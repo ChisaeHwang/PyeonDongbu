@@ -1,6 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.tag.presentation;
 
-import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
+import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagRes;
 import com.pyeondongbu.editorrecruitment.domain.tag.service.TagService;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +18,14 @@ public class TagController {
     private final TagService tagService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<TagResDTO>> getAllTags() {
+    public ResponseEntity<ApiResponse<TagRes>> getAllTags() {
         return ResponseEntity.ok(
                 ApiResponse.success(tagService.getAllTags(), 200)
         );
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ApiResponse<TagResDTO>> getTagsByPostId(
+    public ResponseEntity<ApiResponse<TagRes>> getTagsByPostId(
             @PathVariable("postId") Long postId) {
         return ResponseEntity.ok(
                 ApiResponse.success(tagService.getTagsByPostId(postId), 200)

@@ -16,6 +16,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
+import com.pyeondongbu.editorrecruitment.global.validation.MemberValidationUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,14 +44,19 @@ class MemberServiceImplTest {
     @Mock
     private MemberDetailsRepository memberDetailsRepository;
 
+    @Mock
+    private MemberValidationUtils memberValidationUtils;
+
     private Member createMember() {
-        return new Member(
+        Member member = new Member(
                 1L,
                 Role.CLIENT,
                 "socialLoginId",
                 "testNickname",
                 "https://pyeondongbu.s3.ap-northeast-2.amazonaws.com/testImage.jpg"
         );
+        member.setDetails(createMemberDetails());
+        return member;
     }
 
     private MemberDetails createMemberDetails() {
@@ -106,7 +112,58 @@ class MemberServiceImplTest {
         // then
         verify(memberRepository).findById(any());
         verify(memberRepository).save(any());
-
     }
+
+    @DisplayName("멤버의 세부 정보를 업데이트 가능")
+    @Test
+    void updateMemberDetails() {
+        // given
+        final Member member = createMember();
+
+        final MemberDetailsReq newDetailsReq = MemberDetailsReq.builder()
+                .maxSubs(2000)
+                .remarks("Updated Remarks")
+                .skills(Arrays.asList("UpdatedSkill1", "UpdatedSkill2"))
+                .videoTypes(Arrays.asList("UpdatedVideoType1"))
+                .editedChannels(Arrays.asList("UpdatedChannel1"))
+                .currentChannels(Arrays.asList("UpdatedCurrentChannel1"))
+                .portfolio("Updated Portfolio")
+                .build();
+
+        final MyPageReq request = MyPageReq.builder()
+                .nickname("newNickname")
+                .imageUrl("https://newurl.com/newImage.jpg")
+                .role(Role.CLIENT)
+                .memberDetails(newDetailsReq)
+                .build();
+
+        given(memberRepository.findById(member.getId()))
+                .willReturn(Optional.of(member));
+        given(memberDetailsRepository.save(any(MemberDetails.class)))
+                .willAnswer(invocation -> invocation.getArgument(0));
+        given(memberRepository.save(any(Member.class)))
+                .willAnswer(invocation -> invocation.getArgument(0));
+
+        // when
+        memberService.updateMyPage(member.getId(), request);
+
+        // then
+        assertThat(member.getNickname()).isEqualTo("newNickname");
+        assertThat(member.getImageUrl()).isEqualTo("https://newurl.com/newImage.jpg");
+        MemberDetails updatedDetails = member.getDetails();
+        assertThat(updatedDetails.getMaxSubs()).isEqualTo(2000);
+        assertThat(updatedDetails.getRemarks()).isEqualTo("Updated Remarks");
+        assertThat(updatedDetails.getSkills()).containsExactly("UpdatedSkill1", "UpdatedSkill2");
+        assertThat(updatedDetails.getVideoTypes()).containsExactly("UpdatedVideoType1");
+        assertThat(updatedDetails.getEditedChannels()).containsExactly("UpdatedChannel1");
+        assertThat(updatedDetails.getCurrentChannels()).containsExactly("UpdatedCurrentChannel1");
+        assertThat(updatedDetails.getPortfolio()).isEqualTo("Updated Portfolio");
+
+        verify(memberRepository).findById(member.getId());
+        verify(memberDetailsRepository).save(any(MemberDetails.class));
+        verify(memberRepository).save(any(Member.class));
+    }
+
+
 
 }

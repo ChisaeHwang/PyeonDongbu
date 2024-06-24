@@ -1,7 +1,0 @@
-[source,http,options="nowrap"]
-----
-GET /api/recruitment/posts/search/by-details?maxSubs=2&skill=Java&skill=Spring&videoType=Tutorial&videoType=Lecture&tagName=Tag1&tagName=Tag2 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: test-access-token
-
-----

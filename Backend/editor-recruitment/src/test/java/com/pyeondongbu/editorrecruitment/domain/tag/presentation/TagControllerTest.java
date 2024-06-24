@@ -2,7 +2,7 @@ package com.pyeondongbu.editorrecruitment.domain.tag.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
-import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
+import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagRes;
 import com.pyeondongbu.editorrecruitment.domain.tag.service.TagService;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class TagControllerTest extends ControllerTest {
     @Test
     void getAllTags() throws Exception {
         // given
-        final TagResDTO res = TagResDTO.of(
+        final TagRes res = TagRes.of(
                 Arrays.asList(
                         "태그1", "태그2", "태그3"
                 )
@@ -86,7 +86,7 @@ class TagControllerTest extends ControllerTest {
     @Test
     void getTagsByPostId() throws Exception {
         // given
-        final TagResDTO res = TagResDTO.of(
+        final TagRes res = TagRes.of(
                 Arrays.asList(
                         "태그1", "태그2", "태그3"
                 )

@@ -1,6 +1,0 @@
-[source,bash]
-----
-$ http GET 'http://localhost:8080/api/recruitment/posts/search/by-details?maxSubs=2&skill=Java&skill=Spring&videoType=Tutorial&videoType=Lecture&tagName=Tag1&tagName=Tag2' \
-    'Content-Type:application/json;charset=UTF-8' \
-    'Authorization:test-access-token'
-----

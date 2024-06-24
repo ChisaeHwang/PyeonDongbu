@@ -1,13 +1,11 @@
 package com.pyeondongbu.editorrecruitment.domain.tag.service;
 
-import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagResDTO;
-
-import java.util.Set;
+import com.pyeondongbu.editorrecruitment.domain.tag.dto.TagRes;
 
 public interface TagService {
 
-    TagResDTO getTagsByPostId(Long postId);
+    TagRes getTagsByPostId(Long postId);
 
-    TagResDTO getAllTags();
+    TagRes getAllTags();
 
 }

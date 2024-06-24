@@ -1,6 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/api/recruitment/posts/search/by-details?maxSubs=2&skill=Java&skill=Spring&videoType=Tutorial&videoType=Lecture&tagName=Tag1&tagName=Tag2' -i -X GET \
-    -H 'Content-Type: application/json;charset=UTF-8' \
-    -H 'Authorization: test-access-token'
-----
