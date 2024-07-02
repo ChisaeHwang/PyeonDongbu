@@ -3,10 +3,12 @@ package com.pyeondongbu.editorrecruitment.global.validation;
 import com.pyeondongbu.editorrecruitment.domain.common.dto.request.DetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
+import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MemberDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
 import com.pyeondongbu.editorrecruitment.global.exception.BadRequestException;
+import com.pyeondongbu.editorrecruitment.global.exception.MemberException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +63,18 @@ public class MemberValidationUtils {
         if (!violations.isEmpty()) {
             throw new BadRequestException(INVALID_MEMBER_DETAILS);
         }
+    }
 
+    public boolean validateMemberDetails(MemberDetails memberDetails) {
+        if (memberDetails == null) {
+            return false;
+        }
 
+        Set<ConstraintViolation<MemberDetails>> violations = validator.validate(memberDetails);
+        if (!violations.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 }
