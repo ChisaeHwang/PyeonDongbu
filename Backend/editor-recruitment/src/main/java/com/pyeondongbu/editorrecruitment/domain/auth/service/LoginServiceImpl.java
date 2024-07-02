@@ -1,7 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.auth.service;
 
-import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.EXIST_LOGIN_CHECK;
-import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.FIRST_LOGIN_CHECK;
+import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.*;
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.OauthProviders;
@@ -21,6 +20,8 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostR
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 
 
+import com.pyeondongbu.editorrecruitment.global.exception.MemberException;
+import com.pyeondongbu.editorrecruitment.global.validation.MemberValidationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -48,6 +50,7 @@ public class LoginServiceImpl implements LoginService {
     private final ApplicationEventPublisher publisher;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MemberValidationUtils memberValidationUtils;
 
     @Override
     public LoginRes login(String code) {
@@ -55,7 +58,7 @@ public class LoginServiceImpl implements LoginService {
             final OauthProvider provider = oauthProviders.mapping("google");
             final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
-            final Boolean isExistingMember = checkMember(oauthUserInfo.getSocialLoginId());
+            final Boolean isCheckMember = checkMember(oauthUserInfo.getSocialLoginId());
 
             final Member member = findOrCreateMember(
                     oauthUserInfo.getSocialLoginId(),
@@ -69,21 +72,7 @@ public class LoginServiceImpl implements LoginService {
             final RefreshToken refreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
             refreshTokenRepository.save(refreshToken);
 
-            if(isExistingMember) { // 이미 존재하는 멤버일 경우
-                return new LoginRes(
-                        memberTokens.getAccessToken(),
-                        memberTokens.getRefreshToken(),
-                        200,
-                        EXIST_LOGIN_CHECK.getMessage()
-                );
-            } else {
-                return new LoginRes(
-                        memberTokens.getAccessToken(),
-                        memberTokens.getRefreshToken(),
-                        201,
-                        FIRST_LOGIN_CHECK.getMessage()
-                );
-            }
+            return createLoginResponse(memberTokens, isCheckMember);
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
                 throw new AuthException(ALREADY_USED_AUTHORIZATION_CODE);
@@ -101,6 +90,13 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean checkMember(String socialLoginId) {
+        final Member member = memberRepository.findBySocialLoginId(socialLoginId)
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
+
+        if(memberValidationUtils.validateMemberDetails(member.getDetails())) {
+            return false;
+        }
+
         return memberRepository.findBySocialLoginId(socialLoginId).isPresent();
     }
 
@@ -162,4 +158,27 @@ public class LoginServiceImpl implements LoginService {
         memberRepository.deleteByMemberId(memberId);
         publisher.publishEvent(new MemberDeleteEvent(postIds, memberId));
     }
+
+    /**
+     * Private 함수들
+     */
+
+    private LoginRes createLoginResponse(MemberTokens memberTokens, Boolean isCheckMember) {
+        if (isCheckMember) {
+            return new LoginRes(
+                    memberTokens.getAccessToken(),
+                    memberTokens.getRefreshToken(),
+                    200,
+                    EXIST_LOGIN_CHECK.getMessage()
+            );
+        } else {
+            return new LoginRes(
+                    memberTokens.getAccessToken(),
+                    memberTokens.getRefreshToken(),
+                    201,
+                    FIRST_LOGIN_OR_ENTER_DETAILS_CHECK.getMessage()
+            );
+        }
+    }
+
 }

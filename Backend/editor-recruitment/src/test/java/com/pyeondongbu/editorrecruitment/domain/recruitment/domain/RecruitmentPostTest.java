@@ -2,11 +2,13 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.domain;
 
 
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import com.pyeondongbu.editorrecruitment.global.exception.InvalidDomainException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,13 +116,18 @@ class RecruitmentPostTest {
 
         final String expectedTitle = "UpdatedTitle";
         final String expectedContent = "UpdatedContent";
-        final Set<Tag> expectedTags = new HashSet<>();
+        final List<String> expectedTags = new ArrayList<>();
+        // 테스트 코드 짜기 편하게 일단 Req에 맞춰서 선언
+
+       final RecruitmentPostReq req = RecruitmentPostReq.builder()
+                .title(expectedTitle)
+                .content(expectedContent)
+                .tagNames(expectedTags)
+                .build();
 
         // when
         post.update(
-                expectedTitle,
-                expectedContent,
-                expectedTags,
+                req,
                 null
         );
 

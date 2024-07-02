@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ResponseMessage {
 
-    FIRST_LOGIN_CHECK(1001, "최초 로그인 요청입니다."),
+    FIRST_LOGIN_OR_ENTER_DETAILS_CHECK(1001, "최초 로그인 또는 세부정보가 없습니다."),
     EXIST_LOGIN_CHECK(1002, "기존 회원의 로그인 요청입니다.");
 
     private final int status;
