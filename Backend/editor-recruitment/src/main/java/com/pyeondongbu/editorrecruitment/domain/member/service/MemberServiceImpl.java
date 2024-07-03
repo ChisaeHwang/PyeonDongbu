@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberValidationUtils validationUtils;
 
     @Override
-    public Member getMember(final Long memberId) {
+        public Member getMember(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
     }

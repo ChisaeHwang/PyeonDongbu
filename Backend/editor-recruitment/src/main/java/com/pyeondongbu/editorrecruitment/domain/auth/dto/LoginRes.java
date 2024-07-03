@@ -11,4 +11,18 @@ public class LoginRes {
     private final Integer code;
     private final String message;
 
+    public static LoginRes from(
+            final String accessToken,
+            final String refreshToken,
+            final Integer code,
+            final String message
+    ) {
+        return new LoginRes(
+                accessToken,
+                refreshToken,
+                code,
+                message
+        );
+    }
+
 }
