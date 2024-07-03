@@ -53,7 +53,7 @@ public class LoginServiceImpl implements LoginService {
     private final MemberValidationUtils memberValidationUtils;
 
     @Override
-    public LoginRes login(String code) {
+    public LoginRes login(final String code) {
         try {
             final OauthProvider provider = oauthProviders.mapping("google");
             final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
@@ -83,17 +83,17 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public Member findOrCreateMember(String socialLoginId, String nickname, String imageUrl) {
+    public Member findOrCreateMember(final String socialLoginId, final String nickname, final String imageUrl) {
         return memberRepository.findBySocialLoginId(socialLoginId)
                 .orElseGet(() -> createMember(socialLoginId, nickname, imageUrl));
     }
 
     @Override
-    public Boolean checkMember(String socialLoginId) {
+    public Boolean checkMember(final String socialLoginId) {
         final Member member = memberRepository.findBySocialLoginId(socialLoginId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
 
-        if(memberValidationUtils.validateMemberDetails(member.getDetails())) {
+        if (memberValidationUtils.validateMemberDetails(member)) {
             return false;
         }
 
@@ -102,7 +102,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public Member createMember(String socialLoginId, String nickname, String imageUrl) {
+    public Member createMember(final String socialLoginId, final String nickname, final String imageUrl) {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             final String RandomName = nickname + generateRandomFourDigitCode();
@@ -163,16 +163,16 @@ public class LoginServiceImpl implements LoginService {
      * Private 함수들
      */
 
-    private LoginRes createLoginResponse(MemberTokens memberTokens, Boolean isCheckMember) {
+    private LoginRes createLoginResponse(final MemberTokens memberTokens, final Boolean isCheckMember) {
         if (isCheckMember) {
-            return new LoginRes(
+            return LoginRes.from(
                     memberTokens.getAccessToken(),
                     memberTokens.getRefreshToken(),
                     200,
                     EXIST_LOGIN_CHECK.getMessage()
             );
         } else {
-            return new LoginRes(
+            return LoginRes.from(
                     memberTokens.getAccessToken(),
                     memberTokens.getRefreshToken(),
                     201,

@@ -5,6 +5,7 @@ import com.pyeondongbu.editorrecruitment.domain.auth.annotation.MemberOnly;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.access.Accessor;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import com.pyeondongbu.editorrecruitment.matching.domain.MatchingResult;
+import com.pyeondongbu.editorrecruitment.matching.dto.MatchingRes;
 import com.pyeondongbu.editorrecruitment.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,12 @@ public class MatchingController {
 
     @GetMapping
     @MemberOnly
-    public ResponseEntity<ApiResponse<List<MatchingResult>>> getMatchingPosts(
-            @Auth final Accessor accessor,
-            @RequestParam(name = "topK", required = false, defaultValue = "10") int limit) {
-        List<MatchingResult> results = matchingService.findTopKMatchingPosts(accessor.getMemberId(), limit);
+    public ResponseEntity<ApiResponse<MatchingRes>> getMatchingPosts(
+            @Auth final Accessor accessor
+    ) {
+        MatchingRes matchingRes = matchingService.findMatchingPosts(accessor.getMemberId());
         return ResponseEntity.ok(
-                ApiResponse.success(results, 200)
+                ApiResponse.success(matchingRes, 200)
         );
     }
 }

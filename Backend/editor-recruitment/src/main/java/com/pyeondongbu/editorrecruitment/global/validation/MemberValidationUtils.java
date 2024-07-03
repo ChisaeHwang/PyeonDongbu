@@ -27,7 +27,7 @@ public class MemberValidationUtils {
     private final MemberRepository memberRepository;
     private final Validator validator;
 
-    public void validateMyPageReq(MyPageReq myPageReq, Member existingMember) {
+    public void validateMyPageReq(final MyPageReq myPageReq, final Member existingMember) {
         if (myPageReq.getRole() == null || !Role.isValidRole(myPageReq.getRole().name())) {
             throw new BadRequestException(INVALID_ROLE_INFO);
         }
@@ -55,7 +55,7 @@ public class MemberValidationUtils {
         }
     }
 
-    public void validateMemberDetailsReq(MemberDetailsReq memberDetailsReq) {
+    public void validateMemberDetailsReq(final MemberDetailsReq memberDetailsReq) {
         if (memberDetailsReq == null) {
             throw new BadRequestException(INVALID_MEMBER_DETAILS);
         }
@@ -65,12 +65,16 @@ public class MemberValidationUtils {
         }
     }
 
-    public boolean validateMemberDetails(MemberDetails memberDetails) {
-        if (memberDetails == null) {
+    public boolean validateMemberDetails(final Member member) {
+        if (member.getRole() == Role.GUEST) {
             return false;
         }
 
-        Set<ConstraintViolation<MemberDetails>> violations = validator.validate(memberDetails);
+        if (member.getDetails() == null) {
+            return false;
+        }
+
+        Set<ConstraintViolation<MemberDetails>> violations = validator.validate(member.getDetails());
         if (!violations.isEmpty()) {
             return false;
         }
