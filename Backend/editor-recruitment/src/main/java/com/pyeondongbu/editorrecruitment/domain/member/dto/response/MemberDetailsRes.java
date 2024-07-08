@@ -4,6 +4,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDeta
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter // 어노테이션 선택 정리
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -11,11 +12,11 @@ import java.util.List;
 public class MemberDetailsRes {
 
     private int maxSubs;
-    private List<String> videoTypes;
+    private Set<String> videoTypes;
     private List<String> editedChannels;
     private List<String> currentChannels;
     private String portfolio;
-    private List<String> skills;
+    private Set<String> skills;
     private String remarks;
 
     public static MemberDetailsRes from(MemberDetails memberDetails) {

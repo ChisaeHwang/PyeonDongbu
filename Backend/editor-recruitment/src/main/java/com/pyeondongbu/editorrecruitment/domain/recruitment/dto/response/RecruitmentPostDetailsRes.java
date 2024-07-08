@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,8 +18,8 @@ import java.util.List;
 public class RecruitmentPostDetailsRes {
 
     private int maxSubs;
-    private List<String> videoTypes;
-    private List<String> skills;
+    private Set<String> videoTypes;
+    private Set<String> skills;
     private String remarks;
 
     public static RecruitmentPostDetailsRes from(

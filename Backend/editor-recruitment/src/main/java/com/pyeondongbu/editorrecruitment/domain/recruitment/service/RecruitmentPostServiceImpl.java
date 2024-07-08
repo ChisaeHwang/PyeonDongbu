@@ -75,7 +75,8 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
 
     @Override
     public List<RecruitmentPostRes> listPosts() {
-        return postRepository.findAll().stream()
+        final List<RecruitmentPost> posts = postRepository.findAllWithDetails();
+        return posts.stream()
                 .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }

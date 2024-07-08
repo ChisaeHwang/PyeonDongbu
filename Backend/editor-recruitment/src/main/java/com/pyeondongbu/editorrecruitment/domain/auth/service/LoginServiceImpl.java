@@ -90,15 +90,17 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Boolean checkMember(final String socialLoginId) {
-        final Member member = memberRepository.findBySocialLoginId(socialLoginId)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
-
+        final Optional<Member> optionalMember = memberRepository.findBySocialLoginId(socialLoginId);
+        if (!optionalMember.isPresent()) {
+            return false;
+        }
+        final Member member = optionalMember.get();
         if (memberValidationUtils.validateMemberDetails(member)) {
             return false;
         }
-
-        return memberRepository.findBySocialLoginId(socialLoginId).isPresent();
+        return true;
     }
+
 
     @Override
     @Transactional

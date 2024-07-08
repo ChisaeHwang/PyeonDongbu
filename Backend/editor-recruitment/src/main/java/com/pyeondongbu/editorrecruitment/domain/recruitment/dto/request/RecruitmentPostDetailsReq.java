@@ -5,6 +5,7 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.Recru
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,8 +14,8 @@ public class RecruitmentPostDetailsReq extends DetailsReq {
     @Builder
     public RecruitmentPostDetailsReq(
             final int maxSubs,
-            final List<String> videoTypes,
-            final List<String> skills,
+            final Set<String> videoTypes,
+            final Set<String> skills,
             final String remarks
     ) {
         super(maxSubs, videoTypes, skills, remarks);

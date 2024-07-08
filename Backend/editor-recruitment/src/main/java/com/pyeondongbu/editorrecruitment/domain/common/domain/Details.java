@@ -11,7 +11,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @MappedSuperclass
 @Getter
@@ -29,17 +31,17 @@ public abstract class Details {
 
     @ElementCollection
     @Column(name = "skill")
-    protected List<String> skills;
+    protected Set<String> skills = new HashSet<>();
 
     @ElementCollection
     @Column(name = "video_type")
-    protected List<String> videoTypes;
+    protected Set<String> videoTypes = new HashSet<>();
 
     public Details(
             int maxSubs,
             String remarks,
-            List<String> skills,
-            List<String> videoTypes
+            Set<String> skills,
+            Set<String> videoTypes
     ) {
         this.maxSubs = maxSubs;
         this.remarks = remarks;
