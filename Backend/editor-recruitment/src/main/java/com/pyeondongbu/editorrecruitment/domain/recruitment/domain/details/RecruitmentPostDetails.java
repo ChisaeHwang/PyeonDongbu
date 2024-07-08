@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("RECRUITMENT_POST")
@@ -29,8 +30,8 @@ public class RecruitmentPostDetails extends Details {
     public RecruitmentPostDetails(
             int maxSubs,
             String remarks,
-            List<String> skills,
-            List<String> videoTypes,
+            Set<String> skills,
+            Set<String> videoTypes,
             RecruitmentPost recruitmentPost
     ) {
         super(maxSubs, remarks, skills, videoTypes);

@@ -23,7 +23,7 @@ public class MatchingController {
     @GetMapping
     @MemberOnly
     public ResponseEntity<ApiResponse<MatchingRes>> getMatchingPosts(
-            @Auth final Accessor accessor
+             @Auth final Accessor accessor
     ) {
         MatchingRes matchingRes = matchingService.findMatchingPosts(accessor.getMemberId());
         return ResponseEntity.ok(

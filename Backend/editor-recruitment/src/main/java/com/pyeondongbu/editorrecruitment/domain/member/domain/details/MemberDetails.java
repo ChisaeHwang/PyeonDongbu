@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @DiscriminatorValue("MEMBER")
@@ -36,8 +37,8 @@ public class MemberDetails extends Details {
     public MemberDetails(
             int maxSubs,
             String remarks,
-            List<String> skills,
-            List<String> videoTypes,
+            Set<String> skills,
+            Set<String> videoTypes,
             List<String> editedChannels,
             List<String> currentChannels,
             String portfolio,

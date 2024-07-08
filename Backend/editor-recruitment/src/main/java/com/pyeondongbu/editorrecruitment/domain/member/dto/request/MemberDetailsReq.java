@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +24,8 @@ public class MemberDetailsReq extends DetailsReq {
     @Builder
     public MemberDetailsReq(
             final int maxSubs,
-            final List<String> videoTypes,
-            final List<String> skills,
+            final Set<String> videoTypes,
+            final Set<String> skills,
             final String remarks,
             final List<String> editedChannels,
             final List<String> currentChannels,

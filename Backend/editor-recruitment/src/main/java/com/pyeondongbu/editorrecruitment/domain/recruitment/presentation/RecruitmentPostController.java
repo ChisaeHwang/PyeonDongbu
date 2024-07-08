@@ -42,7 +42,7 @@ public class RecruitmentPostController {
         String remoteAddr = request.getRemoteAddr();
         if (forwardedFor != null && !forwardedFor.isEmpty()) {
             remoteAddr = forwardedFor.split(",")[0].trim();
-        } // Ip 주소 받아오기,
+        }
 
         RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr);
         return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));

@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,11 +19,11 @@ public abstract class DetailsReq {
     private int maxSubs;
 
     @NotNull(message = "장르는 공백이 될 수 없습니다.")
-    private List<String> videoTypes;
+    private Set<String> videoTypes;
 
     @NotNull(message = "스킬 리스트는 필수입니다.")
     @Size(min = 1, message = "최소한 하나 이상의 스킬이 필요합니다.")
-    private List<String> skills;
+    private Set<String> skills;
 
     @Size(max = 1000, message = "비고란은 1000자를 초과할 수 없습니다.")
     private String remarks;
