@@ -13,8 +13,8 @@ public class MemberDetailsRes {
 
     private int maxSubs;
     private Set<String> videoTypes;
-    private List<String> editedChannels;
-    private List<String> currentChannels;
+    private Set<String> editedChannels;
+    private Set<String> currentChannels;
     private String portfolio;
     private Set<String> skills;
     private String remarks;

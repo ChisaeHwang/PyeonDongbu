@@ -54,8 +54,7 @@ public class CommunityPost {
                 .member(member)
                 .build();
     }
-
-    // 게시글 업데이트
+    
     public CommunityPost update(String title, String content) {
         this.title = title;
         this.content = content;

@@ -24,11 +24,11 @@ public class MemberDetails extends Details {
 
     @ElementCollection
     @Column(name = "edited_channel_name")
-    private List<String> editedChannels;
+    private Set<String> editedChannels;
 
     @ElementCollection
     @Column(name = "current_channel_name")
-    private List<String> currentChannels;
+    private Set<String> currentChannels;
 
     @Column
     private String portfolio;
@@ -39,8 +39,8 @@ public class MemberDetails extends Details {
             String remarks,
             Set<String> skills,
             Set<String> videoTypes,
-            List<String> editedChannels,
-            List<String> currentChannels,
+            Set<String> editedChannels,
+            Set<String> currentChannels,
             String portfolio,
             Member member
     ) {

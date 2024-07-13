@@ -14,10 +14,10 @@ import java.util.Set;
 public class MemberDetailsReq extends DetailsReq {
 
     @NotNull(message = "편집된 채널 리스트는 필수입니다.")
-    private List<String> editedChannels = new ArrayList<>();
+    private Set<String> editedChannels;
 
     @NotNull(message = "현재 채널 리스트는 필수입니다.")
-    private List<String> currentChannels = new ArrayList<>();
+    private Set<String> currentChannels;
 
     private String portfolio = "";
 
@@ -27,8 +27,8 @@ public class MemberDetailsReq extends DetailsReq {
             final Set<String> videoTypes,
             final Set<String> skills,
             final String remarks,
-            final List<String> editedChannels,
-            final List<String> currentChannels,
+            final Set<String> editedChannels,
+            final Set<String> currentChannels,
             final String portfolio
     ) {
         super(maxSubs, videoTypes, skills, remarks);
