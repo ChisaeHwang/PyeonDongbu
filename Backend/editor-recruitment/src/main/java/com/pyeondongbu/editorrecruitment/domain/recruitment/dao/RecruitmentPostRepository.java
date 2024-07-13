@@ -33,7 +33,7 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
             "LEFT JOIN FETCH d.skills s " +
             "LEFT JOIN FETCH d.videoTypes v " +
             "WHERE rp.id = :id")
-    RecruitmentPost findByIdWithDetails(@Param("id") Long id);
+    Optional<RecruitmentPost> findByIdWithDetails(@Param("id") Long id);
 
     @Query("SELECT rp FROM RecruitmentPost rp " +
             "LEFT JOIN FETCH rp.details d " +

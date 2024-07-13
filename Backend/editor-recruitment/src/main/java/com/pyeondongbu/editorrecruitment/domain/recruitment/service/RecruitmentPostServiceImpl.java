@@ -43,7 +43,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     @Override
     @Transactional
     public RecruitmentPostRes create(final RecruitmentPostReq req, final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
         final PostValidationUtils.ValidationResult validationResult = validationUtils.validateRecruitmentPostReq(req);
         final RecruitmentPost post = new RecruitmentPost(member);
@@ -62,7 +62,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     @Override
     @DistributedLock
     public RecruitmentPostRes getPost(final Long postId, final String remoteAddr) {
-        final RecruitmentPost post = postRepository.findById(postId)
+        final RecruitmentPost post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
         if (validationUtils.validatePostView(postId, remoteAddr)) {

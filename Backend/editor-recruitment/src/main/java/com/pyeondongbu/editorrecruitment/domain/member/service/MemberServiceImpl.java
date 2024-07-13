@@ -38,21 +38,21 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
         public Member getMember(final Long memberId) {
-        return memberRepository.findById(memberId)
+        return memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
     }
 
     @Override
     @Transactional
     public MyPageRes getMyPage(final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
         return MyPageRes.from(member);
     }
 
     @Override
     public MyPageRes updateMyPage(final Long memberId, final MyPageReq myPageReq) {
-        final Member member = memberRepository.findById(memberId)
+        final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
 
         validationUtils.validateMyPageReq(myPageReq, member);
