@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/recruitment/posts")
 @RequiredArgsConstructor
-@Slf4j
 public class RecruitmentPostController {
 
     private final RecruitmentPostService postService;

@@ -15,11 +15,11 @@ import java.util.Set;
 public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost, Long>, JpaSpecificationExecutor<RecruitmentPost> {
     List<Long> findPostIdsByMemberId(final Long memberId);
 
-    List<RecruitmentPost> findByMemberId(Long memberId);
+    List<RecruitmentPost> findByMemberId(final Long memberId);
 
-    Optional<RecruitmentPost> findByMemberIdAndId(Long memberId, Long postId);
+    Optional<RecruitmentPost> findByMemberIdAndId(final Long memberId, final Long postId);
 
-    void deleteByMemberId(Long memberId);
+    void deleteByMemberId(final Long memberId);
 
     @Modifying
     @Query("DELETE FROM RecruitmentPost p WHERE p.id IN :postIds")

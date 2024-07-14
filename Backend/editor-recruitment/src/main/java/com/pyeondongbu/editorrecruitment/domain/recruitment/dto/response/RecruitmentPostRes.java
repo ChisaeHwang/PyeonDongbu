@@ -22,7 +22,7 @@ public class RecruitmentPostRes {
     private Long id;
     private String title;
     private String content;
-    private String authorName;
+    private String memberName;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int viewCount;
@@ -35,19 +35,19 @@ public class RecruitmentPostRes {
             final RecruitmentPost post
     ) {
 
-        return new RecruitmentPostRes(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getMember().getNickname(),
-                post.getCreatedAt(),
-                post.getModifiedAt(),
-                post.getViewCount(),
-                getImagesUrlList(post),
-                getTagsNameList(post),
-                getPaymentsList(post),
-                RecruitmentPostDetailsRes.from(post.getDetails())
-        );
+        return RecruitmentPostRes.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .memberName(post.getMember().getNickname())
+                .createdAt(post.getCreatedAt())
+                .modifiedAt(post.getModifiedAt())
+                .viewCount(post.getViewCount())
+                .images(getImagesUrlList(post))
+                .tagNames(getTagsNameList(post))
+                .payments(getPaymentsList(post))
+                .recruitmentPostDetailsRes(RecruitmentPostDetailsRes.from(post.getDetails()))
+                .build();
     }
 
     public RecruitmentPost toEntity(Member member) {

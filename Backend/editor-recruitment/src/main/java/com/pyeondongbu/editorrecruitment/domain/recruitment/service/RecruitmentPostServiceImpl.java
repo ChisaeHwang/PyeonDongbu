@@ -38,6 +38,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     private final MemberRepository memberRepository;
     private final RecruitmentPostDetailsRepository recruitmentPostDetailsRepository;
     private final PostValidationUtils validationUtils;
+
     private final RedisLockService redisLockService;
 
     @Override
@@ -46,7 +47,9 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
         final PostValidationUtils.ValidationResult validationResult = validationUtils.validateRecruitmentPostReq(req);
-        final RecruitmentPost post = new RecruitmentPost(member);
+        final RecruitmentPost post = RecruitmentPost.builder()
+                                                    .member(member)
+                                                    .build();
         return createOrUpdatePost(post, req, validationResult);
     }
 
@@ -123,6 +126,10 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 .map(RecruitmentPostRes::from)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Private 함수들
+     */
 
     private RecruitmentPostRes createOrUpdatePost(
             final RecruitmentPost post,

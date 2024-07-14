@@ -96,23 +96,17 @@ public class RecruitmentPost {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public RecruitmentPost(final Member member) {
-        this.member = member;
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-    }
-
     public static RecruitmentPost of(
             final String title,
             final String content,
-            final Member author,
+            final Member member,
             final Set<Tag> tags,
             final Set<Payment> payments
     ) {
         return RecruitmentPost.builder()
                 .title(title)
                 .content(content)
-                .member(author)
+                .member(member)
                 .tags(tags)
                 .payments(payments)
                 .build();
