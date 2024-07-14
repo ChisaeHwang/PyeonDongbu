@@ -1,5 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.community.domain;
 
+import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityPostReq;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -38,8 +39,17 @@ public class CommunityPost {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int viewCount;
+
     @Builder
-    public CommunityPost(String title, String content, Member member) {
+    public CommunityPost(
+            final Long id,
+            final String title,
+            final String content,
+            final Member member
+    ) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;
@@ -47,19 +57,33 @@ public class CommunityPost {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public static CommunityPost of(String title, String content, Member member) {
+    public static CommunityPost of(
+            final String title,
+            final String content,
+            final Member member
+    ) {
         return CommunityPost.builder()
                 .title(title)
                 .content(content)
                 .member(member)
                 .build();
     }
-    
-    public CommunityPost update(String title, String content) {
-        this.title = title;
-        this.content = content;
+
+    public CommunityPost update(
+            final CommunityPostReq req
+    ) {
+        this.title = req.getTitle();
+        this.content = req.getContent();
         this.modifiedAt = LocalDateTime.now();
         return this;
+    }
+
+    public void setViewCount(int viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public void incrementViewCount() {
+        this.viewCount++;
     }
 }
 

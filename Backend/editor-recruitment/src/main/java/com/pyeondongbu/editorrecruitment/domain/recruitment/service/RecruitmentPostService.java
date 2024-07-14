@@ -10,27 +10,27 @@ import java.util.List;
 
 public interface RecruitmentPostService {
 
-    RecruitmentPostRes create(RecruitmentPostReq request, Long memberId);
+    RecruitmentPostRes create(final RecruitmentPostReq request, final Long memberId);
 
-    RecruitmentPostRes getPost(Long postId, String remoteAddr);
+    RecruitmentPostRes getPost(final Long postId, final String remoteAddr);
 
     List<RecruitmentPostRes> listPosts();
 
-    RecruitmentPostRes update(Long postId, RecruitmentPostReq request, Long memberId);
+    RecruitmentPostRes update(final Long postId, final RecruitmentPostReq request, final Long memberId);
 
-    void deletePost(Long postId, Long memberId);
+    void deletePost(final Long postId, final Long memberId);
 
 
     List<RecruitmentPostRes> searchRecruitmentPosts(
-            Integer maxSubs
-            , String title,
-            List<String> skills,
-            List<String> videoTypes,
-            List<String> tagNames
+            final Integer maxSubs,
+            final String title,
+            final List<String> skills,
+            final List<String> videoTypes,
+            final List<String> tagNames
     );
 
     List<RecruitmentPostRes> searchRecruitmentPostsByTags(
-            List<String> tagNames
+            final List<String> tagNames
     );
 
 }
