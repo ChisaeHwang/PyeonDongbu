@@ -12,8 +12,6 @@ public interface LoginService {
 
     Member createMember(final String socialLoginId, final String nickname, final String imageUrl);
 
-    Boolean checkMember(final String socialLoginId);
-
     String generateRandomFourDigitCode();
 
     String renewalAccessToken(final String refreshTokenRequest, final String authorizationHeader);

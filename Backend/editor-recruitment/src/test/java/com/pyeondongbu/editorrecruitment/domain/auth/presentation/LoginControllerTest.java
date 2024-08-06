@@ -3,7 +3,6 @@ package com.pyeondongbu.editorrecruitment.domain.auth.presentation;
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;;
 import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.EXIST_LOGIN_CHECK;
-import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.FIRST_LOGIN_CHECK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;

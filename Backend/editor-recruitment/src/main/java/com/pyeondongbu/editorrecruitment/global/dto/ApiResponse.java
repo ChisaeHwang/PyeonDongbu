@@ -22,4 +22,8 @@ public class ApiResponse<T> {
     public static ApiResponse<?> error(ErrorCode e, int status) {
         return new ApiResponse<>(Integer.toString(status), "fail", e);
     }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
