@@ -28,7 +28,7 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AccessTokenRes>> login(
+    public ResponseEntity<ApiResponse<LoginRes>> login(
             @RequestBody final LoginReq loginReq,
             final HttpServletResponse response
     ) {
@@ -42,7 +42,7 @@ public class LoginController {
         response.addHeader(SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(
-                ApiResponse.success(new AccessTokenRes(res.getAccessToken()), res.getCode(), res.getMessage())
+                ApiResponse.success(res, 201)
         );
     }
 

@@ -19,19 +19,13 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 
-
-import com.pyeondongbu.editorrecruitment.global.exception.MemberException;
-import com.pyeondongbu.editorrecruitment.global.validation.MemberValidationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -50,36 +44,29 @@ public class LoginServiceImpl implements LoginService {
     private final ApplicationEventPublisher publisher;
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final MemberValidationUtils memberValidationUtils;
 
     @Override
     public LoginRes login(final String code) {
-        try {
-            final OauthProvider provider = oauthProviders.mapping("google");
-            final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
+        final OauthProvider provider = oauthProviders.mapping("google");
+        final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
-            final Boolean isCheckMember = checkMember(oauthUserInfo.getSocialLoginId());
+        final Member member = findOrCreateMember(
+                oauthUserInfo.getSocialLoginId(),
+                oauthUserInfo.getNickname(),
+                oauthUserInfo.getImageUrl()
+        );
+        member.updateLastLoginDate();
 
-            final Member member = findOrCreateMember(
-                    oauthUserInfo.getSocialLoginId(),
-                    oauthUserInfo.getNickname(),
-                    oauthUserInfo.getImageUrl()
-            );
-            member.updateLastLoginDate();
+        final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 
-            final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
+        final RefreshToken refreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+        refreshTokenRepository.save(refreshToken);
 
-            final RefreshToken refreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
-            refreshTokenRepository.save(refreshToken);
-
-            return createLoginResponse(memberTokens, isCheckMember);
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
-                throw new AuthException(ALREADY_USED_AUTHORIZATION_CODE);
-            } else {
-                throw new AuthException(INTERNAL_SEVER_ERROR);
-            }
-        }
+        return LoginRes.from(
+                memberTokens.getAccessToken(),
+                memberTokens.getRefreshToken(),
+                member
+        );
     }
 
     @Override
@@ -87,20 +74,6 @@ public class LoginServiceImpl implements LoginService {
         return memberRepository.findBySocialLoginId(socialLoginId)
                 .orElseGet(() -> createMember(socialLoginId, nickname, imageUrl));
     }
-
-    @Override
-    public Boolean checkMember(final String socialLoginId) {
-        final Optional<Member> optionalMember = memberRepository.findBySocialLoginId(socialLoginId);
-        if (!optionalMember.isPresent()) {
-            return false;
-        }
-        final Member member = optionalMember.get();
-        if (memberValidationUtils.validateMemberDetails(member)) {
-            return false;
-        }
-        return true;
-    }
-
 
     @Override
     @Transactional
@@ -161,26 +134,5 @@ public class LoginServiceImpl implements LoginService {
         publisher.publishEvent(new MemberDeleteEvent(postIds, memberId));
     }
 
-    /**
-     * Private 함수들
-     */
-
-    private LoginRes createLoginResponse(final MemberTokens memberTokens, final Boolean isCheckMember) {
-        if (isCheckMember) {
-            return LoginRes.from(
-                    memberTokens.getAccessToken(),
-                    memberTokens.getRefreshToken(),
-                    200,
-                    EXIST_LOGIN_CHECK.getMessage()
-            );
-        } else {
-            return LoginRes.from(
-                    memberTokens.getAccessToken(),
-                    memberTokens.getRefreshToken(),
-                    201,
-                    FIRST_LOGIN_OR_ENTER_DETAILS_CHECK.getMessage()
-            );
-        }
-    }
 
 }

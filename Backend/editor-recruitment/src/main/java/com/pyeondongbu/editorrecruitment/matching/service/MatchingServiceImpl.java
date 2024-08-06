@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.FIRST_LOGIN_OR_ENTER_DETAILS_CHECK;
 import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.SUCCESS_REQUEST;
+import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.INVALID_MEMBER_DETAILS;
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.NOT_FOUND_MEMBER_ID;
 
 @Service
@@ -41,11 +42,8 @@ public class MatchingServiceImpl implements MatchingService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
 
-        if(memberValidationUtils.validateMemberDetails(member)){
-            return MatchingRes.from(
-                    matcher.match(member, null),
-                    FIRST_LOGIN_OR_ENTER_DETAILS_CHECK.getMessage()
-            );
+        if (memberValidationUtils.validateMemberDetails(member)) {
+            throw new MemberException(INVALID_MEMBER_DETAILS);
         }
 
         List<RecruitmentPostRes> postResList = recruitmentPostService.searchRecruitmentPostsByTags(List.of(defaultTag));
