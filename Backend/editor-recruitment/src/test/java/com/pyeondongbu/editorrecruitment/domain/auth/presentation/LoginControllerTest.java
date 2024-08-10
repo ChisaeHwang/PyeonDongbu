@@ -27,6 +27,7 @@ import com.pyeondongbu.editorrecruitment.domain.auth.dto.LoginReq;
 import com.pyeondongbu.editorrecruitment.domain.auth.dto.LoginRes;
 import com.pyeondongbu.editorrecruitment.domain.auth.infra.JwtProvider;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
+import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.global.config.WebConfig;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,7 @@ class LoginControllerTest extends ControllerTest {
     void login() throws Exception {
         // given
         final LoginReq loginRequest = new LoginReq("code");
-        final LoginRes loginResponse = new LoginRes(REFRESH_TOKEN, ACCESS_TOKEN, 200, EXIST_LOGIN_CHECK.getMessage());
+        final LoginRes loginResponse = new LoginRes(REFRESH_TOKEN, ACCESS_TOKEN, Member.builder().build());
 
         when(loginService.login(anyString()))
                 .thenReturn(loginResponse);
@@ -130,7 +131,7 @@ class LoginControllerTest extends ControllerTest {
     void first_login() throws Exception {
         // given
         final LoginReq loginRequest = new LoginReq("code");
-        final LoginRes loginResponse = new LoginRes(REFRESH_TOKEN, ACCESS_TOKEN, 201, FIRST_LOGIN_CHECK.getMessage());
+        final LoginRes loginResponse = new LoginRes(REFRESH_TOKEN, ACCESS_TOKEN, Member.builder().build());
 
         when(loginService.login(anyString()))
                 .thenReturn(loginResponse);

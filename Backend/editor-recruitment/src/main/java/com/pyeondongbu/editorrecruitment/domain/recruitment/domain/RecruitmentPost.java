@@ -79,14 +79,12 @@ public class RecruitmentPost {
 
     @Builder
     public RecruitmentPost(
-            final Long id,
             final String title,
             final String content,
             final Member member,
             final Set<Tag> tags,
             final Set<Payment> payments
     ) {
-        this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;

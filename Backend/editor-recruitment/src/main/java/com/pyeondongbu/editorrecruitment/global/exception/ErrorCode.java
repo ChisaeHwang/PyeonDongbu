@@ -9,6 +9,7 @@ public enum ErrorCode {
 
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
+    NOT_FOUND(1001, "찾을 수 없는 페이지입니다"),
 
     NOT_FOUND_MEMBER_ID(1011, "멤버를 찾을 수 없습니다."),
     FAIL_TO_GENERATE_RANDOM_NICKNAME(1012, "랜덤한 닉네임을 생성하는데 실패하였습니다."),

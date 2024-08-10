@@ -52,7 +52,6 @@ public class RecruitmentPostRes {
 
     public RecruitmentPost toEntity(Member member) {
         return RecruitmentPost.builder()
-                .id(this.id)
                 .title(this.title)
                 .content(this.content)
                 .member(member)

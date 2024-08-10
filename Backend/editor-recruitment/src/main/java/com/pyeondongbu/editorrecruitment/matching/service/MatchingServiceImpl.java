@@ -42,7 +42,7 @@ public class MatchingServiceImpl implements MatchingService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
 
-        if (memberValidationUtils.validateMemberDetails(member)) {
+        if (!memberValidationUtils.validateMemberDetails(member)) {
             throw new MemberException(INVALID_MEMBER_DETAILS);
         }
 

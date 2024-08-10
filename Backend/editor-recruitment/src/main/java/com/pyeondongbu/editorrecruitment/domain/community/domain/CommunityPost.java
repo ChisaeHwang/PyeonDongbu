@@ -44,12 +44,10 @@ public class CommunityPost {
 
     @Builder
     public CommunityPost(
-            final Long id,
             final String title,
             final String content,
             final Member member
     ) {
-        this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;
