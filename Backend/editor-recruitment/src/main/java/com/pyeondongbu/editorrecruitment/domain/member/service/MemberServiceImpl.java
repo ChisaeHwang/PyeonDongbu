@@ -8,6 +8,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.request.MyPageReq;
+import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MemberRes;
 import com.pyeondongbu.editorrecruitment.domain.member.dto.response.MyPageRes;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.BadRequestException;
@@ -37,9 +38,11 @@ public class MemberServiceImpl implements MemberService {
     private final MemberValidationUtils validationUtils;
 
     @Override
-        public Member getMember(final Long memberId) {
-        return memberRepository.findByIdWithDetails(memberId)
+        public MemberRes getMember(final Long memberId) {
+        Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
+
+        return new MemberRes(member);
     }
 
     @Override

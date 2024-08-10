@@ -70,15 +70,39 @@ public class MemberValidationUtils {
             return false;
         }
 
-        if (member.getDetails() == null) {
+        MemberDetails details = member.getDetails();
+        if (details == null) {
             return false;
         }
 
-        Set<ConstraintViolation<MemberDetails>> violations = validator.validate(member.getDetails());
+        if (details.getMaxSubs() <= 0) {
+            return false;
+        }
+        if (details.getRemarks() == null || details.getRemarks().trim().isEmpty()) {
+            return false;
+        }
+        if (details.getPortfolio() == null || details.getPortfolio().trim().isEmpty()) {
+            return false;
+        }
+        if (details.getVideoTypes() == null || details.getVideoTypes().isEmpty()) {
+            return false;
+        }
+        if (details.getEditedChannels() == null || details.getEditedChannels().isEmpty()) {
+            return false;
+        }
+        if (details.getCurrentChannels() == null || details.getCurrentChannels().isEmpty()) {
+            return false;
+        }
+        if (details.getSkills() == null || details.getSkills().isEmpty()) {
+            return false;
+        }
+
+        Set<ConstraintViolation<MemberDetails>> violations = validator.validate(details);
         if (!violations.isEmpty()) {
             return false;
         }
 
         return true;
     }
+
 }

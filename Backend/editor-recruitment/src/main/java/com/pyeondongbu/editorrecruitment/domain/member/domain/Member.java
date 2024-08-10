@@ -64,13 +64,11 @@ public class Member {
 
     @Builder
     public Member(
-            final Long id,
             final Role role,
             final String socialLoginId,
             final String nickname,
             final String imageUrl
     ) {
-        this.id = id;
         this.role = role;
         this.socialLoginId = socialLoginId;
         this.nickname = nickname;

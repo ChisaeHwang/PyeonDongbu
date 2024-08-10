@@ -1,6 +1,5 @@
 package com.pyeondongbu.editorrecruitment.domain.auth.service;
 
-import static com.pyeondongbu.editorrecruitment.global.dto.ResponseMessage.*;
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
 
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.OauthProviders;
@@ -64,8 +63,7 @@ public class LoginServiceImpl implements LoginService {
 
         return LoginRes.from(
                 memberTokens.getAccessToken(),
-                memberTokens.getRefreshToken(),
-                member
+                memberTokens.getRefreshToken()
         );
     }
 
