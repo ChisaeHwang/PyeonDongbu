@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -16,6 +17,7 @@ const samplePosts = [
 
 const MainPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState('구인');
     const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
 
@@ -26,18 +28,29 @@ const MainPage = () => {
         post.title.includes(searchQuery) && post.title.includes(selectedCategory)
     );
 
-    // 구글 로그인 성공 후 백엔드로 인증 코드 전송
     const handleGoogleLoginSuccess = async (code: string) => {
         try {
-            const response = await axios.post('/api/login', { code });
-
-            sessionStorage.setItem('access-token', response.data.data.accessToken);
-
-            document.cookie = `refresh-token=${response.data.data.refreshToken}; path=/`;
-
-        } catch (error) {
-            console.error('로그인 중 오류가 발생했습니다:', error);
-        }
+            const response = await axios.post(
+              "http://localhost:8080/api/login",
+              { code },
+              {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+              }
+            );
+            const accessToken = response.data.data.accessToken;
+            if (accessToken) {
+              sessionStorage.setItem("access-token", accessToken);
+            } else {
+              setError("Access token not found in response");
+            }
+          } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+              setError(error.response.data.error || error.message);
+            } else {
+              setError("An unknown error occurred");
+            }
+          } 
     };
 
     const googleLogin = useGoogleLogin({
