@@ -1,6 +1,4 @@
-// src/pages/CreatePostPage.tsx
 import React from 'react';
-import Header from '../components/Header';
 import PostEditor from '../components/PostEditor';
 
 const CreatePostPage = () => {
@@ -12,7 +10,6 @@ const CreatePostPage = () => {
 
     return (
         <div>
-            <Header />
             <h1>새 게시글 작성</h1>
             <PostEditor onSubmit={handlePostSubmit} /> {/* 4개의 인자를 받는 handlePostSubmit 전달 */}
         </div>

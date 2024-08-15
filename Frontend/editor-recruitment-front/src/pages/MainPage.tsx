@@ -1,10 +1,11 @@
-// src/pages/MainPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import CategoryTabs from '../components/CategoryTabs';
 import PostList from '../components/PostList';
+import { useGoogleLogin } from '@react-oauth/google'; // 구글 로그인 훅 추가
+import axios from 'axios'; // API 호출을 위해 axios 사용
 import '../styles/MainPage.css';
 
 const samplePosts = [
@@ -25,14 +26,32 @@ const MainPage = () => {
         post.title.includes(searchQuery) && post.title.includes(selectedCategory)
     );
 
-    // 게시글 작성 버튼을 눌렀을 때 게시글 작성 페이지로 이동
+    // 구글 로그인 성공 후 백엔드로 인증 코드 전송
+    const handleGoogleLoginSuccess = async (code: string) => {
+        try {
+            const response = await axios.post('/api/login', { code });
+
+            sessionStorage.setItem('access-token', response.data.data.accessToken);
+
+            document.cookie = `refresh-token=${response.data.data.refreshToken}; path=/`;
+
+        } catch (error) {
+            console.error('로그인 중 오류가 발생했습니다:', error);
+        }
+    };
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: (tokenResponse) => handleGoogleLoginSuccess(tokenResponse.code),
+        flow: 'auth-code', 
+    });
+
     const handleCreatePost = () => {
         navigate('/create-post'); // 게시글 작성 페이지로 이동
     };
 
     return (
         <div className="main-page">
-            <Header />
+            <Header onGoogleLogin={googleLogin} />
             <div className="search-and-category">
                 <SearchBar onSearch={handleSearch} />
                 <CategoryTabs onSelect={handleCategorySelect} selectedCategory={selectedCategory} />

@@ -1,12 +1,16 @@
 import React from 'react';
-import GoogleLoginButton from './GoogleLoginButton';
-import '../styles/Header.css'; // 스타일 임포트
 
-const Header = () => {
+type HeaderProps = {
+    onGoogleLogin: () => void; // 함수 타입 정의
+};
+
+const Header: React.FC<HeaderProps> = ({ onGoogleLogin }) => {
     return (
         <header className="header">
             <h1 className="header-title">My App</h1>
-            <GoogleLoginButton />
+            <button className="google-login-button" onClick={onGoogleLogin}>
+                Google 로그인
+            </button>
         </header>
     );
 };
