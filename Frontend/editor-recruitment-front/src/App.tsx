@@ -1,36 +1,18 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ThemeProvider } from "styled-components";
-import { GlobalStyle, theme } from "./App.styles";
-import HomePage from "./pages/HomePage";
-import GoogleAuthRedirectHandler from "./auth/GoogleAuthRedirectHandler";
-import GoogleAuthRefreshToken from "./auth/GoogleAuthRefreshToken";
-import CreatePost from "./pages/Blog/CreatePost";
-import Header from "./components/Header";
-import AccessTokenProvider from "./providers/AccessTokenProvider";
+// src/App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import CreatePostPage from './pages/CreatePostPage';
 
-const queryClient = new QueryClient();
-
-const App = (): JSX.Element => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AccessTokenProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <Router>
-            <Header />
+const App = () => {
+    return (
+        <Router>
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login/oauth2/code/google" element={<GoogleAuthRedirectHandler />} />
-              <Route path="/home" element={<GoogleAuthRefreshToken />} />
-              <Route path="/create-post" element={<CreatePost />} />
+                <Route path="/" element={<MainPage />} />
+                <Route path="/create-post" element={<CreatePostPage />} />
             </Routes>
-          </Router>
-        </ThemeProvider>
-      </AccessTokenProvider>
-    </QueryClientProvider>
-  );
+        </Router>
+    );
 };
 
 export default App;

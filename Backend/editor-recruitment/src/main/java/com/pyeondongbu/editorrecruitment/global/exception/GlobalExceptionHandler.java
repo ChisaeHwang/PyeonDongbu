@@ -81,6 +81,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    /*
+    사용자가 엔드포인트가 없는걸 호출할 경우 404 페이지 대신
+     */
+
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             NoHandlerFoundException e,

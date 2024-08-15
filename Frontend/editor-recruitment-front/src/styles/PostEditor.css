@@ -1,0 +1,62 @@
+/* src/styles/PostEditor.css */
+.post-editor-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.editor-section {
+    width: 48%;
+}
+
+.title-input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.category-select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.quill-editor {
+    height: 400px;
+    margin-bottom: 1rem;
+}
+
+.preview-section {
+    width: 48%;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.image-preview {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-button:hover {
+    background-color: #357ae8;
+}
