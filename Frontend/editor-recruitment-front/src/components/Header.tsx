@@ -1,21 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import GoogleLoginButton from './GoogleLoginButton';
+import '../styles/Header.css'; // 스타일 임포트
 
-const Header: React.FC = () => {
-  return (
-    <header>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/create-post">Create Post</Link>
-          </li>
-        </ul>
-      </nav>
-    </header>
-  );
+const Header = () => {
+    return (
+        <header className="header">
+            <h1 className="header-title">My App</h1>
+            <GoogleLoginButton />
+        </header>
+    );
 };
 
 export default Header;
