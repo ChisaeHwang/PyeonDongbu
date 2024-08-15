@@ -1,4 +1,3 @@
-// src/components/PostEditor.tsx
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -10,19 +9,15 @@ const PostEditor = ({ onSubmit }: { onSubmit: (title: string, category: string, 
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('구인');
     const [content, setContent] = useState('');
-    const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState('');
 
     // 이미지 업로드 핸들러
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            setImage(file);
-            // 백엔드로 이미지 업로드 후 URL 반환
             const formData = new FormData();
             formData.append('image', file);
 
-            // 예시로 백엔드에 이미지 전송 (API 호출)
             const response = await fetch('https://your-backend-url.com/upload', {
                 method: 'POST',
                 body: formData,
