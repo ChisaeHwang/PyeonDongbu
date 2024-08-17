@@ -2,6 +2,7 @@ package com.pyeondongbu.editorrecruitment.domain.common.domain.specification;
 
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
+import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.Join;
@@ -36,7 +37,8 @@ public class RecruitmentPostSpecification {
     public static Specification<RecruitmentPost> withTags(List<String> tagNames) {
         return (root, query, cb) -> {
             query.distinct(true);
-            return root.join("tags").get("name").in(tagNames);
+            Join<RecruitmentPost, Tag> tagJoin = root.join("tags", JoinType.INNER);
+            return tagJoin.get("name").in(tagNames);
         };
     }
 
@@ -57,8 +59,9 @@ public class RecruitmentPostSpecification {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
+
             if (maxSubs != null) {
-                Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
                 predicates.add(cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
             }
 
@@ -67,15 +70,11 @@ public class RecruitmentPostSpecification {
             }
 
             if (skills != null && !skills.isEmpty()) {
-                Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-                Predicate skillsPredicate = detailsJoin.join("skills").in(skills);
-                predicates.add(skillsPredicate);
+                predicates.add(detailsJoin.join("skills").in(skills));
             }
 
             if (videoTypes != null && !videoTypes.isEmpty()) {
-                Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-                Predicate videoTypesPredicate = detailsJoin.join("videoTypes").in(videoTypes);
-                predicates.add(videoTypesPredicate);
+                predicates.add(detailsJoin.join("videoTypes").in(videoTypes));
             }
 
             if (tagNames != null && !tagNames.isEmpty()) {
@@ -85,4 +84,5 @@ public class RecruitmentPostSpecification {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
+
 }
