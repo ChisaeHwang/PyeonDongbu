@@ -2,15 +2,16 @@
     display: flex;
     justify-content: space-between; /* 왼쪽과 오른쪽 배치 */
     align-items: flex-start;
-    width: 70%; /* 상하좌우 15% 여백 (100% - 15%*2 = 70%) */
+    width: 100%; /* 상하좌우 15% 여백 (100% - 15%*2 = 70%) */
     margin: 0 auto; /* 가운데 정렬 */
     height: 100vh; /* 화면 전체 높이 */
+    gap: 20px;
     padding-top: 20px;
     box-sizing: border-box;
 }
 
 .editor-section, .preview-section {
-    width: 45%; /* 절반씩 차지하게 만듦 (약간의 여백을 위해 45%) */
+    width: 500px; /* 절반씩 차지하게 만듦 (약간의 여백을 위해 45%) */
     margin: 0 10px; /* 섹션 간 약간의 여백 */
 }
 
@@ -82,10 +83,16 @@
 }
 
 .payment-item {
+    margin-top: 20px;
     margin-bottom: 10px;
+    width: 30%;
     display: flex;
     justify-content: space-between; /* 삭제 버튼을 오른쪽에 배치 */
     align-items: center;
+    padding: 8px 16px; /* 버튼 크기 줄임 */
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #f0f0f0;
 }
 
 .payment-item button {
@@ -115,4 +122,93 @@
 
 .preview-section h2 {
     text-align: center;
+}
+
+
+.details-section h3 {
+    margin-bottom: 15px; /* 제목 아래 여백 */
+    font-size: 18px;
+    color: #333;
+}
+
+.details-input, .details-textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px; /* 필드 사이에 여백 추가 */
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.details-textarea {
+    height: 100px; /* 텍스트 영역 높이 */
+    resize: none; /* 텍스트 영역 크기 조정 금지 */
+}
+
+.details-input:focus, .details-textarea:focus {
+    border-color: #007bff; /* 포커스 시 파란색 테두리 */
+    outline: none;
+}
+
+/* Quill 에디터 내 콘텐츠의 텍스트 및 이미지 처리 */
+.quill-editor .ql-editor {
+    max-width: 100%; /* 에디터 내용이 컨테이너의 최대 가로 크기를 넘지 않도록 설정 */
+    word-break: break-word; /* 긴 단어나 URL이 박스를 넘지 않고 줄바꿈되도록 설정 */
+    overflow-wrap: break-word; /* 텍스트가 박스를 넘어갈 경우 자동으로 줄바꿈 */
+    white-space: normal; /* 텍스트가 길어질 경우 자동으로 다음 줄로 넘어가도록 설정 */
+}
+
+/* 미리보기 섹션에 대한 추가 스타일 */
+.preview-section p {
+    max-width: 100%; /* 미리보기 섹션에서 텍스트가 가로로 늘어나지 않도록 제한 */
+    word-break: break-word; /* 긴 단어를 자동으로 줄바꿈 처리 */
+    overflow-wrap: break-word; /* 텍스트가 박스를 넘으면 자동 줄바꿈 */
+    white-space: normal; /* 공백을 처리하여 텍스트가 자연스럽게 줄바꿈되도록 설정 */
+}
+
+
+/* 미리보기 섹션에 가로 크기 제한 및 자동 확장 */
+.preview-section {
+    padding: 20px;
+    border: 2px solid #007bff; /* 두꺼운 파란색 경계선 */
+    border-radius: 10px; /* 둥근 테두리 */
+    background-color: #f9f9f9; /* 연한 배경색 */
+    margin-top: 30px; /* 위쪽에 여백 추가 */
+    box-sizing: border-box;
+}
+
+/* 카테고리 및 태그 구분 */
+.preview-section div {
+    margin-bottom: 10px; /* 섹션 간 여백 */
+}
+
+.preview-section strong {
+    color: #007bff; /* 강조 부분에 파란색 */
+}
+
+/* 결제 정보 리스트 스타일 */
+.preview-section ul {
+    padding-left: 20px;
+    list-style-type: disc; /* 기본 목록 스타일로 디스크 추가 */
+    margin-bottom: 15px;
+}
+
+.preview-section li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* 세부 사항 미리보기 */
+.preview-section .details-preview {
+    margin-top: 20px;
+}
+
+.preview-section .details-preview strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
 }

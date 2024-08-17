@@ -40,7 +40,6 @@ const CreatePostPage = () => {
 
     return (
         <div>
-            <h1>새 게시글 작성</h1>
             <PostEditor onSubmit={handlePostSubmit} />
         </div>
     );
