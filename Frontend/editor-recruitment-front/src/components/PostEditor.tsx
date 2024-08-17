@@ -247,7 +247,6 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                 {imageUrl.map((url, index) => (
                     <img key={index} src={url} alt={`미리보기 이미지 ${index}`} className="image-preview" />
                 ))}
-                <p dangerouslySetInnerHTML={{ __html: content }} />
                 
                 {/* 카테고리와 태그 분리 */}
                 <div>
@@ -273,6 +272,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                     <strong>기술:</strong> {skills.join(', ') || 'N/A'} <br />
                     <strong>비고:</strong> {remarks || 'N/A'}
                 </div>
+                <p dangerouslySetInnerHTML={{ __html: content }} />
             </div>
         </div>
     );

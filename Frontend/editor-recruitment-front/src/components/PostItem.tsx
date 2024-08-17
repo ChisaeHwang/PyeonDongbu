@@ -1,4 +1,3 @@
-// src/components/PostItem.tsx
 import React from 'react';
 import '../styles/PostItem.css'; // 스타일 임포트
 

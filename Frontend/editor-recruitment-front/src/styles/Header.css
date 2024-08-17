@@ -1,20 +1,30 @@
+/* Header 스타일 */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    padding: 1rem 2rem;
+    width: 100vw;
     background-color: #f8f9fa;
     border-bottom: 1px solid #ddd;
+    padding: 0.5rem 1rem;
 }
 
 .header-title {
     font-size: 1.5rem;
+    margin: 10px;
     font-weight: bold;
+    cursor: pointer; /* 제목 클릭 시 커서 변경 */
 }
 
-.google-login-button {
-    padding: 0.5rem 1rem;
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+.google-login-button,
+.logout-button {
+    padding: 10px;
+    margin: 10px;
     background-color: #4285f4;
     color: white;
     border: none;
@@ -22,6 +32,67 @@
     cursor: pointer;
 }
 
-.google-login-button:hover {
+.google-login-button:hover,
+.logout-button:hover {
     background-color: #357ae8;
+}
+
+.profile-wrap {
+    position: relative;
+    display: inline-block;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.profile-wrap .profile-image {
+    margin-right: 30px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: auto;
+}
+
+.dropdown-menu {
+    position: absolute;
+    width: 5rem;
+    top: 50px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+/* 구인 | 구직 하러가기 버튼 */
+.post-button {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #00b894;
+    color: white;
+    border: none;
+    border-radius: 20px; /* 둥근 버튼 */
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 버튼 hover 효과 */
+.post-button:hover {
+    background-color: #019267; /* 호버 시 색상 변경 */
+}
+
+/* 드롭다운 스타일 */
+.dropdown-menu button {
+    padding: 0.7rem 0.7rem;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+    background-color: #f0f0f0;
 }
