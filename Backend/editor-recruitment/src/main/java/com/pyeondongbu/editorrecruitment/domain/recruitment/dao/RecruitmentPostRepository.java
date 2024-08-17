@@ -1,10 +1,8 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.dao;
 
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +18,16 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
     Optional<RecruitmentPost> findByMemberIdAndId(final Long memberId, final Long postId);
 
     void deleteByMemberId(final Long memberId);
+
+    @EntityGraph(attributePaths = {
+            "details",
+            "details.skills",
+            "details.videoTypes",
+            "tags",
+            "payments",
+            "images"
+    })
+    List<RecruitmentPost> findAll(Specification<RecruitmentPost> spec);
 
     @Modifying
     @Query("DELETE FROM RecruitmentPost p WHERE p.id IN :postIds")
