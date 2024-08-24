@@ -1,30 +1,87 @@
-/* Header 스타일 */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100vw;
-    background-color: #f8f9fa;
+    height: 6.5vh;
     border-bottom: 1px solid #ddd;
-    padding: 0.5rem 1rem;
+    font-family: 'Pretendard', sans-serif; /* Pretendard 폰트 사용 */
+    box-shadow: 0px 4px 10px 0px rgba(140, 140, 140, 0.25);
 }
 
-.header-title {
-    font-size: 1.5rem;
-    margin: 10px;
-    font-weight: bold;
-    cursor: pointer; /* 제목 클릭 시 커서 변경 */
-}
-
-.header-actions {
+.left-section {
     display: flex;
     align-items: center;
 }
 
-.google-login-button,
-.logout-button {
+.left-section .logo{
+    width: 30px;
+    height: 30px;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.header-title {
+    font-size: 1.25rem;
+    margin-right: 3rem;
+    font-weight: 600;
+    margin-left: 2px;
+    margin-bottom: 8px;
+    cursor: pointer; 
+}
+
+.nav-menu {
+    display: flex;
+    gap: 1.5rem;
+    font-weight: 600;
+}
+
+.nav-menu span {
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+}
+
+.nav-menu span:hover {
+    text-decoration: underline;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+.right-section .search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 0.15rem 0.15rem;
+    border-radius: 20px;
+    margin-right: 1rem;
+}
+
+.right-section .search-icon {
+    color: #767676;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.right-section .search-input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 14px;
+    color: #767676;
+    width: 150px;
+    padding: 0.5rem;
+}
+
+.google-login-button {
+    display: flex;
+    align-items: center;
     padding: 10px;
-    margin: 10px;
+    margin-left: 10px;
     background-color: #4285f4;
     color: white;
     border: none;
@@ -32,25 +89,49 @@
     cursor: pointer;
 }
 
-.google-login-button:hover,
-.logout-button:hover {
+.google-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.google-login-button:hover {
     background-color: #357ae8;
+}
+
+.match-button, .post-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 20px; /* 둥근 버튼 */
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.post-button {
+    margin-right: 25px;
+}
+
+.match-button:hover, .post-button:hover {
+    background-color: #00CBD6;
+    color: white;
 }
 
 .profile-wrap {
     position: relative;
     display: inline-block;
-    margin-left: 1rem;
     cursor: pointer;
 }
 
 .profile-wrap .profile-image {
-    margin-right: 30px;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: auto;
+    margin-right: 1rem;
 }
 
 .dropdown-menu {
@@ -64,26 +145,6 @@
     border-radius: 4px;
 }
 
-/* 구인 | 구직 하러가기 버튼 */
-.post-button {
-    padding: 10px 20px;
-    margin: 10px;
-    background-color: #00b894;
-    color: white;
-    border: none;
-    border-radius: 20px; /* 둥근 버튼 */
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-/* 버튼 hover 효과 */
-.post-button:hover {
-    background-color: #019267; /* 호버 시 색상 변경 */
-}
-
-/* 드롭다운 스타일 */
 .dropdown-menu button {
     padding: 0.7rem 0.7rem;
     width: 100%;
