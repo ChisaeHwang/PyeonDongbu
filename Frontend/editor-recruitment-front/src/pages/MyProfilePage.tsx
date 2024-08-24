@@ -3,9 +3,9 @@ import MyProfile from '../components/MyProfile'; // MyProfile 컴포넌트 임�
 
 const MyProfilePage = () => {
     return (
-        <div>
-            <MyProfile />
-        </div>
+        
+        <MyProfile />
+        
     );
 };
 

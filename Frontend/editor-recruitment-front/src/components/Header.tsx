@@ -4,7 +4,7 @@ import '../styles/Header.css'; // 스타일 임포트
 
 // 로그인 상태를 확인하는 함수 (JWT 토큰 확인)
 const checkLoginStatus = () => {
-    return sessionStorage.getItem('token') !== null; // 토큰 확인
+    return sessionStorage.getItem('access-token') !== null; // 토큰 확인
 };
 
 const Header = () => {
@@ -22,13 +22,13 @@ const Header = () => {
     };
 
     const handleLogin = () => {
-        navigate('/auth/google'); // 페이지 이동
+        window.location.href = `http://localhost:8080/auth/google`;
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem('token'); // 로그아웃 시 토큰 제거
+        sessionStorage.removeItem('access-token'); // 로그아웃 시 토큰 제거
         setIsLoggedIn(false);
-        navigate('/'); // 메인 페이지로 이동
+        window.location.reload(); // 새로고침
     };
 
     const handlePostPage = () => {
@@ -36,7 +36,7 @@ const Header = () => {
             navigate('/posts'); // 로그인이 되어 있으면 게시글 페이지로 이동
         } else {
             alert('로그인이 필요합니다.');
-            navigate('/auth/google'); // 로그인 페이지로 이동
+            navigate('/'); 
         }
     };
 
@@ -44,11 +44,11 @@ const Header = () => {
         <header className="header">
             <h1 className="header-title" onClick={() => navigate('/')}>PDB</h1>
             <div className="header-actions">
-                <button className="post-button" onClick={handlePostPage}>
-                    구인 | 구직 하러가기
-                </button>
                 {isLoggedIn ? (
                     <>
+                        <button className="post-button" onClick={handlePostPage}>
+                            구인 | 구직 하러가기
+                        </button>
                         <div className="profile-wrap" onClick={toggleDropdown}>
                             <img src="https://ifh.cc/g/q2ZvDd.jpg" alt="Profile" className="profile-image" />
                             {showDropdown && (
