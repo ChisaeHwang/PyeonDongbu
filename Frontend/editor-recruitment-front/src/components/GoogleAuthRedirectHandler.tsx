@@ -29,7 +29,8 @@ const GoogleAuthRedirectHandler: React.FC = () => {
         const accessToken = response.data.data.accessToken;
         if (accessToken) {
           sessionStorage.setItem("access-token", accessToken);
-          navigate("/"); // 로그인 성공 시 홈으로 이동
+          navigate("/"); 
+          window.location.reload();
         } else {
           setError("Access token not found in response");
         }

@@ -3,15 +3,16 @@
     justify-content: space-between;
     align-items: center;
     width: 100vw;
-    height: 6.5vh;
+    height: 60px;
     border-bottom: 1px solid #ddd;
     font-family: 'Pretendard', sans-serif; /* Pretendard 폰트 사용 */
-    box-shadow: 0px 4px 10px 0px rgba(140, 140, 140, 0.25);
+    box-shadow: 0px 4px 10px 0px rgba(140, 140, 140, 0.25) !important;
 }
 
 .left-section {
     display: flex;
     align-items: center;
+
 }
 
 .left-section .logo{
@@ -75,39 +76,54 @@
     color: #767676;
     width: 150px;
     padding: 0.5rem;
+    font-family: 'Pretendard', sans-serif;
 }
 
 .google-login-button {
+    
+    padding: 10px 20px;
+    margin-right: 1rem;
+    border: none;
+    border-radius: 20px; /* 둥근 버튼 */
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
-    padding: 10px;
-    margin-left: 10px;
-    background-color: #4285f4;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    justify-content: center;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.google-login-content {
+    display: flex; /* 아이콘과 텍스트를 감싼 래퍼를 Flexbox로 설정 */
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
 }
 
 .google-icon {
     width: 18px;
     height: 18px;
-    margin-right: 8px;
+    transform: translateX(-50%);  /* 추가: 정확한 세로 중앙 정렬을 위해 자신의 높이의 반만큼 위로 이동 */
 }
 
 .google-login-button:hover {
-    background-color: #357ae8;
+    background-color: #00CBD6;
+    color: white;
 }
+
+
 
 .match-button, .post-button {
     padding: 10px 20px;
     margin: 0 10px;
     border: none;
     border-radius: 20px; /* 둥근 버튼 */
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 400;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
 }
 
 .post-button {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Header.css'; // 스타일 임포트
 import { AiOutlineSearch } from 'react-icons/ai'; // 돋보기 아이콘 임포트
+import GoogleLogo from '../assets/GoogleLogo';
 
 // 로그인 상태를 확인하는 함수 (JWT 토큰 확인)
 const checkLoginStatus = () => {
@@ -28,7 +29,7 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem('token'); // 로그아웃 시 토큰 제거
+        sessionStorage.removeItem('access-token'); // 로그아웃 시 토큰 제거
         setIsLoggedIn(false);
         navigate('/'); // 메인 페이지로 이동
     };
@@ -52,7 +53,7 @@ const Header = () => {
         if (event.key === 'Enter') {
             handleSearch(); // 엔터 키로 검색 실행
         }
-    };    
+    };
 
     return (
         <header className="header">
@@ -95,8 +96,13 @@ const Header = () => {
                     </>
                 ) : (
                     <button className="google-login-button" onClick={handleLogin}>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Icon" className="google-icon" />
+                        {/* 구글 로고 SVG 사용 */}
+                        <div className="google-icon">
+                        <GoogleLogo/>
+                        </div>
+                        <div className="google-login-content">
                         구글 로그인
+                        </div>
                     </button>
                 )}
             </div>

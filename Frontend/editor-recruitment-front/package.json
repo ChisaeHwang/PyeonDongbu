@@ -49,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/axios": "^0.14.0",
     "@types/jest": "^29.5.12",
     "@types/react-query": "^1.2.9",

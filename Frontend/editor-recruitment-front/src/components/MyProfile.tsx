@@ -54,7 +54,6 @@ const MyProfile = () => {
     }
 
     return (
-        <div className='container'>
             <div className="profile-container">
                 <div className="profile-info">
                     <img src={userInfo.imageUrl} alt="Profile" className="profile-image" />
@@ -99,7 +98,7 @@ const MyProfile = () => {
 
                 {error && <p className="error-message">Failed to fetch data, showing placeholder data.</p>}
             </div>
-        </div>
+        
     );
 };
 
