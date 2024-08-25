@@ -1,11 +1,10 @@
 /* PostsPage.css */
 
 .posts-page {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Arial', sans-serif;
-    padding: 2rem 0;
 }
 
 .search-and-category {
