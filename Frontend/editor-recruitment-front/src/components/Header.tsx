@@ -1,62 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Header.css'; // 스타일 임포트
-import { AiOutlineSearch } from 'react-icons/ai'; // 돋보기 아이콘 임포트
+import '../styles/Header.css';
+import { AiOutlineSearch } from 'react-icons/ai';
 import GoogleLogo from '../assets/GoogleLogo';
 
-// 로그인 상태를 확인하는 함수 (JWT 토큰 확인)
 const checkLoginStatus = () => {
-    return sessionStorage.getItem('access-token') !== null; // 토큰 확인
+    return sessionStorage.getItem('access-token') !== null;
 };
 
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 상태
-    const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
-    const navigate = useNavigate(); // useNavigate 훅
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isFixed, setIsFixed] = useState(false);
+    const navigate = useNavigate();
 
-    // 컴포넌트가 마운트되면 로그인 상태 확인
     useEffect(() => {
         setIsLoggedIn(checkLoginStatus());
+
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setIsFixed(true);
+            } else {
+                setIsFixed(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     const toggleDropdown = () => {
-        setShowDropdown(!showDropdown); // 드롭다운 토글
+        setShowDropdown(!showDropdown);
     };
 
     const handleLogin = () => {
-        navigate('/auth/google'); // 페이지 이동
+        window.location.href = `http://localhost:8080/auth/google`;
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem('access-token'); // 로그아웃 시 토큰 제거
+        sessionStorage.removeItem('access-token');
         setIsLoggedIn(false);
-        navigate('/'); // 메인 페이지로 이동
+        navigate('/');
     };
 
     const handlePostPage = () => {
         if (isLoggedIn) {
-            navigate('/posts'); // 로그인이 되어 있으면 게시글 페이지로 이동
+            navigate('/posts');
         } else {
             alert('로그인이 필요합니다.');
-            navigate('/auth/google'); // 로그인 페이지로 이동
+            navigate('/auth/google');
         }
     };
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
-            navigate(`/search?query=${searchQuery}`); // 검색 페이지로 이동
+            navigate(`/search?query=${searchQuery}`);
         }
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            handleSearch(); // 엔터 키로 검색 실행
+            handleSearch();
         }
     };
 
     return (
-        <header className="header">
+        <header className={`header ${isFixed ? 'fixed' : ''}`}>
             <div className="left-section">
                 <img src="https://ifh.cc/g/PDRy1k.png" alt="Logo" className="logo" />
                 <h1 className="header-title" onClick={() => navigate('/')}>PDB</h1>
@@ -96,12 +109,11 @@ const Header = () => {
                     </>
                 ) : (
                     <button className="google-login-button" onClick={handleLogin}>
-                        {/* 구글 로고 SVG 사용 */}
                         <div className="google-icon">
-                        <GoogleLogo/>
+                            <GoogleLogo/>
                         </div>
                         <div className="google-login-content">
-                        구글 로그인
+                            구글 로그인
                         </div>
                     </button>
                 )}

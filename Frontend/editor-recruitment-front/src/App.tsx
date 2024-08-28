@@ -5,6 +5,7 @@ import CreatePostPage from './pages/CreatePostPage';
 import MyProfilePage from './pages/MyProfilePage';
 import PostsPage from './pages/PostsPage';
 import GoogleAuthRedirectHandler from './components/GoogleAuthRedirectHandler';
+import './App.css';
 
 const App = () => {
     return (

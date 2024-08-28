@@ -1,0 +1,45 @@
+.filter-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 14px;
+  width: 800px;
+  margin-left: 100px; /* 왼쪽 여백 증가 */
+  margin-top: 40px;
+  margin-bottom: 40px;
+  overflow-y: auto; /* 세로 스크롤 추가 */
+}
+
+.filter-button {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background-color: white;
+  color: #374151;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.filter-button:hover {
+  background-color: #00CBD6;
+  color: white;
+}
+
+.filter-button.active {
+  background-color: #00CBD6;
+  color: white;
+}
+
+.filter-button img {
+  width: 16px;
+  height: 16px;
+}
+
+
