@@ -9,7 +9,6 @@ const GoogleAuthRedirectHandler: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false); // 중복 요청 방지를 위한 상태
 
   useEffect(() => {
-    // 코드를 얻기 위한 로직은 여전히 한 번만 실행됩니다.
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get("code");
 
@@ -41,7 +40,7 @@ const GoogleAuthRedirectHandler: React.FC = () => {
           setError("An unknown error occurred");
         }
       } finally {
-        setIsSubmitting(false); // 요청 완료
+        setIsSubmitting(false);
       }
     };
 

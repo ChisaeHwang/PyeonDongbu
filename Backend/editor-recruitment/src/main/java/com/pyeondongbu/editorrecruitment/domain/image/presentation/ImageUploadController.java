@@ -1,4 +1,4 @@
-package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
+package com.pyeondongbu.editorrecruitment.domain.image.presentation;
 
 import com.pyeondongbu.editorrecruitment.domain.image.domain.ImageFile;
 import com.pyeondongbu.editorrecruitment.domain.image.infra.ImageUploader;
@@ -19,7 +19,7 @@ public class ImageUploadController {
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("file") MultipartFile file) {
         ImageFile imageFile = new ImageFile(file);
-        List<ImageFile> imageFiles = List.of(imageFile); // 단일 파일을 리스트로 변환
+        List<ImageFile> imageFiles = List.of(imageFile);
         List<String> uploadedImageNames = imageUploader.uploadImages(imageFiles);
         return "Uploaded: " + uploadedImageNames.get(0);
     }

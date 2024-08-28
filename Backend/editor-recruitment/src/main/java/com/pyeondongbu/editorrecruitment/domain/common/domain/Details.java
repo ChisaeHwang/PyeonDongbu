@@ -31,11 +31,11 @@ public abstract class Details {
 
     @ElementCollection
     @Column(name = "skill")
-    protected Set<String> skills = new HashSet<>();
+    protected Set<String> skills;
 
     @ElementCollection
     @Column(name = "video_type")
-    protected Set<String> videoTypes = new HashSet<>();
+    protected Set<String> videoTypes;
 
     public Details(
             int maxSubs,

@@ -4,6 +4,8 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.Recruit
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

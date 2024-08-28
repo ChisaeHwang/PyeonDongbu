@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import com.pyeondongbu.editorrecruitment.domain.image.domain.ImageFile;
@@ -52,6 +53,8 @@ public class ImageUploader {
         } catch (final IOException e) {
             throw new ImageException(INVALID_IMAGE);
         }
-        return imageFile.getHashedName();
+
+         URL fileUrl = s3Client.getUrl(bucket, path);
+        return fileUrl.toString();
     }
 }
