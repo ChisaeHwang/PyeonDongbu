@@ -19,7 +19,7 @@
     background-color: white;
     width: 45%;
     height: auto;  /* 고정 높이 대신 자동으로 조절되도록 변경 */
-    min-height: 1200px;  /* 최소 높이 설정 */
+    min-height: 1150px;  /* 최소 높이 설정 */
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -36,14 +36,27 @@
     margin-top: 0;
 }
 
+.preview-content {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.preview-content img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* 입력 필드 스타일 */
-.title-input, .payment-amount-input, .details-input, .details-textarea {
+.title-input,
+.payment-amount-input, 
+.details-input, 
+.details-textarea {
     display: block;
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 10px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 20px;
     border: 1px solid #B3B3B3;
     box-sizing: border-box;
 }
@@ -53,9 +66,13 @@
     resize: none;
 }
 
-.details-input:focus, .details-textarea:focus {
+.details-input:focus, 
+.details-textarea:focus {
     border-color: #007bff;
-    outline: none;
+}
+
+.details-item label {
+    margin-bottom: 5px;
 }
 
 /* 버튼 스타일 */
@@ -215,11 +232,141 @@
 
 .button-container {
     position: static;  /* absolute 대신 static으로 변경 */
-    margin-top: 20px;  /* 상단 여백 추가 */
+    margin-top: 30px;  /* 상단 여백 추가 */
     text-align: right;  /* 오른쪽 정렬 */
 }
 
 .button-group .filter-button svg {
     width: 20px;
     height: 20px;
+}
+
+/* 제목 입력 컨테이너 스타일 */
+.title-input-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.title-char-count {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 14px;
+}
+
+/* 입력 필드 스타일 수정 */
+.title-input,
+.payment-amount-input, 
+.details-input {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #B3B3B3;
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;  
+}
+
+.input-with-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-unit input {
+    padding-right: 40px; /* 단위를 위한 공간 확보 */
+}
+
+.input-unit {
+    position: absolute;
+    right: 15px;
+    top: 40%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 14px;
+    pointer-events: none; /* 텍스트 선택 방지 */
+}
+
+/* 작업 갯수 선택 버튼 스타일 */
+.work-count-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.work-count-button {
+    border: 1px solid #B3B3B3;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.work-count-button.active {
+    background-color: #00CBD6;
+    color: white;
+}
+
+.work-count-button:hover {
+    background-color: #00CBD6;
+    color: white;
+}
+
+/* 결제 금액 입력 필드 스타일 수정 */
+.payment-amount-input {
+    padding-right: 30px; /* 단위를 위한 여백 */
+}
+
+/* 기타 스타일 유지 */
+
+/* Select 스타일 */
+.details-select {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #B3B3B3;
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.details-select:focus {
+    outline: none;
+    border-color: #00CBD6;
+    box-shadow: 0 0 0 2px rgba(0, 203, 214, 0.2);
+}
+
+.details-select:hover {
+    border-color: #00CBD6;
+}
+
+/* 기타 스타일 유지 */
+
+/* 숫자 입력 필드의 증가/감소 버튼 제거 */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
 }

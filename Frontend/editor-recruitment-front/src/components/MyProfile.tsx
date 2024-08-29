@@ -1,104 +1,180 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import '../styles/MyProfile.css'; // 스타일 파일 임포트
+import React, { useState } from 'react';
+import '../styles/MyProfile.css';
+import { formatNumber } from '../utils/FormatNumber';
+import premierProIcon from '../assets/premierProIcon';
+import photoshopIcon from '../assets/photoshopIcon';
+import afterEffectsIcon from '../assets/afterEffectsIcon';
+import illustratorIcon from '../assets/illustratorIcon';
+import chatIcon from '../assets/chatIcon';
+import radioIcon from '../assets/radioIcon';
+import gameIcon from '../assets/gameIcon';
+import foodIcon from '../assets/foodIcon';
+import educationIcon from '../assets/educationIcon';
+import reviewIcon from '../assets/reviewIcon';
+import UploadIcon from '../assets/UploadIcon';
 
-// 사용자 정보 타입 정의
-interface UserInfo {
-    nickname: string;
-    imageUrl: string;
-    role: string;
-    maxSubs: number;
-    videoTypes: string[];
-    editedChannels: string[];
-    currentChannels: string[];
-    portfolio: string;
-    skills: string[];
-    remarks: string;
-}
+type FilterOption = {
+    name: string;
+    icon: React.ComponentType; 
+    type: 'skill' | 'videoGenre';
+};
+
+const filterOptions: FilterOption[] = [
+    { name: '프리미어 프로', icon: premierProIcon, type: 'skill' },
+    { name: '포토샵', icon: photoshopIcon, type: 'skill' },
+    { name: '에프터 이펙트', icon: afterEffectsIcon, type: 'skill' },
+    { name: '어도비 일러스트', icon: illustratorIcon, type: 'skill' },
+    { name: '저스트 채팅', icon: chatIcon, type: 'videoGenre' },
+    { name: '보이는 라디오', icon: radioIcon, type: 'videoGenre' },
+    { name: '게임', icon: gameIcon, type: 'videoGenre' },
+    { name: '먹방', icon: foodIcon, type: 'videoGenre' },
+    { name: '교육/강의', icon: educationIcon, type: 'videoGenre' },
+    { name: '리뷰/정보', icon: reviewIcon, type: 'videoGenre' },
+];
 
 const MyProfile = () => {
-    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-    const [error, setError] = useState(false);
+    const [nickname, setNickname] = useState('');
+    const [role, setRole] = useState('');
+    const [selectedVideoTypes, setSelectedVideoTypes] = useState<string[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [editedChannels, setEditedChannels] = useState('');
+    const [currentChannels, setCurrentChannels] = useState('');
+    const [maxSubs, setMaxSubs] = useState('');
+    const [introduction, setIntroduction] = useState('');
 
-    // 백엔드에서 사용자 정보를 가져오는 함수
-    const fetchUserInfo = async () => {
-        try {
-            const response = await axios.get('/api/member'); // 백엔드 API 호출
-            setUserInfo(response.data.data);
-        } catch (error) {
-            console.error('Failed to fetch user info:', error);
-            setError(true);
-
-            // 더미 데이터 설정 
-            setUserInfo({
-                nickname: '치새황',
-                imageUrl: 'https://ifh.cc/g/q2ZvDd.jpg',
-                role: '편집자',
-                maxSubs: 6000000,
-                videoTypes: ['브이로그', '게임', '저스트 채팅'],
-                editedChannels: ['우왁굳', '김재원'],
-                currentChannels: ['무직'],
-                portfolio: 'https://example.com/portfolio',
-                skills: ['Premiere Pro', 'After Effects', 'DaVinci Resolve'],
-                remarks: '여러 클라이언트를 경험했던 영상 편집자입니다',
-            });
+    const handleFilterOptionClick = (option: FilterOption) => {
+        if (option.type === 'skill') {
+            setSelectedSkills(prev => 
+                prev.includes(option.name) ? prev.filter(skill => skill !== option.name) : [...prev, option.name]
+            );
+        } else {
+            setSelectedVideoTypes(prev => 
+                prev.includes(option.name) ? prev.filter(genre => genre !== option.name) : [...prev, option.name]
+            );
         }
     };
 
-    useEffect(() => {
-        fetchUserInfo();
-    }, []);
-
-    if (!userInfo) {
-        return <div>Loading...</div>; // 로딩 중 표시
-    }
-
     return (
-            <div className="profile-container">
-                <div className="profile-info">
-                    <img src={userInfo.imageUrl} alt="Profile" className="profile-image" />
-                    <h2>{userInfo.nickname}</h2>
-                    <p><strong>역할 :</strong> {userInfo.role}</p>
-                    <p><strong>구독자 수(총):</strong> {userInfo.maxSubs}</p>
-                    <p><strong>포트폴리오:</strong> <a href={userInfo.portfolio} target="_blank" rel="noopener noreferrer">View Portfolio</a></p>
+        <div className="profile-container">
+            <h2 className="page-title">마이 페이지</h2>
+            
+            <div className="profile-row">
+                <div className="profile-image-container">
+                    <img src="https://ifh.cc/g/q2ZvDd.jpg" alt="Profile" className="profile-image" />
+                    <button className="upload-button">
+                        <UploadIcon />
+                        <span>프로필 사진 업로드</span>
+                    </button>
                 </div>
-
-                <div className="profile-details">
-                    <h3>선호하는 카테고리</h3>
-                    <ul>
-                        {userInfo.videoTypes.map((type, index) => (
-                            <li key={index}>{type}</li>
-                        ))}
-                    </ul>
-
-                    <h3>편집했던 채널</h3>
-                    <ul>
-                        {userInfo.editedChannels.map((channel, index) => (
-                            <li key={index}>{channel}</li>
-                        ))}
-                    </ul>
-
-                    <h3>현재 작업 중인 채널</h3>
-                    <ul>
-                        {userInfo.currentChannels.map((channel, index) => (
-                            <li key={index}>{channel}</li>
-                        ))}
-                    </ul>
-
-                    <h3>기술</h3>
-                    <ul>
-                        {userInfo.skills.map((skill, index) => (
-                            <li key={index}>{skill}</li>
-                        ))}
-                    </ul>
-
-                    <h3>자기소개</h3>
-                    <p>{userInfo.remarks}</p>
+                <div className="nickname-container">
+                    <label htmlFor="nickname">닉네임</label>
+                    <input
+                        id="nickname"
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        placeholder="닉네임을 입력하세요 (최대 8자)"
+                         maxLength={8}
+                    />
                 </div>
-
-                {error && <p className="error-message">Failed to fetch data, showing placeholder data.</p>}
             </div>
-        
+
+            <div className="profile-section">
+                <h3>역할</h3>
+                <div className="profile-button-group">
+                    <button
+                        className={`profile-role-button ${role === '클라이언트' ? 'active' : ''}`}
+                        onClick={() => setRole('클라이언트')}
+                    >
+                        클라이언트
+                    </button>
+                    <button
+                        className={`profile-role-button ${role === '작업자' ? 'active' : ''}`}
+                        onClick={() => setRole('작업자')}
+                    >
+                        작업자
+                    </button>
+                </div>
+            </div>
+
+            <div className="profile-section">
+                <h3>선호하는 영상 타입</h3>
+                <div className="button-group">
+                    {filterOptions.filter(option => option.type === 'videoGenre').map((option) => (
+                        <button
+                            key={option.name}
+                            className={`filter-button ${selectedVideoTypes.includes(option.name) ? 'active' : ''}`}
+                            onClick={() => handleFilterOptionClick(option)}
+                        >
+                            <option.icon />
+                            {option.name}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="profile-section">
+                <h3>사용하는 기술</h3>
+                <div className="button-group">
+                    {filterOptions.filter(option => option.type === 'skill').map((option) => (
+                        <button
+                            key={option.name}
+                            className={`filter-button ${selectedSkills.includes(option.name) ? 'active' : ''}`}
+                            onClick={() => handleFilterOptionClick(option)}
+                        >
+                            <option.icon />
+                            {option.name}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="profile-section">
+                <h3>편집했던 채널</h3>
+                <input
+                    type="text"
+                    value={editedChannels}
+                    onChange={(e) => setEditedChannels(e.target.value.slice(0, 48))}
+                    placeholder="편집했던 채널을 입력하세요 (최대 48자)"
+                    maxLength={48}
+                />
+            </div>
+
+            <div className="profile-section">
+                <h3>작업 중인 채널</h3>
+                <input
+                    type="text"
+                    value={currentChannels}
+                    onChange={(e) => setCurrentChannels(e.target.value.slice(0, 48))}
+                    placeholder="작업 중인 채널을 입력하세요 (최대 48자)"
+                    maxLength={48}
+                />
+            </div>
+
+            <div className="profile-section">
+                <h3>최고 구독자 수</h3>
+                <div className="input-with-unit">
+                    <input
+                        type="text"
+                        value={formatNumber(maxSubs)}
+                        onChange={(e) => setMaxSubs(e.target.value.replace(/[^0-9]/g, ''))}
+                        placeholder="최고 구독자 수를 입력하세요"
+                    />
+                    <span className="input-unit">명</span>
+                </div>
+            </div>
+
+            <div className="profile-section">
+                <h3>자기 소개</h3>
+                <textarea
+                    value={introduction}
+                    onChange={(e) => setIntroduction(e.target.value.slice(0, 100))}
+                    placeholder="자기 소개를 입력하세요 (최대 100자)"
+                    maxLength={100}
+                />
+                <span className="char-count">{introduction.length}/100</span>
+            </div>
+        </div>
     );
 };
 

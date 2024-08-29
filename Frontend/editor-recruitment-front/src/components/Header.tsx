@@ -19,7 +19,7 @@ const Header = () => {
         setIsLoggedIn(checkLoginStatus());
 
         const handleScroll = () => {
-            if (window.scrollY > 100) {
+            if (window.scrollY > 50) {
                 setIsFixed(true);
             } else {
                 setIsFixed(false);
