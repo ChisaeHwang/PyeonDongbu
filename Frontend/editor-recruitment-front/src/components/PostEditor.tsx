@@ -13,6 +13,7 @@ import gameIcon from '../assets/gameIcon';
 import foodIcon from '../assets/foodIcon';
 import educationIcon from '../assets/educationIcon';
 import reviewIcon from '../assets/reviewIcon';
+import { formatNumber } from '../utils/FormatNumber';
 
 interface PostEditorProps {
     onSubmit: (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => void;
@@ -21,10 +22,18 @@ interface PostEditorProps {
 const paymentTypes = [
     { label: '분당', value: 'PER_HOUR' },
     { label: '건당', value: 'PER_PROJECT' },
-    { label: '월급', value: 'MONTHLY_SALARY' }
+    { label: '월급', value: 'MONTHLY_SALARY' },
+    { label: '협의', value: 'NEGOTIABLE' }
 ];
 
 const recruitmentTypes = ['구인', '구직'];
+
+const weeklyWorkOptions = [
+    { value: '1-2', label: '1~2개' },
+    { value: '3-4', label: '3~4개' },
+    { value: '5-6', label: '5~6개' },
+    { value: '7+', label: '7개 이상' }
+];
 
 type FilterOption = {
     name: string;
@@ -54,9 +63,11 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
     const [paymentType, setPaymentType] = useState('');
     const [paymentAmount, setPaymentAmount] = useState('');
     const [maxSubs, setMaxSubs] = useState<number | null>(null);
-    const [weeklyWorkCount, setWeeklyWorkCount] = useState<number | null>(null);
+    const [maxSubsInput, setMaxSubsInput] = useState('');
+    const [weeklyWorkCount, setWeeklyWorkCount] = useState('');
     const [selectedVideoGenres, setSelectedVideoGenres] = useState<string[]>([]);
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [isNegotiable, setIsNegotiable] = useState(false);
     const quillRef = useRef<ReactQuill>(null);
 
     const handleRecruitmentTypeChange = (selectedType: string) => {
@@ -84,7 +95,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                         },
                     });
 
-                    const imageUrl = response.data;  // 서버에서 반환된 URL
+                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
                     const quill = quillRef.current?.getEditor();
                     if (quill) {
                         const range = quill.getSelection(true);
@@ -99,13 +110,28 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
 
     const handlePaymentTypeClick = (type: string) => {
         setPaymentType(type);
+        if (type === 'NEGOTIABLE') {
+            setPaymentAmount('협의');
+            setIsNegotiable(true);
+        } else {
+            setPaymentAmount('');
+            setIsNegotiable(false);
+        }
+    };
+
+    const handleMaxSubsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9]/g, '');
+        setMaxSubsInput(value);
+        setMaxSubs(value ? Number(value) : null);
     };
 
     const handlePaymentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = e.target.value;
-        setPaymentAmount(amount);
-        if (paymentType) {
-            setPayments(prev => ({...prev, [paymentType]: amount}));
+        if (!isNegotiable) {
+            const amount = e.target.value;
+            setPaymentAmount(amount);
+            if (paymentType) {
+                setPayments(prev => ({...prev, [paymentType]: amount}));
+            }
         }
     };
 
@@ -140,7 +166,6 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                 ['bold', 'italic', 'underline', 'strike'],
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                 ['link', 'image'],
-                ['clean']
             ],
             handlers: {
                 image: handleImageUpload
@@ -153,13 +178,17 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
             <div className="editor-section">
                 <h2>게시글 작성</h2>
                 
-                <input
-                    type="text"
-                    placeholder="제목을 입력하세요"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="title-input"
-                />
+                <div className="title-input-container">
+                    <input
+                        type="text"
+                        placeholder="제목을 입력하세요"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value.slice(0, 25))}
+                        className="title-input"
+                        maxLength={25}
+                    />
+                    <span className="title-char-count">{title.length}/25</span>
+                </div>
 
                 <h3>구인/구직</h3>
                 <div className="button-group">
@@ -206,25 +235,31 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                     <div className="details-row">
                         <div className="details-item">
                             <label htmlFor="maxSubs">최대 구독자 수</label>
-                            <input
-                                id="maxSubs"
-                                type="number"
-                                placeholder="최대 구독자 수 입력"
-                                value={maxSubs || ''}
-                                onChange={(e) => setMaxSubs(Number(e.target.value))}
-                                className="details-input"
-                            />
+                            <div className="input-with-unit">
+                                <input
+                                    id="maxSubs"
+                                    type="text"
+                                    placeholder="최대 구독자 수 입력"
+                                    value={formatNumber(maxSubsInput)}
+                                    onChange={handleMaxSubsChange}
+                                    className="details-input"
+                                />
+                                <span className="input-unit">명</span>
+                            </div>
                         </div>
                         <div className="details-item">
                             <label htmlFor="weeklyWorkCount">주간 작업 갯수</label>
-                            <input
+                            <select
                                 id="weeklyWorkCount"
-                                type="number"
-                                placeholder="주간 작업 갯수 입력"
-                                value={weeklyWorkCount || ''}
-                                onChange={(e) => setWeeklyWorkCount(Number(e.target.value))}
-                                className="details-input"
-                            />
+                                value={weeklyWorkCount}
+                                onChange={(e) => setWeeklyWorkCount(e.target.value)}
+                                className="details-select"
+                            >
+                                <option value="">선택하세요</option>
+                                {weeklyWorkOptions.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -241,7 +276,6 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                 <div className="payment-container">
                 <h3>결제 유형</h3>
                     <div className="payment-group">
-                
                         {paymentTypes.map((type) => (
                             <button
                                 key={type.value}
@@ -254,14 +288,18 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                     </div>
 
                     <div className="payment-section">
-                        <input
-                            type="text"
-                            placeholder="금액을 입력하세요 (최대 8자리)"
-                            value={paymentAmount}
-                            onChange={handlePaymentAmountChange}
-                            className="payment-amount-input"
-                        />
-                        <p className="payment-note">*숫자외 문자도 입력가능하니 자유롭게 작성해주세요 !</p>
+                        <div className="input-with-unit">
+                            <input
+                                type="text"
+                                placeholder="금액을 입력하세요 (최대 8자리)"
+                                value={isNegotiable ? '협의' : formatNumber(paymentAmount)}
+                                onChange={handlePaymentAmountChange}
+                                className="payment-amount-input"
+                                maxLength={8}
+                                disabled={isNegotiable}
+                            />
+                            <span className="input-unit">원</span>
+                        </div>
                     </div>
                 </div>
 

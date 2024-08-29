@@ -1,61 +1,270 @@
-
+/* 1. 전체 컨테이너 */
 .profile-container {
     padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f9f9f9;
+    margin: 30px auto;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 50%;
-    margin: auto;
+    width: 60%;
+    max-width: 1000px;
+    font-family: 'Pretendard', sans-serif;
 }
 
-.profile-info {
-    text-align: center;
+/* 2. 페이지 제목 */
+.page-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    padding: 0 3.75rem; /* 좌우 패딩을 rem 단위로 설정 */
+}
+
+/* 3. 프로필 상단 섹션 */
+.profile-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 2rem; /* gap을 2rem으로 증가 */
+    padding: 0 3.75rem; /* 좌우 패딩을 rem 단위로 설정 */
+}
+
+.profile-image-container {
+    display: flex;
+    flex-direction: column; /* 이미지와 버튼을 세로로 정렬 */
+    align-items: center;
+    flex-shrink: 0;
+    gap: 1rem; /* 이미지와 버튼 사이의 간격 */
 }
 
 .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1rem;
 }
 
-.profile-info h2 {
-    margin: 0;
-    font-size: 1.8rem;
+.profile-info-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.5rem;
 }
 
-.profile-details {
-    margin-top: 2rem;
+.upload-button {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 20px;
+    border: 3px solid #00F2FF;
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    height: 36px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+}
+
+.upload-button:hover {
+    background-color: #00F2FF;
+    color: white;
+}
+
+.upload-button:hover svg {
+    fill: white; /* SVG 아이콘 색상 변경 */
+}
+
+.upload-button:hover svg path {
+    fill: white; /* SVG 내부 path에 대한 색상 변경 */
+}
+
+.upload-button svg {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+    transition: fill 0.3s ease; /* SVG 색상 변경에 대한 전환 효과 */
+}
+
+.nickname-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.nickname-container label {
+    margin-bottom: 0.25rem; /* 라벨과 입력 칸 사이 간격 줄임 */
+    font-size: 0.9rem; /* 라벨 글자 크기 줄임 */
+}
+
+.nickname-container input {
+    padding: 0.375rem 0.5rem; /* 상하 패딩 줄임 */
+    border-radius: 10px;
+    border: 1px solid #ccc;
     width: 100%;
+    height: 36px; /* 입력 칸 높이를 36px로 줄임 */
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.9rem; /* 입력 칸 글자 크기 줄임 */
 }
 
-.profile-details h3 {
-    margin-top: 1.5rem;
-    font-size: 1.4rem;
+/* 4. 프로필 섹션 공통 스타일 */
+.profile-section {
+    margin-bottom: 2rem;
+    padding: 0 3.75rem; /* 좌우 패딩을 rem 단위로 설정 */
 }
 
-.profile-details ul {
-    list-style-type: none;
-    padding: 0;
+.profile-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #333;
 }
 
-.profile-details ul li {
-    background-color: #fff;
-    padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.profile-details p {
+/* 5. 입력 필드 공통 스타일 */
+.profile-section input[type="text"],
+.profile-section textarea,
+.profile-section .input-with-unit {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
     font-size: 1rem;
+    font-family: 'Pretendard', sans-serif;
 }
 
-.error-message {
-    color: red;
-    margin-top: 1rem;
+.profile-section .input-with-unit {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #ccc;
+}
+
+.profile-section .input-with-unit input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 0.5rem;
+    font-family: 'Pretendard', sans-serif;
+}
+
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* input-with-unit 관련 스타일을 더 구체적으로 지정 */
+.profile-section .input-with-unit {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.profile-section .input-with-unit input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 1rem;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+.profile-section .input-with-unit .input-unit {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+/* 포커스 효과 수정 */
+.profile-section .input-with-unit:focus-within {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.profile-section .input-with-unit input:focus {
+    box-shadow: none;
+}
+
+/* 6. 버튼 그룹 스타일 */
+.profile-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.profile-role-button, 
+.profile-filter-button {
+    border: 1px solid #B3B3B3 !important;
+    padding: 10px 16px;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.profile-role-button:hover, .profile-filter-button:hover {
+    background-color: #00CBD6;
+    color: white;
+}
+
+.profile-role-button.active, .profile-filter-button.active {
+    background-color: #00CBD6;
+    color: white;
+}
+
+
+/* 7. 기타 스타일 */
+.char-count {
+    display: block;
+    text-align: right;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* 8. 포커스 효과 */
+input[type="text"]:focus, 
+textarea:focus,
+.profile-section .input-with-unit:focus-within {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.input-with-unit input:focus {
+    box-shadow: none;
+}
+
+.filter-button:hover {
+    background-color: #f0f0f0;
+}
+
+.filter-button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.filter-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.input_unit {
+    top: 50%;
+    font-size: 18px;
 }
