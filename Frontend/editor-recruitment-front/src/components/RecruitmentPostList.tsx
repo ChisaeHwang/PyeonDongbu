@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import '../styles/RecruitmentPostList.css';
-import NextArrowIcon from '../assets/NextArrowIcon';
-import PrevArrowIcon from '../assets/PrevArrowIcon';
-import { CustomArrowProps } from "react-slick";
 
 interface PaymentDTO {
     type: string;
@@ -18,6 +13,7 @@ interface RecruitmentPostDetailsRes {
     videoTypes: string[];
     skills: string[];
     remarks: string;
+    weeklyWorkload: string; // 추가된 필드
 }
 
 interface RecruitmentPost {
@@ -34,54 +30,78 @@ interface RecruitmentPost {
     recruitmentPostDetailsRes: RecruitmentPostDetailsRes;
 }
 
+interface RecruitmentPostItemProps {
+    post: RecruitmentPost;
+    variant: 'main' | 'jobs';
+}
+
+const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant }) => {
+    const getPaymentString = (payments: PaymentDTO[]) => {
+        if (payments.length === 0) return '정보 없음';
+        const payment = payments[0];
+        if (payment.type === 'MONTHLY_SALARY') {
+            return `월 ${payment.amount.toLocaleString()}원`;
+        } else if (payment.type === 'PER_HOUR') {
+            return `분당 ${payment.amount.toLocaleString()}원`;
+        }
+        return '정보 없음';
+    };
+
+    return (
+        <div className="recruitment-post-item">
+            <div className="post-image">
+                {post.images && post.images.length > 0 && (
+                    <img 
+                        src={post.images[0]} 
+                        alt={`게시글 이미지`} 
+                        loading="lazy"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/path/to/placeholder-image.jpg';
+                        }}
+                    />
+                )}
+            </div>
+            <div className="post-content">
+                <h3 className="post-title">{post.title}</h3>
+                {variant === 'jobs' && <p className="post-description">{post.content}</p>}
+                {variant === 'main' && (
+                    <div className="post-remarks">
+                        {post.recruitmentPostDetailsRes.remarks.split(',').map((remark, index) => (
+                            <span key={`${post.id}-${index}`} className="remark">{remark.trim()}</span>
+                        ))}
+                    </div>
+                )}
+                {variant === 'jobs' && (
+                    <div className="post-details">
+                        <div className="detail-item payment">
+                            <span className="detail-label">페이</span>
+                            <span className="detail-value">{getPaymentString(post.payments)}</span>
+                        </div>
+                        <div className="detail-item subscribers">
+                            <span className="detail-label">구독자 수</span>
+                            <span className="detail-value">{post.recruitmentPostDetailsRes.maxSubs.toLocaleString()}명</span>
+                        </div>
+                        <div className="detail-item workload">
+                            <span className="detail-label">작업 갯수</span>
+                            <span className="detail-value">{post.recruitmentPostDetailsRes.weeklyWorkload}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 interface RecruitmentPostListProps {
     skills: string[];
     videoTypes: string[];
     tagNames: string[];
+    sliderSettings?: any;
+    variant: 'main' | 'jobs';
 }
 
-const RecruitmentPostItem: React.FC<{ post: RecruitmentPost }> = ({ post }) => (
-    <div className="recruitment-post-item">
-        <div className="post-image">
-            {post.images && post.images.length > 0 && (
-                <img 
-                    src={post.images[0]} 
-                    alt={`게시글 이미지`} 
-                    loading="lazy"
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/path/to/placeholder-image.jpg';
-                    }}
-                />
-            )}
-        </div>
-        <h3 className="post-title">{post.title}</h3>
-        <div className="post-remarks">
-            {post.recruitmentPostDetailsRes && post.recruitmentPostDetailsRes.remarks && 
-             post.recruitmentPostDetailsRes.remarks.split(',').map((remark, index) => (
-                <span key={`${post.id}-${index}`} className="remark">{remark.trim()}</span>
-            ))}
-        </div>
-    </div>
-);
-
-const NextArrow = (props: CustomArrowProps) => (
-    <div {...props} className="slick-next custom-arrow-wrapper">
-      <div className="custom-arrow">
-        <NextArrowIcon />
-      </div>
-    </div>
-  );
-  
-  const PrevArrow = (props: CustomArrowProps) => (
-    <div {...props} className="slick-prev custom-arrow-wrapper">
-      <div className="custom-arrow">
-        <PrevArrowIcon />
-      </div>
-    </div>
-  );
-
-const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, videoTypes, tagNames }) => {
+const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, videoTypes, tagNames, sliderSettings, variant }) => {
     const [posts, setPosts] = useState<RecruitmentPost[]>([]);
     const [filteredPosts, setFilteredPosts] = useState<RecruitmentPost[]>([]);
     const [loading, setLoading] = useState(false);
@@ -133,53 +153,6 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, video
         };
     }, [posts, skills, videoTypes, tagNames]);
 
-    const settings = {
-        dots: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 6,  // 1920x1080에서 더 많은 아이템 표시
-        slidesToScroll: 3,
-        nextArrow: <NextArrow />,
-        prevArrow: <PrevArrow />,
-        responsive: [
-            {
-                breakpoint: 1600,
-                settings: {
-                    slidesToShow: 5,
-                    slidesToScroll: 3,
-                }
-            },
-            {
-                breakpoint: 1400,
-                settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 2,
-                }
-            },
-            {
-                breakpoint: 1100,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 2,
-                }
-            },
-            {
-                breakpoint: 800,
-                settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
-    };
-
     if (loading) {
         return <div className="loading">로딩 중...</div>;
     }
@@ -190,14 +163,25 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, video
 
     return (
         <div className="recruitment-post-list-container">
-            <Slider {...settings}>
-                {filteredPosts.map((post) => (
-                    <div key={post.id}>
-                        <RecruitmentPostItem post={post} />
+            {filteredPosts.length > 0 ? (
+                sliderSettings ? (
+                    <Slider {...sliderSettings}>
+                        {filteredPosts.map((post) => (
+                            <div key={post.id}>
+                                <RecruitmentPostItem post={post} variant={variant} />
+                            </div>
+                        ))}
+                    </Slider>
+                ) : (
+                    <div className="recruitment-post-list">
+                        {filteredPosts.map((post) => (
+                            <RecruitmentPostItem key={post.id} post={post} variant={variant} />
+                        ))}
                     </div>
-                ))}
-            </Slider>
-            {filteredPosts.length === 0 && <div className="no-posts">게시글이 없습니다.</div>}
+                )
+            ) : (
+                <div className="no-posts">게시글이 없습니다.</div>
+            )}
         </div>
     );
 };

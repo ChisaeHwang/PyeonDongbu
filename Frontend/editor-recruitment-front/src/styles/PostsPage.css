@@ -10,34 +10,36 @@
     width: 100%;
     height: auto;
     background: #F2F4F6;
+    padding: 0 50px;
 }
 
+
 .current-partners-title {
-    margin-left: 100px;
     font-size: 36px;
     font-weight: bold;
     margin-top: 100px;
     margin-bottom: 20px;
+    padding-left: 100px;
 }
 
 .current-partners-title.workers-title {
     text-align: right;
-    margin-right: 200px;
+    padding-right: 200px;
 }
 
 .youtuber-section {
-    height:900px;
     background-color: #F2F4F6;
     position: relative;
     z-index: 1;
+    padding-bottom: 150px;
 }
 
 .worker-section {
-    height:800px;
     background-color: white;
     position: relative;
     margin-top: -50px;
     padding-top: 100px;
+    padding-bottom: 100px;
 }
 
 .youtuber-section::after,
@@ -61,4 +63,68 @@
     height: 100px;
     background-color: #ffffff;
     clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+
+.recruitment-post-list-container .recruitment-post-item:first-child {
+    margin-left: 10px; 
+}
+
+
+/* Slider 스타일 */
+.slick-slider {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.slick-prev,
+.slick-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.slick-prev {
+    left: -20px;
+}
+
+.slick-next {
+    right: -20px;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    display: none;
+}
+
+.custom-arrow-wrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.custom-arrow {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slick-prev.custom-arrow-wrapper {
+    left: -25px;
+}
+
+.slick-next.custom-arrow-wrapper {
+    right: -20px;
 }

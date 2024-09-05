@@ -181,6 +181,12 @@
     background-color: #f0f0f0;
 }
 
-body {
-    padding-top: 0;
+.right-section .search-bar:focus-within {
+    outline: none;
+    box-shadow: none;
+}
+
+.right-section .search-input:focus {
+    outline: none;
+    box-shadow: none;
 }

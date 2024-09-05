@@ -68,14 +68,17 @@ const MyProfile = () => {
                 </div>
                 <div className="nickname-container">
                     <label htmlFor="nickname">닉네임</label>
-                    <input
-                        id="nickname"
-                        type="text"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                        placeholder="닉네임을 입력하세요 (최대 8자)"
-                         maxLength={8}
-                    />
+                    <div className="input-with-count">
+                        <input
+                            id="nickname"
+                            type="text"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                            placeholder="닉네임 (최대 8자)"
+                            maxLength={8}
+                        />
+                        <span className="char-count">{nickname.length}/8</span>
+                    </div>
                 </div>
             </div>
 
@@ -131,24 +134,30 @@ const MyProfile = () => {
 
             <div className="profile-section">
                 <h3>편집했던 채널</h3>
-                <input
-                    type="text"
-                    value={editedChannels}
-                    onChange={(e) => setEditedChannels(e.target.value.slice(0, 48))}
-                    placeholder="편집했던 채널을 입력하세요 (최대 48자)"
-                    maxLength={48}
-                />
+                <div className="input-with-count">
+                    <input
+                        type="text"
+                        value={editedChannels}
+                        onChange={(e) => setEditedChannels(e.target.value.slice(0, 48))}
+                        placeholder="편집했던 채널을 입력하세요 (최대 48자)"
+                        maxLength={48}
+                    />
+                    <span className="char-count">{editedChannels.length}/48</span>
+                </div>
             </div>
 
             <div className="profile-section">
                 <h3>작업 중인 채널</h3>
-                <input
-                    type="text"
-                    value={currentChannels}
-                    onChange={(e) => setCurrentChannels(e.target.value.slice(0, 48))}
-                    placeholder="작업 중인 채널을 입력하세요 (최대 48자)"
-                    maxLength={48}
-                />
+                <div className="input-with-count">
+                    <input
+                        type="text"
+                        value={currentChannels}
+                        onChange={(e) => setCurrentChannels(e.target.value.slice(0, 48))}
+                        placeholder="작업 중인 채널을 입력하세요 (최대 48자)"
+                        maxLength={48}
+                    />
+                    <span className="char-count">{currentChannels.length}/48</span>
+                </div>
             </div>
 
             <div className="profile-section">
@@ -158,7 +167,7 @@ const MyProfile = () => {
                         type="text"
                         value={formatNumber(maxSubs)}
                         onChange={(e) => setMaxSubs(e.target.value.replace(/[^0-9]/g, ''))}
-                        placeholder="최고 구독자 수를 입력하세요"
+                        placeholder="최고 구독자 수를 입력하세요 (최대 1,000만 명)"
                     />
                     <span className="input-unit">명</span>
                 </div>
