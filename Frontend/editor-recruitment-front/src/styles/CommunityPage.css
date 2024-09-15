@@ -1,0 +1,216 @@
+.community-page {
+    font-family: 'Pretendard', sans-serif;
+    padding-top: 50px;
+    margin-bottom: 100px;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: flex-start; /* 변경: space-between에서 flex-start로 */
+    gap: 20px; /* 간격 축소: 20px로 설정 */
+}
+
+.popular-posts {
+    width: 250px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.main-content {
+    flex: 1;
+    max-width: 800px;
+}
+
+.community-content {
+    display: flex;
+    gap: 20px;
+}
+
+.popular-posts h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #333;
+}
+
+.popular-post-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.popular-post-item:hover {
+    background-color: #f5f5f5;
+}
+
+.popular-post-item h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.popular-post-item p {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.popular-post-author {
+    font-size: 12px;
+    color: #888;
+    display: block;
+    text-align: right;
+}
+
+.community-search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0.15rem 0.15rem;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+    border: 1px solid #767676;
+    transition: box-shadow 0.3s ease;
+}
+
+.community-search-bar:focus-within {
+    box-shadow: 0 0 0 2px rgba(118, 118, 118, 0.3);
+}
+
+.community-search-bar .search-icon {
+    color: #767676;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.community-search-bar .search-input {
+    border: none;
+    background: none;
+    outline: none;
+    font-size: 14px;
+    color: #767676;
+    width: 100%;
+    padding: 0.5rem;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.community-search-bar .search-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.community-page .search-bar {
+    margin-bottom: 20px;
+}
+
+.community-page .search-bar input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.community-page .category-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.community-page .category-bar button {
+    padding: 12px 20px;
+    font-size: 14px;
+    border: 1px solid #B3B3B3;
+    border-radius: 20px;
+    background-color: #fff;
+    cursor: pointer;
+    font-family: 'Pretendard', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.community-page .category-bar button:hover {
+    background-color: #f0f0f0;
+    border-color: #00CBD6;
+}
+
+.community-page .category-bar button.active {
+    background-color: #00CBD6;
+    color: #fff;
+    border-color: #00CBD6;
+}
+
+.community-page .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.community-page .post-item {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.community-page .post-item:hover {
+    background-color: #f5f5f5;
+}
+
+.community-page .post-content {
+    flex: 1;
+}
+
+.community-page .post-item h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+}
+
+.community-page .post-item p {
+    margin: 0 0 30px 0;  /* 하단 여백 증가 */
+    font-size: 14px;
+    color: #666;
+}
+
+.community-page .post-info {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+}
+
+.community-page .post-info span {
+    margin-left: 15px;
+}
+
+.community-page .post-author {
+    font-weight: bold;
+}
+
+.community-page .post-date {
+    color: #999;
+}
+
+.community-page .post-views {
+    color: #666;
+}

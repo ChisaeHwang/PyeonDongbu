@@ -71,7 +71,7 @@ public class RecruitmentPost {
     @JoinColumn(name = "details_id")
     private RecruitmentPostDetails details;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "recruitment_post_payment",
             joinColumns = @JoinColumn(name = "recruitment_post_id"))

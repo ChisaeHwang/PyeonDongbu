@@ -65,6 +65,7 @@
 
 .workers-page-post-list .recruitment-post-item {
     width: 100%;
+    cursor: pointer;
     height: auto;
     flex-direction: row;
     padding: 1rem;
@@ -154,7 +155,7 @@
 .workers-page-post-list .post-details {
     display: flex;
     gap: 1rem;
-    justify-content: start;
+    justify-content: flex-start;
 }
 
 .workers-page-post-list .detail-item {

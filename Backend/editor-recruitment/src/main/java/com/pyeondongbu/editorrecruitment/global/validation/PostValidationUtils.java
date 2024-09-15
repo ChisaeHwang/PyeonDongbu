@@ -84,13 +84,23 @@ public class PostValidationUtils {
     }
 
     private void isValidIp(String ip) {
-        String ipRegex = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
-        Pattern pattern = Pattern.compile(ipRegex);
-        Matcher matcher = pattern.matcher(ip);
-        if (!matcher.matches()) {
+        // 로컬호스트 IP 허용
+        // TO-DO 이 부분에 대한 코드 개선이 필요할 거 같음..
+        if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")) {
+            return;
+        }
+
+        String ipv4Regex = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        String ipv6Regex = "^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$";
+
+        Pattern ipv4Pattern = Pattern.compile(ipv4Regex);
+        Pattern ipv6Pattern = Pattern.compile(ipv6Regex);
+
+        if (!ipv4Pattern.matcher(ip).matches() && !ipv6Pattern.matcher(ip).matches()) {
             throw new BadRequestException(INVALID_IP_ADDRESS);
         }
     }
+
 
     public record ValidationResult(Set<Tag> tags, Set<Payment> payments) {
     }
