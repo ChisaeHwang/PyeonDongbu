@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
@@ -63,6 +61,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @DistributedLock
     public RecruitmentPostRes getPost(final Long postId, final String remoteAddr) {
         final RecruitmentPost post = postRepository.findByIdWithDetails(postId)
@@ -77,6 +76,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RecruitmentPostRes> listPosts() {
         final List<RecruitmentPost> posts = postRepository.findAllWithDetails();
         return posts.stream()
@@ -85,6 +85,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(final Long postId, final Long memberId) {
         final RecruitmentPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));

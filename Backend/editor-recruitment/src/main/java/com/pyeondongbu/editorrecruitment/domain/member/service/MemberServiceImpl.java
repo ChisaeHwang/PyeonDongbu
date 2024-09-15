@@ -38,6 +38,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberValidationUtils validationUtils;
 
     @Override
+    @Transactional(readOnly = true)
         public MemberRes getMember(final Long memberId) {
         Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
@@ -46,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public MyPageRes getMyPage(final Long memberId) {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
@@ -54,6 +55,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public MyPageRes updateMyPage(final Long memberId, final MyPageReq myPageReq) {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));

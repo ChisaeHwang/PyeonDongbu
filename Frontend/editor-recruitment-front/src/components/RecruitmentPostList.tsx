@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import Slider from 'react-slick';
+import { useNavigate } from 'react-router-dom';
 import '../styles/RecruitmentPostList.css';
 
 interface PaymentDTO {
@@ -36,6 +37,12 @@ interface RecruitmentPostItemProps {
 }
 
 const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/post/${post.id}`);
+    };
+
     const getPaymentString = (payments: PaymentDTO[]) => {
         if (payments.length === 0) return '정보 없음';
         const payment = payments[0];
@@ -48,7 +55,7 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
     };
 
     return (
-        <div className="recruitment-post-item">
+        <div className="recruitment-post-item" onClick={handleClick}>
             <div className="post-image">
                 {post.images && post.images.length > 0 && (
                     <img 

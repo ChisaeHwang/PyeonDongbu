@@ -6,8 +6,12 @@ import MyProfilePage from './pages/MyProfilePage';
 import PostsPage from './pages/PostsPage';
 import JobsPage from './pages/JobsPage';
 import WorkersPage from './pages/WorkersPage';
+import CommunityPage from './pages/CommunityPage';
 import GoogleAuthRedirectHandler from './components/GoogleAuthRedirectHandler';
 import './App.css';
+import PartnerMatchingPage from './pages/PartnerMatchingPage';
+import PostDetailPage from './pages/PostDetailPage';
+
 
 const App = () => {
     return (
@@ -20,6 +24,9 @@ const App = () => {
                     <Route path="profile" element={<MyProfilePage />} />
                     <Route path="jobs" element={<JobsPage />} />
                     <Route path="workers" element={<WorkersPage />} />
+                    <Route path="community" element={<CommunityPage />} />
+                    <Route path="match" element={<PartnerMatchingPage />} />
+                    <Route path="/post/:postId" element={<PostDetailPage />} />
                 </Route>
             </Routes>
         </Router>

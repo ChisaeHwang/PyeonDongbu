@@ -1,0 +1,141 @@
+.partner-matching-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px; /* 상하 패딩 증가 */
+    font-family: 'Pretendard', sans-serif;
+}
+
+.partner-matching-page .matching-title {
+    font-size: 40px;
+    color: #333;
+    margin-bottom: 0px; /* 간격 증가 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.partner-matching-page .matching-subtitle {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 50px; /* 간격 증가 */
+    text-align: center; /* 중앙 정렬 */
+}
+
+.partner-matching-page .matched-partners-list {
+    width: 100%;
+    max-width: 1000px;
+    margin-top: 30px; /* 상단 여백 추가 */
+}
+
+.partner-matching-page .matched-partners-list .matched-partner-item {
+    display: flex;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    padding: 1rem;
+    margin-bottom: 30px; /* 간격 증가 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partner-matching-page .matched-partners-list .partner-image {
+    width: 260px;
+    height: 140px;
+    margin-right: 1rem;
+}
+
+.partner-matching-page .matched-partners-list .partner-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.partner-matching-page .matched-partners-list .partner-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.partner-matching-page .matched-partners-list .partner-title {
+    font-size: 2rem;
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.partner-matching-page .matched-partners-list .partner-description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.partner-matching-page .matched-partners-list .partner-details {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.partner-matching-page .matched-partners-list .detail-item {
+    display: flex;
+    align-items: center;
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+}
+
+.partner-matching-page .matched-partners-list .detail-label {
+    font-size: 14px;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 25px;
+    margin-right: 0.5rem;
+}
+
+.partner-matching-page .matched-partners-list .detail-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.partner-matching-page .matched-partners-list .detail-item.payment .detail-label {
+    background-color: #318F43;
+}
+
+.partner-matching-page .matched-partners-list .detail-item.subscribers .detail-label {
+    background-color: #4C88C3;
+}
+
+.partner-matching-page .matched-partners-list .detail-item.workload .detail-label {
+    background-color: #4C54C3;
+}
+
+.partner-matching-page .matched-partners-list .matched-partner-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.partner-matching-page .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px; /* 상단 여백 증가 */
+}
+
+.partner-matching-page .pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.partner-matching-page .pagination button.active {
+    background-color: #00CBD6;
+    color: #fff;
+    border-color: #00CBD6;
+}
+
+.partner-matching-page .pagination button:hover {
+    background-color: #f0f0f0;
+}
