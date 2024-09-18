@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/Header.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import GoogleLogo from '../assets/GoogleLogo';
@@ -8,22 +9,53 @@ const checkLoginStatus = () => {
     return sessionStorage.getItem('access-token') !== null;
 };
 
+interface UserInfo {
+    nickname: string;
+    imageUrl: string;
+    role: string;
+}
+
+interface ApiResponse {
+    code: string;
+    message: string;
+    data: {
+        nickname: string;
+        imageUrl: string;
+        role: string;
+        memberDetailsRes: {
+            maxSubs: number;
+            videoTypes: string[];
+            editedChannels: string[];
+            currentChannels: string[];
+            portfolio: string;
+            skills: string[];
+            remarks: string;
+        };
+    };
+}
+
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isFixed, setIsFixed] = useState(false);
+    const [userInfo, setUserInfo] = useState<UserInfo>({
+        nickname: '',
+        imageUrl: '',
+        role: ''
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
-        setIsLoggedIn(checkLoginStatus());
+        const loggedIn = checkLoginStatus();
+        setIsLoggedIn(loggedIn);
+
+        if (loggedIn) {
+            fetchUserInfo();
+        }
 
         const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setIsFixed(true);
-            } else {
-                setIsFixed(false);
-            }
+            setIsFixed(window.scrollY > 50);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -32,6 +64,22 @@ const Header = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
+    const fetchUserInfo = async () => {
+        try {
+            const token = sessionStorage.getItem('access-token');
+            const response = await axios.get<ApiResponse>('http://localhost:8080/api/member', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                withCredentials: true // 이 옵션을 추가하여 쿠키를 포함시킵니다.
+            });
+            const { nickname, imageUrl, role } = response.data.data;
+            setUserInfo({ nickname, imageUrl, role });
+        } catch (error) {
+            console.error('Failed to fetch user info:', error);
+        }
+    };
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
@@ -44,6 +92,7 @@ const Header = () => {
     const handleLogout = () => {
         sessionStorage.removeItem('access-token');
         setIsLoggedIn(false);
+        setUserInfo({ nickname: '', imageUrl: '', role: '' });
         navigate('/');
     };
 
@@ -98,10 +147,20 @@ const Header = () => {
                             구인 | 구직 하기
                         </button>
                         <div className="profile-wrap" onClick={toggleDropdown}>
-                            <img src="https://ifh.cc/g/q2ZvDd.jpg" alt="Profile" className="profile-image" />
+                            <img src={userInfo.imageUrl} alt="Profile" className="profile-image" />
                             {showDropdown && (
                                 <div className="dropdown-menu">
-                                    <button onClick={() => navigate('/profile')}>프로필</button>
+                                    <div className="user-info">
+                                        <img src={userInfo.imageUrl} alt="Profile" className="dropdown-profile-image" />
+                                        <div className="user-details">
+                                            <span className="user-name">{userInfo.nickname}</span>
+                                            <span className="user-position">{userInfo.role}</span>
+                                        </div>
+                                    </div>
+                                    <div className="dropdown-divider"></div>
+                                    <button onClick={() => navigate('/mypage')}>마이 페이지</button>
+                                    <button onClick={() => navigate('/myposts')}>게시글 목록</button>
+                                    <div className="dropdown-divider"></div>
                                     <button onClick={handleLogout}>로그아웃</button>
                                 </div>
                             )}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import '../styles/JobsPage.css';
-import FilterButtonGroup from '../components/FilterButtonGroup';
-import RecruitmentPostList from '../components/RecruitmentPostList';
-import { FilterOptions } from '../utils/FilterOptions';
+import '../../styles/JobsPage.css';
+import FilterButtonGroup from '../../components/FilterButtonGroup';
+import RecruitmentPostList from '../../components/RecruitmentPostList';
+import { FilterOptions } from '../../utils/FilterOptions';
 
 const JobsPage = () => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);

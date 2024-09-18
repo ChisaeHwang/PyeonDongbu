@@ -126,11 +126,17 @@
 
 .community-page .category-bar {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.community-page .category-bar button {
+.community-page .category-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.community-page .category-buttons button {
     padding: 12px 20px;
     font-size: 14px;
     border: 1px solid #B3B3B3;
@@ -141,15 +147,32 @@
     transition: all 0.3s ease;
 }
 
-.community-page .category-bar button:hover {
+.community-page .category-buttons button:hover {
     background-color: #f0f0f0;
     border-color: #00CBD6;
 }
 
-.community-page .category-bar button.active {
+.community-page .category-buttons button.active {
     background-color: #00CBD6;
     color: #fff;
     border-color: #00CBD6;
+}
+
+.community-page .create-post-button {
+    padding: 12px 20px;
+    font-size: 14px;
+    border: 1px solid #00CBD6;
+    border-radius: 20px;
+    background-color: #00CBD6;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Pretendard', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.community-page .create-post-button:hover {
+    background-color: #00A8B1;
+    border-color: #00A8B1;
 }
 
 .community-page .post-list {

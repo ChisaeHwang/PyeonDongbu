@@ -55,33 +55,38 @@
     border-radius: 20px;
     border: 0.15rem solid #00F2FF;
     padding: 1.5rem 1rem;
-    cursor: pointer;
     white-space: nowrap;
     height: 36px;
     font-family: 'Pretendard', sans-serif;
     font-size: 0.9rem;
     font-weight: 600;
-    transition: all 0.3s ease; /* 부드러운 전환 효과 추가 */
+    transition: all 0.3s ease;
 }
 
-.upload-button:hover {
-    background-color: #00F2FF;
+.upload-button:not(:disabled) {
+    cursor: pointer;
+}
+
+.upload-button:hover:not(:disabled) {
+    background-color: #00CBD6;
     color: white;
 }
 
-.upload-button:hover svg {
-    fill: white; /* SVG 아이콘 색상 변경 */
+.upload-button:disabled {
+    cursor: default;
+    opacity: 0.6;
 }
 
-.upload-button:hover svg path {
-    fill: white; /* SVG 내부 path에 대한 색상 변경 */
+.upload-button:disabled:hover {
+    background-color: initial;
+    color: initial;
 }
 
 .upload-button svg {
     width: 25px;
     height: 25px;
     margin-right: 10px;
-    transition: fill 0.3s ease; /* SVG 색상 변경에 대한 전환 효과 */
+    transition: fill 0.3s ease;
 }
 
 .nickname-container {
@@ -243,6 +248,42 @@ textarea {
     color: white;
 }
 
+/* 비활성화된 버튼 스타일 수정 */
+.profile-role-button:disabled,
+.filter-button:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+.profile-role-button:disabled.active,
+.filter-button:disabled.active {
+    background-color: #00CBD6;
+    color: white;
+}
+
+.profile-role-button:disabled:not(.active),
+.filter-button:disabled:not(.active) {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* 비활성화된 입력 필드 스타일 수정 */
+.profile-section input[type="text"]:disabled,
+.profile-section textarea:disabled,
+.profile-section .input-with-unit input:disabled {
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: default;
+}
+
+/* 최고 구독자 수 입력 필드 스타일 수정 */
+.profile-section .input-with-unit input:disabled {
+    color: #333;
+}
+
+.profile-section .input-with-unit .input-unit {
+    color: #333;
+}
 
 /* 7. 기타 스타일 */
 .char-count {
@@ -283,4 +324,30 @@ textarea:focus,
 .input_unit {
     top: 50%;
     font-size: 18px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.save-profile-button {
+    background-color: white;
+    color: #00FF2F;
+    padding: 10px 20px;
+    border: 2px solid #00FF2F;
+    border-radius: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.save-profile-button:hover {
+    background-color: #00CC26;
+    color: white;
+    border-color: #00CC26;
 }

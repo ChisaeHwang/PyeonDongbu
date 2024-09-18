@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 import java.util.Set;
 
-@Getter // 어노테이션 선택 정리
+@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberDetailsRes {

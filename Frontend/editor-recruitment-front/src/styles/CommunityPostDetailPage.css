@@ -1,0 +1,53 @@
+.community-post-detail-page {
+    max-width: 800px;
+    width: 100%;
+    margin: 50px auto;
+    padding: 40px;
+    font-family: 'Pretendard', sans-serif;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 600px;
+}
+
+.post-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+}
+
+.post-title {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.post-meta {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.post-meta span {
+    margin-left: 15px;
+}
+
+.post-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #444;
+}
+
+.post-author {
+    font-weight: bold;
+}
+
+.post-date {
+    color: #888;
+}
+
+.post-views {
+    color: #888;
+}

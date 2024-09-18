@@ -1,0 +1,164 @@
+.community-post-editor-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 90vw;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: auto;
+    gap: 40px;
+    padding: 40px 20px;
+    background-color: #F2F4F6;
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.community-post-editor-container .editor-section, 
+.community-post-editor-container .preview-section {
+    background-color: white;
+    width: 45%;
+    height: auto;
+    min-height: 700px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.community-post-editor__title-input {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #B3B3B3;
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.community-post-editor__content-input {
+    height: 300px;  /* 높이를 늘립니다 */
+    margin-bottom: 30px;  /* 아래 여백을 늘립니다 */
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+/* ReactQuill 에디터의 테두리 제거 */
+.community-post-editor__content-input .ql-container.ql-snow {
+    border: none;
+}
+
+.community-post-editor__content-input .ql-toolbar.ql-snow {
+    border: 1px solid #ccc;
+    border-radius: 5px 5px 0 0;
+}
+
+.community-post-editor__content-input .ql-container.ql-snow {
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+}
+
+.community-post-editor__tag-selection {
+    margin-top: 70px;
+    margin-bottom: 20px;
+}
+
+.community-post-editor__tag-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.community-post-editor__tag-button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.community-post-editor__tag-button.active {
+    background-color: #00CBD6;
+    color: #fff;
+    border-color: #00CBD6;
+}
+
+.community-post-editor__submit-button {
+    padding: 10px 20px;
+    background-color: white;
+    color: #00FF2F;
+    border: 2px solid #00FF2F;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.community-post-editor__submit-button:hover {
+    background-color: #00CC26;
+    color: white;
+    border-color: #00CC26;
+}
+
+.title-input-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.title-char-count {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 14px;
+}
+
+.button-container {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.preview-section h2 {
+    text-align: left;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.preview-section h3 {
+    border: none;
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.preview-content {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.preview-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.preview-section .preview-content > * {
+    margin-bottom: 15px;
+}
+
+.preview-section .preview-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.preview-section p {
+    max-width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
