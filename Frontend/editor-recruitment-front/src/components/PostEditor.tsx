@@ -14,9 +14,10 @@ import foodIcon from '../assets/foodIcon';
 import educationIcon from '../assets/educationIcon';
 import reviewIcon from '../assets/reviewIcon';
 import { formatNumber } from '../utils/FormatNumber';
+import Modal from './Modal';
 
 interface PostEditorProps {
-    onSubmit: (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => void;
+    onSubmit?: (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => void;
 }
 
 const paymentTypes = [
@@ -58,7 +59,6 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
     const [title, setTitle] = useState('');
     const [recruitmentType, setRecruitmentType] = useState('구인');
     const [content, setContent] = useState('');
-    const [tagNames, setTagNames] = useState<string[]>([]);
     const [payments, setPayments] = useState<Record<string, string>>({});
     const [paymentType, setPaymentType] = useState('');
     const [paymentAmount, setPaymentAmount] = useState('');
@@ -69,11 +69,11 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [isNegotiable, setIsNegotiable] = useState(false);
     const quillRef = useRef<ReactQuill>(null);
+    const [showModal, setShowModal] = useState(false);
+    const [representativeImage, setRepresentativeImage] = useState<string | null>(null);
 
     const handleRecruitmentTypeChange = (selectedType: string) => {
         setRecruitmentType(selectedType);
-        const updatedTags = tagNames.filter(tag => tag !== '구인' && tag !== '구직');
-        setTagNames([...updatedTags, selectedType]);
     };
 
     const handleImageUpload = useCallback(() => {
@@ -108,6 +108,34 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
         };
     }, []);
 
+    const handleRepresentativeImageUpload = useCallback(() => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files?.[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);  
+
+                try {
+                    const response = await axios.post('http://localhost:8080/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+
+                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
+                    setRepresentativeImage(imageUrl);
+                } catch (error) {
+                    console.error('대표 이미지 업로드 실패:', error);
+                }
+            }
+        };
+    }, []);
+
     const handlePaymentTypeClick = (type: string) => {
         setPaymentType(type);
         if (type === 'NEGOTIABLE') {
@@ -121,8 +149,15 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
 
     const handleMaxSubsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/[^0-9]/g, '');
-        setMaxSubsInput(value);
-        setMaxSubs(value ? Number(value) : null);
+        const numValue = parseInt(value, 10);
+        
+        if (numValue > 10000000) {
+            setMaxSubsInput('10000000');
+            setMaxSubs(10000000);
+        } else {
+            setMaxSubsInput(value);
+            setMaxSubs(numValue || null);
+        }
     };
 
     const handlePaymentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,16 +182,32 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!representativeImage) {
+            alert('대표 이미지를 선택해주세요.');
+            return;
+        }
+
         const paymentArray = Object.entries(payments).map(([type, amount]) => ({type, amount}));
         const recruitmentPostDetailsReq = {
             maxSubs,
-            weeklyWorkCount,
-            videoGenres: selectedVideoGenres,
+            videoTypes: selectedVideoGenres,
             skills: selectedSkills,
+            weeklyWorkCount,
         };
 
-        onSubmit(title, content, [], tagNames, paymentArray, recruitmentPostDetailsReq);
+        const postData = {
+            title,
+            content,
+            images: [representativeImage], 
+            tagNames: [recruitmentType],
+            payments: paymentArray,
+            recruitmentPostDetailsReq,
+        };
+
+        if (onSubmit) {
+            onSubmit(postData.title, postData.content, postData.images, postData.tagNames, postData.payments, postData.recruitmentPostDetailsReq);
+        }
     };
 
     const modules = {
@@ -304,7 +355,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                 </div>
 
                 <div className="button-container">
-                    <button className="submit-button" onClick={handleSubmit}>
+                    <button className="submit-button" onClick={() => setShowModal(true)}>
                         {recruitmentType} 하러가기
                     </button>
                 </div>
@@ -317,6 +368,25 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                     <div dangerouslySetInnerHTML={{ __html: content }} />
                 </div>
             </div>
+
+            {showModal && (
+            <Modal onClose={() => setShowModal(false)}>
+                <h2 className="post-editor-modal-title">대표 이미지 설정</h2>
+                <div className="post-editor-representative-image-container" onClick={handleRepresentativeImageUpload}>
+                    {representativeImage ? (
+                        <img src={representativeImage} alt="대표 이미지" className="post-editor-representative-image" />
+                    ) : (
+                        <div className="post-editor-image-placeholder">
+                            <span>+</span>
+                            <p>대표 이미지 설정하기</p>
+                        </div>
+                    )}
+                </div>
+                <button className="post-editor-submit-button" onClick={handleSubmit}>
+                    작성 완료하기
+                </button>
+            </Modal>
+            )}      
         </div>
     );
 };

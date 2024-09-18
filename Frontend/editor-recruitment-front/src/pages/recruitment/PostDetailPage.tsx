@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 import '../../styles/PostDetailPage.css';
 
 interface PaymentDTO {
@@ -85,7 +86,6 @@ const PostDetailPage: React.FC = () => {
         <div className="post-detail-page">
             <div className="post-header">
                 <div className="author-info">
-                    <img src="/path/to/default/profile/image.jpg" alt={post.memberName} className="author-image" />
                     <div className="author-details">
                         <h2 className="author-name">{post.memberName}</h2>
                         <span className="post-date">{formatDate(post.createdAt)}</span>
@@ -97,14 +97,7 @@ const PostDetailPage: React.FC = () => {
                 </div>
             </div>
             <div className="post-content">
-                {post.images.length > 0 && (
-                    <div className="post-image">
-                        <img src={post.images[0]} alt={post.title} />
-                    </div>
-                )}
-                <div className="content-text">
-                    <p>{post.content}</p>
-                </div>
+                <div className="content-text" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />
             </div>
             <div className="post-details">
                 <div className="detail-item subscribers">
@@ -131,10 +124,6 @@ const PostDetailPage: React.FC = () => {
                 {post.recruitmentPostDetailsRes.videoTypes.map((type, index) => (
                     <span key={index} className="video-type">{type}</span>
                 ))}
-            </div>
-            <div className="post-remarks">
-                <h3>비고</h3>
-                <p>{post.recruitmentPostDetailsRes.remarks}</p>
             </div>
         </div>
     );

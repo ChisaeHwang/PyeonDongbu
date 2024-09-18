@@ -3,6 +3,7 @@ import { debounce } from 'lodash';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
 import '../styles/RecruitmentPostList.css';
+import { extractTextFromHTML } from '../utils/TextExtractor';
 
 interface PaymentDTO {
     type: string;
@@ -54,6 +55,12 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
         return '정보 없음';
     };
 
+    const truncateContent = (content: string, maxLength: number) => {
+        const textContent = extractTextFromHTML(content);
+        if (textContent.length <= maxLength) return textContent;
+        return textContent.slice(0, maxLength) + '...';
+    };
+
     return (
         <div className="recruitment-post-item" onClick={handleClick}>
             <div className="post-image">
@@ -71,10 +78,14 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
             </div>
             <div className="post-content">
                 <h3 className="post-title">{post.title}</h3>
-                {variant === 'jobs' && <p className="post-description">{post.content}</p>}
+                {variant === 'jobs' && (
+                    <p className="post-description">
+                        {truncateContent(post.content, 20)}
+                    </p>
+                )}
                 {variant === 'main' && (
                     <div className="post-remarks">
-                        {post.recruitmentPostDetailsRes.remarks.split(',').map((remark, index) => (
+                        {(post.recruitmentPostDetailsRes.remarks || '').split(',').filter(Boolean).map((remark, index) => (
                             <span key={`${post.id}-${index}`} className="remark">{remark.trim()}</span>
                         ))}
                     </div>
