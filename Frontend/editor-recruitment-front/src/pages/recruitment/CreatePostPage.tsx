@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import PostEditor from '../components/PostEditor';
+import PostEditor from '../../components/PostEditor';
 
 const CreatePostPage = () => {
     const handlePostSubmit = async (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => {

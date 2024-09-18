@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/CommunityPage.css';
+import '../../styles/CommunityPage.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 
 interface CommunityPost {

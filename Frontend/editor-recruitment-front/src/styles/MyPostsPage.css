@@ -1,0 +1,78 @@
+.my-posts-page {
+    font-family: 'Pretendard', sans-serif;
+    padding: 50px 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.my-posts-page h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.my-posts-page .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.my-posts-page .post-item {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.my-posts-page .post-item:hover {
+    background-color: #f5f5f5;
+}
+
+.my-posts-page .post-item h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.my-posts-page .post-item p {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.my-posts-page .post-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #888;
+}
+
+.my-posts-page .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.my-posts-page .pagination button {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.my-posts-page .pagination button:hover {
+    background-color: #f0f0f0;
+}
+
+.my-posts-page .pagination button.active {
+    background-color: #00CBD6;
+    color: #fff;
+    border-color: #00CBD6;
+}
