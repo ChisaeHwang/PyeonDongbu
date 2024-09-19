@@ -18,6 +18,21 @@ import Modal from './Modal';
 
 interface PostEditorProps {
     onSubmit?: (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => void;
+    initialData?: RecruitmentPostRes;
+}
+
+interface RecruitmentPostRes {
+    title: string;
+    content: string;
+    images: string[];
+    tagNames: string[];
+    payments: Array<{type: string, amount: number}>;
+    recruitmentPostDetailsRes: {
+        maxSubs: number;
+        videoTypes: string[];
+        skills: string[];
+        weeklyWorkload: string;
+    };
 }
 
 const paymentTypes = [
@@ -55,22 +70,23 @@ const filterOptions: FilterOption[] = [
     { name: '리뷰/정보', icon: reviewIcon, type: 'videoGenre' },
 ];
 
-const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
-    const [title, setTitle] = useState('');
+const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
+    const [title, setTitle] = useState(initialData?.title || '');
     const [recruitmentType, setRecruitmentType] = useState('구인');
-    const [content, setContent] = useState('');
-    const [payments, setPayments] = useState<Record<string, string>>({});
+    const [content, setContent] = useState(initialData?.content || '');
+    const [payments, setPayments] = useState<Array<{type: string, amount: number}>>(initialData?.payments || []);
     const [paymentType, setPaymentType] = useState('');
     const [paymentAmount, setPaymentAmount] = useState('');
-    const [maxSubs, setMaxSubs] = useState<number | null>(null);
+    const [maxSubs, setMaxSubs] = useState<number | null>(initialData?.recruitmentPostDetailsRes?.maxSubs || null);
     const [maxSubsInput, setMaxSubsInput] = useState('');
-    const [weeklyWorkCount, setWeeklyWorkCount] = useState('');
-    const [selectedVideoGenres, setSelectedVideoGenres] = useState<string[]>([]);
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [weeklyWorkCount, setWeeklyWorkCount] = useState(initialData?.recruitmentPostDetailsRes?.weeklyWorkload || '');
+    const [selectedVideoGenres, setSelectedVideoGenres] = useState<string[]>(initialData?.recruitmentPostDetailsRes?.videoTypes || []);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(initialData?.recruitmentPostDetailsRes?.skills || []);
     const [isNegotiable, setIsNegotiable] = useState(false);
+  
     const quillRef = useRef<ReactQuill>(null);
     const [showModal, setShowModal] = useState(false);
-    const [representativeImage, setRepresentativeImage] = useState<string | null>(null);
+    const [representativeImage, setRepresentativeImage] = useState<string | null>(initialData?.images[0] || null);
 
     const handleRecruitmentTypeChange = (selectedType: string) => {
         setRecruitmentType(selectedType);
@@ -162,10 +178,10 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
 
     const handlePaymentAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!isNegotiable) {
-            const amount = e.target.value;
-            setPaymentAmount(amount);
+            const numericValue = e.target.value.replace(/[^0-9]/g, '');
+            setPaymentAmount(numericValue);
             if (paymentType) {
-                setPayments(prev => ({...prev, [paymentType]: amount}));
+                setPayments(prev => [...prev, { type: paymentType, amount: parseInt(numericValue) }]);
             }
         }
     };
@@ -188,7 +204,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
             return;
         }
 
-        const paymentArray = Object.entries(payments).map(([type, amount]) => ({type, amount}));
+        const paymentArray = payments.map(({ type, amount }) => ({ type, amount }));
         const recruitmentPostDetailsReq = {
             maxSubs,
             videoTypes: selectedVideoGenres,
@@ -346,7 +362,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit }) => {
                                 value={isNegotiable ? '협의' : formatNumber(paymentAmount)}
                                 onChange={handlePaymentAmountChange}
                                 className="payment-amount-input"
-                                maxLength={8}
+                                maxLength={11}  // 쉼표를 고려하여 최대 길이를 11로 변경
                                 disabled={isNegotiable}
                             />
                             <span className="input-unit">원</span>

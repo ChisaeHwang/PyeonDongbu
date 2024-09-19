@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import '../../styles/PostDetailPage.css';
+import { useToast } from '../../hooks/useToast';
 
 interface PaymentDTO {
     type: string;
@@ -29,6 +30,7 @@ interface RecruitmentPostRes {
     tagNames: string[];
     payments: PaymentDTO[];
     recruitmentPostDetailsRes: RecruitmentPostDetailsRes;
+    isAuthor: boolean; // 서버에서 판단한 작성자 여부
 }
 
 interface ApiResponse<T> {
@@ -41,22 +43,27 @@ const PostDetailPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
     const [post, setPost] = useState<RecruitmentPostRes | null>(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const { showSuccessToast, showErrorToast } = useToast();
 
     useEffect(() => {
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
-                const response = await axios.get<ApiResponse<RecruitmentPostRes>>(`http://localhost:8080/api/recruitment/posts/${postId}`);
+                const response = await axios.get<ApiResponse<RecruitmentPostRes>>(
+                    `http://localhost:8080/api/recruitment/posts/${postId}`
+                );
                 setPost(response.data.data);
             } catch (error) {
                 console.error('게시글을 불러오는데 실패했습니다.', error);
+                showErrorToast('게시글을 불러오는데 실패했습니다.');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchPostDetail();
-    }, [postId]);
+    }, [postId, showErrorToast]);
 
     if (loading) {
         return <div className="loading">로딩 중...</div>;
@@ -74,12 +81,43 @@ const PostDetailPage: React.FC = () => {
     const getPaymentString = (payments: PaymentDTO[]) => {
         if (payments.length === 0) return '정보 없음';
         const payment = payments[0];
-        if (payment.type === 'MONTHLY_SALARY') {
-            return `월 ${payment.amount.toLocaleString()}원`;
-        } else if (payment.type === 'PER_HOUR') {
-            return `시간당 ${payment.amount.toLocaleString()}원`;
+        const formattedAmount = payment.amount.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+        switch (payment.type) {
+            case 'MONTHLY_SALARY':
+                return `월 ${formattedAmount}원`;
+            case 'PER_HOUR':
+                return `분당 ${formattedAmount}원`;
+            case 'PER_PROJECT':
+                return `건당 ${formattedAmount}원`;
+            case 'NEGOTIABLE':
+                return '협의 가능';
+            default:
+                return '정보 없음';
         }
-        return '정보 없음';
+    };
+
+    const handleEdit = () => {
+        navigate(`/post/edit/${postId}`);
+    };
+
+    const handleDelete = async () => {
+        if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+            try {
+                const accessToken = sessionStorage.getItem('access-token');
+                await axios.delete(`http://localhost:8080/api/recruitment/posts/${postId}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true
+                });
+                showSuccessToast('게시글이 성공적으로 삭제되었습니다.');
+                navigate('/');
+            } catch (error) {
+                console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+                showErrorToast('게시글 삭제 중 오류가 발생했습니다.');
+            }
+        }
     };
 
     return (
@@ -91,10 +129,16 @@ const PostDetailPage: React.FC = () => {
                         <span className="post-date">{formatDate(post.createdAt)}</span>
                     </div>
                 </div>
-                <h1 className="post-title">{post.title}</h1>
-                <div className="post-meta">
-                    <span className="post-views">조회수: {post.viewCount}</span>
-                </div>
+                {post.isAuthor && (
+                    <div className="post-actions">
+                        <button onClick={handleEdit} className="action-button edit-button">수정</button>
+                        <button onClick={handleDelete} className="action-button delete-button">삭제</button>
+                    </div>
+                )}
+            </div>
+            <h1 className="post-title">{post.title}</h1>
+            <div className="post-meta">
+                <span className="post-views">조회수: {post.viewCount}</span>
             </div>
             <div className="post-content">
                 <div className="content-text" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }} />

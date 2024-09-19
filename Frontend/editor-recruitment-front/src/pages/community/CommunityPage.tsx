@@ -33,7 +33,6 @@ const CommunityPage: React.FC = () => {
             try {
                 const response = await axios.get<ApiResponse>('http://localhost:8080/api/community/posts');
                 setPosts(response.data.data);
-                // 인기 게시글은 조회수 기준으로 상위 5개를 선택합니다.
                 const sortedPosts = [...response.data.data].sort((a, b) => b.viewCount - a.viewCount);
                 setPopularPosts(sortedPosts.slice(0, 5));
             } catch (error) {
