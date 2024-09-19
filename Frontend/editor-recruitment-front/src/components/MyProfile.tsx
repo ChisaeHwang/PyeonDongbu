@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import '../styles/MyProfile.css';
 import { formatNumber } from '../utils/FormatNumber';
+import { useToast } from '../hooks/useToast';
 import premierProIcon from '../assets/premierProIcon';
 import photoshopIcon from '../assets/photoshopIcon';
 import afterEffectsIcon from '../assets/afterEffectsIcon';
@@ -47,6 +48,7 @@ const MyProfile = () => {
     const [introduction, setIntroduction] = useState('');
     const [imageUrl, setImageUrl] = useState('https://ifh.cc/g/q2ZvDd.jpg');
     const [isEditing, setIsEditing] = useState(false);
+    const { showSuccessToast, showErrorToast } = useToast();
 
     const handleImageUpload = useCallback(() => {
         console.log('Image upload button clicked'); // 디버깅용 로그
@@ -80,11 +82,11 @@ const MyProfile = () => {
                     console.log('New image URL:', imageUrl); // 디버깅용 로그
                 } catch (error) {
                     console.error('이미지 업로드 실패:', error);
-                    alert('프로필 이미지 업로드에 실패했습니다.');
+                    showErrorToast('프로필 이미지 업로드에 실패했습니다.');
                 }
             }
         };
-    }, []);
+    }, [showErrorToast]);
 
     useEffect(() => {
         fetchProfileData();
@@ -136,13 +138,13 @@ const MyProfile = () => {
                 },
                 withCredentials: true,
             });
-            alert('프로필이 성공적으로 저장되었습니다.');
+            showSuccessToast('프로필이 성공적으로 저장되었습니다.');
             setIsEditing(false);
             // 페이지 새로고침
             window.location.reload();
         } catch (error) {
             console.error('프로필 저장 중 오류가 발생했습니다:', error);
-            alert('프로필 저장에 실패했습니다.');
+            showErrorToast('프로필 저장에 실패했습니다.');
         }
     };
 

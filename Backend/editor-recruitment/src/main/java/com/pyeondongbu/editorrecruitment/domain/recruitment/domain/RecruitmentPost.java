@@ -39,7 +39,7 @@ public class RecruitmentPost {
     private String title;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @OneToMany(mappedBy = "post", cascade = ALL, orphanRemoval = true)

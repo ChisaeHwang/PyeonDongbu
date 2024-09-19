@@ -47,18 +47,29 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
     const getPaymentString = (payments: PaymentDTO[]) => {
         if (payments.length === 0) return '정보 없음';
         const payment = payments[0];
-        if (payment.type === 'MONTHLY_SALARY') {
-            return `월 ${payment.amount.toLocaleString()}원`;
-        } else if (payment.type === 'PER_HOUR') {
-            return `분당 ${payment.amount.toLocaleString()}원`;
+        const formattedAmount = payment.amount.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+        switch (payment.type) {
+            case 'MONTHLY_SALARY':
+                return `월 ${formattedAmount}원`;
+            case 'PER_HOUR':
+                return `분당 ${formattedAmount}원`;
+            case 'PER_PROJECT':
+                return `건당 ${formattedAmount}원`;
+            case 'NEGOTIABLE':
+                return '협의 가능';
+            default:
+                return '정보 없음';
         }
-        return '정보 없음';
     };
 
     const truncateContent = (content: string, maxLength: number) => {
         const textContent = extractTextFromHTML(content);
         if (textContent.length <= maxLength) return textContent;
         return textContent.slice(0, maxLength) + '...';
+    };
+
+    const formatNumber = (num: number) => {
+        return num.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
     };
 
     return (
@@ -80,7 +91,7 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
                 <h3 className="post-title">{post.title}</h3>
                 {variant === 'jobs' && (
                     <p className="post-description">
-                        {truncateContent(post.content, 20)}
+                        {truncateContent(post.content, 100)}
                     </p>
                 )}
                 {variant === 'main' && (
@@ -98,7 +109,7 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
                         </div>
                         <div className="detail-item subscribers">
                             <span className="detail-label">구독자 수</span>
-                            <span className="detail-value">{post.recruitmentPostDetailsRes.maxSubs.toLocaleString()}명</span>
+                            <span className="detail-value">{formatNumber(post.recruitmentPostDetailsRes.maxSubs)}명</span>
                         </div>
                         <div className="detail-item workload">
                             <span className="detail-label">작업 갯수</span>
