@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.repository.cdi.Eager;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -53,7 +54,7 @@ public class RecruitmentPost {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -67,7 +68,7 @@ public class RecruitmentPost {
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int viewCount;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "details_id")
     private RecruitmentPostDetails details;
 
@@ -79,12 +80,14 @@ public class RecruitmentPost {
 
     @Builder
     public RecruitmentPost(
+            final Long id,
             final String title,
             final String content,
             final Member member,
             final Set<Tag> tags,
             final Set<Payment> payments
     ) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;

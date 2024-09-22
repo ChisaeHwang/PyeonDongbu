@@ -13,8 +13,11 @@ import com.pyeondongbu.editorrecruitment.matching.domain.Matcher;
 import com.pyeondongbu.editorrecruitment.matching.domain.MatchingResult;
 import com.pyeondongbu.editorrecruitment.matching.dto.MatchingRes;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +31,6 @@ import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.NOT_F
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-
     private final MemberRepository memberRepository;
     private final RecruitmentPostService recruitmentPostService;
 
@@ -38,6 +40,7 @@ public class MatchingServiceImpl implements MatchingService {
     @Value("${recruitment.tag.default}")
     private String defaultTag;
 
+    @Transactional(readOnly = true)
     public MatchingRes findMatchingPosts(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER_ID));
@@ -51,8 +54,7 @@ public class MatchingServiceImpl implements MatchingService {
                 .map(postRes -> postRes.toEntity(member))
                 .collect(Collectors.toList());
 
+
         return MatchingRes.from(matcher.match(member, posts), SUCCESS_REQUEST.getMessage());
     }
-
-
 }

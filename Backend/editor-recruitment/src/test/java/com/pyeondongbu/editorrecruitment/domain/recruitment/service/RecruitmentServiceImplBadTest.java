@@ -80,7 +80,6 @@ class RecruitmentServiceImplBadTest {
         // given
         Long validMemberId = 1L;
         Member member = Member.builder()
-                .id(validMemberId)
                 .socialLoginId("socialLoginId")
                 .nickname("nickname")
                 .imageUrl("imageUrl")
@@ -106,7 +105,6 @@ class RecruitmentServiceImplBadTest {
         // given
         Long validMemberId = 1L;
         Member member = Member.builder()
-                .id(validMemberId)
                 .socialLoginId("socialLoginId")
                 .nickname("nickname")
                 .imageUrl("imageUrl")

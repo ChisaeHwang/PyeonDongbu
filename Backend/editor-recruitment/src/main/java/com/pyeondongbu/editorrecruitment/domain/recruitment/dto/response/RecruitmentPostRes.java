@@ -4,6 +4,7 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import lombok.*;
@@ -31,10 +32,7 @@ public class RecruitmentPostRes {
     private List<PaymentDTO> payments;
     private RecruitmentPostDetailsRes recruitmentPostDetailsRes;
 
-    public static RecruitmentPostRes from(
-            final RecruitmentPost post
-    ) {
-
+    public static RecruitmentPostRes from(final RecruitmentPost post) {
         return RecruitmentPostRes.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -51,17 +49,32 @@ public class RecruitmentPostRes {
     }
 
     public RecruitmentPost toEntity(Member member) {
-        return RecruitmentPost.builder()
+        RecruitmentPost post = RecruitmentPost.builder()
+                .id(this.id)
                 .title(this.title)
                 .content(this.content)
                 .member(member)
                 .tags(this.tagNames.stream()
-                        .map(tagName -> new Tag(tagName))
+                        .map(Tag::new)
                         .collect(Collectors.toSet()))
                 .payments(this.payments.stream()
                         .map(paymentDTO -> new Payment(paymentDTO.getType(), paymentDTO.getAmount()))
                         .collect(Collectors.toSet()))
                 .build();
+
+        if (this.recruitmentPostDetailsRes != null) {
+            RecruitmentPostDetails details = this.recruitmentPostDetailsRes.toEntity();
+            post.setDetails(details);
+        }
+
+        if (this.images != null && !this.images.isEmpty()) {
+            List<PostImage> postImages = this.images.stream()
+                    .map(url -> new PostImage(url, post))
+                    .collect(Collectors.toList());
+            post.addImages(postImages);
+        }
+
+        return post;
     }
 
     private static List<String> getImagesUrlList(RecruitmentPost post) {
@@ -69,6 +82,7 @@ public class RecruitmentPostRes {
                 .map(PostImage::getImageUrl)
                 .collect(Collectors.toList());
     }
+
     private static List<String> getTagsNameList(RecruitmentPost post) {
         return post.getTags().stream()
                 .map(Tag::getName)

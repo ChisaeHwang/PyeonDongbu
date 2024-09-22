@@ -41,8 +41,7 @@ const EditPostPage: React.FC = () => {
     const handlePostSubmit = async (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => {
         try {
             const accessToken = sessionStorage.getItem('access-token');
-            const refreshToken = sessionStorage.getItem('refresh-token');
-            if (!accessToken || !refreshToken) {
+            if (!accessToken) {
                 throw new Error('토큰이 없습니다.');
             }
 
@@ -58,9 +57,9 @@ const EditPostPage: React.FC = () => {
             await axios.put(`http://localhost:8080/api/recruitment/posts/${postId}`, requestData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
-                    'Refresh-Token': refreshToken,
                     'Content-Type': 'application/json',
                 },
+                withCredentials: true
             });
 
             showSuccessToast('게시글이 성공적으로 수정되었습니다.');

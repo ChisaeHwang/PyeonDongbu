@@ -77,6 +77,15 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<RecruitmentPostRes> getMyPosts(final Long memberId) {
+        List<RecruitmentPost> posts = postRepository.findByMemberId(memberId);
+        return posts.stream()
+                .map(RecruitmentPostRes::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<RecruitmentPostRes> listPosts() {
         final List<RecruitmentPost> posts = postRepository.findAllWithDetails();
         return posts.stream()

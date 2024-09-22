@@ -45,6 +45,7 @@ const PostDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { showSuccessToast, showErrorToast } = useToast();
+    const [isAuthor, setIsAuthor] = useState(true);  // 임시로 모든 사용자를 작성자로 설정
 
     useEffect(() => {
         const fetchPostDetail = async () => {
@@ -54,6 +55,7 @@ const PostDetailPage: React.FC = () => {
                     `http://localhost:8080/api/recruitment/posts/${postId}`
                 );
                 setPost(response.data.data);
+                setIsAuthor(true);  // 임시로 모든 사용자를 작성자로 설정
             } catch (error) {
                 console.error('게시글을 불러오는데 실패했습니다.', error);
                 showErrorToast('게시글을 불러오는데 실패했습니다.');
@@ -129,7 +131,7 @@ const PostDetailPage: React.FC = () => {
                         <span className="post-date">{formatDate(post.createdAt)}</span>
                     </div>
                 </div>
-                {post.isAuthor && (
+                {isAuthor && (
                     <div className="post-actions">
                         <button onClick={handleEdit} className="action-button edit-button">수정</button>
                         <button onClick={handleDelete} className="action-button delete-button">삭제</button>

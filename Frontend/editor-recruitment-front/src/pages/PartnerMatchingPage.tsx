@@ -1,46 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/PartnerMatchingPage.css';
+import { getAccessToken } from '../utils/auth';
+import { extractTextFromHTML } from '../utils/TextExtractor';
 
 interface MatchedPartner {
-    id: number;
-    name: string;
-    title: string;
-    description: string;
-    subscribers: string;
-    payment: string;
-    workload: string;
-    imageUrl: string;
+    recruitmentPostRes: {
+        id: number;
+        title: string;
+        content: string;
+        memberName: string;
+        viewCount: number;
+        images: string[];
+        payments: { type: string; amount: string }[];
+        recruitmentPostDetailsRes: {
+            maxSubs: number;
+            videoTypes: string[];
+            skills: string[];
+        };
+    };
+    similarity: number;
 }
+
+const getPaymentString = (payment: { type: string; amount: string }) => {
+    if (!payment) return '정보 없음';
+    const formattedAmount = Number(payment.amount).toLocaleString('ko-KR', { maximumFractionDigits: 0 });
+    switch (payment.type) {
+        case 'MONTHLY_SALARY':
+            return `월급 ${formattedAmount}원`;
+        case 'PER_HOUR':
+            return `분당 ${formattedAmount}원`;
+        case 'PER_PROJECT':
+            return `건당 ${formattedAmount}원`;
+        case 'NEGOTIABLE':
+            return '협의 가능';
+        default:
+            return '정보 없음';
+    }
+};
+
+const truncateContent = (content: string, maxLength: number) => {
+    const textContent = extractTextFromHTML(content);
+    if (textContent.length <= maxLength) return textContent;
+    return textContent.slice(0, maxLength) + '...';
+};
 
 const MatchedPartnerItem: React.FC<{ partner: MatchedPartner }> = ({ partner }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        // 여기서 실제 게시글 ID를 사용해야 합니다. 지금은 임시로 partner.id를 사용합니다.
-        navigate(`/recruitment-post/${partner.id}`);
+        navigate(`/post/${partner.recruitmentPostRes.id}`);
     };
+
+    const firstPayment = partner.recruitmentPostRes.payments[0];
+    const paymentInfo = firstPayment ? getPaymentString(firstPayment) : '정보 없음';
 
     return (
         <div className="matched-partner-item" onClick={handleClick}>
             <div className="partner-image">
-                <img src={partner.imageUrl} alt={partner.name} />
+                <img src={partner.recruitmentPostRes.images[0] || 'default-image-url.jpg'} alt={partner.recruitmentPostRes.memberName} />
             </div>
             <div className="partner-content">
-                <h3 className="partner-title">{partner.title}</h3>
-                <p className="partner-description">{partner.description}</p>
+                <h3 className="partner-title">{partner.recruitmentPostRes.title}</h3>
+                <p className="partner-description">
+                    {truncateContent(partner.recruitmentPostRes.content, 100)}
+                </p>
                 <div className="partner-details">
                     <div className="detail-item subscribers">
-                        <span className="detail-label">구독자 수</span>
-                        <span className="detail-value">{partner.subscribers}</span>
+                        <span className="detail-label">최대 구독자 수</span>
+                        <span className="detail-value">{partner.recruitmentPostRes.recruitmentPostDetailsRes.maxSubs.toLocaleString()}명</span>
                     </div>
                     <div className="detail-item payment">
                         <span className="detail-label">페이</span>
-                        <span className="detail-value">{partner.payment}</span>
+                        <span className="detail-value">{paymentInfo}</span>
                     </div>
                     <div className="detail-item workload">
-                        <span className="detail-label">작업 갯수</span>
-                        <span className="detail-value">{partner.workload}</span>
+                        <span className="detail-label">조회수</span>
+                        <span className="detail-value">{partner.recruitmentPostRes.viewCount.toLocaleString()}</span>
                     </div>
                 </div>
             </div>
@@ -52,24 +89,47 @@ const PartnerMatchingPage: React.FC = () => {
     const [matchedPartners, setMatchedPartners] = useState<MatchedPartner[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const partnersPerPage = 10;
 
     useEffect(() => {
-        setLoading(true);
-        // 더미 데이터를 사용하여 매칭된 파트너 목록을 생성합니다.
-        const dummyPartners: MatchedPartner[] = Array.from({ length: 30 }, (_, i) => ({
-            id: i + 1,
-            name: `파트너 ${i + 1}`,
-            title: `매칭된 파트너 ${i + 1}의 제목`,
-            description: `이 파트너는 당신의 요구사항과 잘 맞습니다. 다양한 경험과 기술을 보유하고 있어 훌륭한 협업이 가능할 것 같습니다.`,
-            subscribers: ['10만', '50만', '100만 이상'][Math.floor(Math.random() * 3)],
-            payment: [`월 ${Math.floor(Math.random() * 5 + 3)}00만원`, `시간당 ${Math.floor(Math.random() * 3 + 2)}만원`][Math.floor(Math.random() * 2)],
-            workload: `주 ${Math.floor(Math.random() * 4 + 2)}회`,
-            imageUrl: `https://picsum.photos/200/200?random=${i}`, // 랜덤 이미지 URL
-        }));
+        const fetchMatchedPartners = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const accessToken = getAccessToken();
+                
+                if (!accessToken) {
+                    throw new Error('액세스 토큰이 없습니다.');
+                }
 
-        setMatchedPartners(dummyPartners);
-        setLoading(false);
+                const response = await axios.get('http://localhost:8080/api/match', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true
+                });
+
+                if (response.data.code === "200" && response.data.message === "success") {
+                    setMatchedPartners(response.data.data.matchingResults);
+                } else {
+                    throw new Error(response.data.message || '매칭 정보를 가져오는데 실패했습니다.');
+                }
+            } catch (err) {
+                if (axios.isAxiosError(err)) {
+                    console.error('Axios 에러:', err.response?.data || err.message);
+                    setError(`매칭 정보를 가져오는데 실패했습니다: ${err.response?.data?.message || err.message}`);
+                } else {
+                    console.error('알 수 없는 에러:', err);
+                    setError('매칭 정보를 가져오는데 실패했습니다. 다시 시도해주세요.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMatchedPartners();
     }, []);
 
     const indexOfLastPartner = currentPage * partnersPerPage;
@@ -82,6 +142,10 @@ const PartnerMatchingPage: React.FC = () => {
         return <div className="loading">로딩 중...</div>;
     }
 
+    if (error) {
+        return <div className="error">{error}</div>;
+    }
+
     return (
         <div className="partner-matching-page">
             <h1 className="matching-title">현재 가장 적합하다고 판단되는 파트너들입니다!</h1>
@@ -89,7 +153,7 @@ const PartnerMatchingPage: React.FC = () => {
             
             <div className="matched-partners-list">
                 {currentPartners.map((partner) => (
-                    <MatchedPartnerItem key={partner.id} partner={partner} />
+                    <MatchedPartnerItem key={partner.recruitmentPostRes.id} partner={partner} />
                 ))}
             </div>
 
