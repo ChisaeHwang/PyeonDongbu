@@ -6,6 +6,7 @@ import com.pyeondongbu.editorrecruitment.domain.auth.domain.access.Accessor;
 import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityPostReq;
 import com.pyeondongbu.editorrecruitment.domain.community.dto.response.CommunityPostRes;
 import com.pyeondongbu.editorrecruitment.domain.community.service.CommunityPostService;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.global.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -44,6 +45,17 @@ public class CommunityPostController {
 
         CommunityPostRes postResponseDTO = communityPostService.getPost(postId, remoteAddr);
         return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
+    }
+
+    @GetMapping("/me")
+    @MemberOnly
+    public ResponseEntity<ApiResponse<List<CommunityPostRes>>> getMyPosts(
+            @Auth final Accessor accessor
+    ) {
+        List<CommunityPostRes> posts = communityPostService.getMyPosts(accessor.getMemberId());
+        return ResponseEntity.ok(
+                ApiResponse.success(posts, 200)
+        );
     }
 
     @GetMapping

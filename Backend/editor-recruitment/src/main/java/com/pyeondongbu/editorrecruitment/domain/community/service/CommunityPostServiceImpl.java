@@ -13,6 +13,7 @@ import com.pyeondongbu.editorrecruitment.global.service.RedisLockService;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
 
     @Override
+    @Transactional
     public CommunityPostRes create(CommunityPostReq request, Long memberId) {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
@@ -42,6 +44,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    @Transactional
     public CommunityPostRes update(Long postId, CommunityPostReq request, Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
@@ -49,6 +52,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @DistributedLock
     public CommunityPostRes getPost(Long postId, String remoteAddr) {
         final CommunityPost post = postRepository.findById(postId)
@@ -63,6 +67,16 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<CommunityPostRes> getMyPosts(Long memberId) {
+        final List<CommunityPost> posts = postRepository.findByMemberId(memberId);
+        return posts.stream()
+                .map(CommunityPostRes::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<CommunityPostRes> listPosts() {
         final List<CommunityPost> posts = postRepository.findAll();
         return posts.stream()
@@ -71,6 +85,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    @Transactional
     public void deletePost(Long postId, Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));

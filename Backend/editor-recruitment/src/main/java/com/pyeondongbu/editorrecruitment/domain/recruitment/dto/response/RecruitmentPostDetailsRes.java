@@ -33,4 +33,12 @@ public class RecruitmentPostDetailsRes {
         );
     }
 
+    public RecruitmentPostDetails toEntity() {
+        return RecruitmentPostDetails.builder()
+                .maxSubs(this.maxSubs)
+                .videoTypes(this.videoTypes)
+                .skills(this.skills)
+                .remarks(this.remarks)
+                .build();
+    }
 }

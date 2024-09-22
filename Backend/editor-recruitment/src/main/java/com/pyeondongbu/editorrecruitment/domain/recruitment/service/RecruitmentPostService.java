@@ -14,6 +14,8 @@ public interface RecruitmentPostService {
 
     RecruitmentPostRes getPost(final Long postId, final String remoteAddr);
 
+    List<RecruitmentPostRes> getMyPosts(final Long memberId);
+
     List<RecruitmentPostRes> listPosts();
 
     RecruitmentPostRes update(final Long postId, final RecruitmentPostReq request, final Long memberId);

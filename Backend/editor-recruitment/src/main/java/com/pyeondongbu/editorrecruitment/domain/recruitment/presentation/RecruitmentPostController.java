@@ -47,6 +47,17 @@ public class RecruitmentPostController {
         return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
     }
 
+    @GetMapping("/me")
+    @MemberOnly
+    public ResponseEntity<ApiResponse<List<RecruitmentPostRes>>> getMyPosts(
+            @Auth final Accessor accessor
+    ) {
+        List<RecruitmentPostRes> posts = postService.getMyPosts(accessor.getMemberId());
+        return ResponseEntity.ok(
+                ApiResponse.success(posts, 200)
+        );
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<RecruitmentPostRes>>> listPosts() {
         List<RecruitmentPostRes> posts = postService.listPosts();

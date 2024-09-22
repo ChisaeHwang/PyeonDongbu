@@ -21,6 +21,7 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
 
     @EntityGraph(attributePaths = {
             "details",
+            "details.maxSubs",
             "details.skills",
             "details.videoTypes",
             "tags",

@@ -9,7 +9,10 @@
 }
 
 .post-detail-page .post-header {
-    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .post-detail-page .author-info {
@@ -204,39 +207,39 @@
 .post-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.post-actions {
+.post-detail-page .post-actions {
     display: flex;
     gap: 10px;
 }
 
-.action-button {
-    padding: 8px 16px;
-    border: none;
+.post-detail-page .post-actions .action-button {
+    background-color: white;
+    border: 1px solid #B3B3B3;
+    padding: 10px 15px;
     border-radius: 20px;
+    font-size: 13px;
+    font-weight: 400;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+    color: #333;
 }
 
-.edit-button {
-    background-color: #4CAF50;
+.post-detail-page .post-actions .action-button:hover {
+    background-color: #00CBD6;
     color: white;
 }
 
-.edit-button:hover {
-    background-color: #45a049;
+.post-detail-page .post-actions .edit-button,
+.post-detail-page .post-actions .delete-button {
+    color: #333;
 }
 
-.delete-button {
-    background-color: #f44336;
+.post-detail-page .post-actions .edit-button:hover,
+.post-detail-page .post-actions .delete-button:hover {
     color: white;
-}
-
-.delete-button:hover {
-    background-color: #da190b;
 }
