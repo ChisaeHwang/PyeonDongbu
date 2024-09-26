@@ -10,7 +10,7 @@ public interface CommunityPostService {
 
     CommunityPostRes create(final CommunityPostReq request, final Long memberId);
 
-    CommunityPostRes getPost(final Long postId, final String remoteAddr);
+    CommunityPostRes getPost(final Long postId, final String remoteAddr, final Long memberId);
 
     List<CommunityPostRes> getMyPosts(final Long memberId);
 

@@ -6,18 +6,14 @@ import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostDetailsRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.global.annotation.DistributedLock;
-import com.pyeondongbu.editorrecruitment.global.config.redis.RedisKey;
-import com.pyeondongbu.editorrecruitment.global.dto.ExecuteWithLockParam;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.PostException;
 import com.pyeondongbu.editorrecruitment.global.service.RedisLockService;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -60,10 +56,11 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         return createOrUpdatePost(post, req, validationResult);
     }
 
+    // To-DO 현재 게시글 작성자인지 확인하는 거 추가 Response에 isAuthor 추가
     @Override
     @Transactional(readOnly = true)
     @DistributedLock
-    public RecruitmentPostRes getPost(final Long postId, final String remoteAddr) {
+    public RecruitmentPostRes getPost(final Long postId, final String remoteAddr, final Long memberId) {
         final RecruitmentPost post = postRepository.findByIdWithDetails(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
@@ -72,7 +69,9 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
             postRepository.save(post);
         }
 
-        return RecruitmentPostRes.from(post);
+        boolean isAuthor = post.getMember().getId().equals(memberId);
+
+        return RecruitmentPostRes.from(post, isAuthor);
     }
 
     @Override
@@ -147,7 +146,6 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
             final PostValidationUtils.ValidationResult validationResult
     ) {
         post.update(req, validationResult);
-        postImagesHandler(req, post);
         RecruitmentPostDetails postDetails = post.getDetails();
         if (postDetails == null) {
             postDetails = RecruitmentPostDetails.of(post, req.getRecruitmentPostDetailsReq());
@@ -158,15 +156,5 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         recruitmentPostDetailsRepository.save(postDetails);
         postRepository.save(post);
         return RecruitmentPostRes.from(post);
-    }
-
-    private void postImagesHandler(final RecruitmentPostReq req, final RecruitmentPost post) {
-        post.getImages().clear();
-        if (req.getImages() != null && !req.getImages().isEmpty()) {
-            List<PostImage> images = req.getImages().stream()
-                    .map(url -> new PostImage(url, post))
-                    .collect(Collectors.toList());
-            post.addImages(images);
-        }
     }
 }

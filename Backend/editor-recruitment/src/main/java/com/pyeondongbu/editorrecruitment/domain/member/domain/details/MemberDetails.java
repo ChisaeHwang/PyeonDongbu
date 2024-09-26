@@ -36,6 +36,7 @@ public class MemberDetails extends Details {
     @Builder
     public MemberDetails(
             int maxSubs,
+            int weeklyWorkload,
             String remarks,
             Set<String> skills,
             Set<String> videoTypes,
@@ -44,7 +45,7 @@ public class MemberDetails extends Details {
             String portfolio,
             Member member
     ) {
-        super(maxSubs, remarks, skills, videoTypes);
+        super(maxSubs, weeklyWorkload, remarks, skills, videoTypes);
         this.editedChannels = editedChannels;
         this.currentChannels = currentChannels;
         this.portfolio = portfolio;
@@ -59,6 +60,7 @@ public class MemberDetails extends Details {
                 .member(member)
                 .remarks(req.getRemarks())
                 .maxSubs(req.getMaxSubs())
+                .weeklyWorkload(req.getWeeklyWorkload())
                 .editedChannels(req.getEditedChannels())
                 .currentChannels(req.getCurrentChannels())
                 .portfolio(req.getPortfolio())
@@ -69,6 +71,7 @@ public class MemberDetails extends Details {
 
     public void update(MemberDetailsReq req) {
         this.maxSubs = req.getMaxSubs();
+        this.weeklyWorkload = req.getWeeklyWorkload();
         this.remarks = req.getRemarks();
         this.skills = req.getSkills();
         this.videoTypes = req.getVideoTypes();

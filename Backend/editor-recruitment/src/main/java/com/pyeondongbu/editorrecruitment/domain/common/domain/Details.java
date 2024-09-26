@@ -26,6 +26,11 @@ public abstract class Details {
     @Column(nullable = false)
     protected int maxSubs;
 
+    @Min(0)
+    @Max(10)
+    @Column(nullable = false)
+    protected int weeklyWorkload;
+
     @Column(length = 1000)
     protected String remarks;
 
@@ -37,13 +42,16 @@ public abstract class Details {
     @Column(name = "video_type")
     protected Set<String> videoTypes;
 
+
     public Details(
             int maxSubs,
+            int weeklyWorkload,
             String remarks,
             Set<String> skills,
             Set<String> videoTypes
     ) {
         this.maxSubs = maxSubs;
+        this.weeklyWorkload = weeklyWorkload;
         this.remarks = remarks;
         this.skills = skills;
         this.videoTypes = videoTypes;

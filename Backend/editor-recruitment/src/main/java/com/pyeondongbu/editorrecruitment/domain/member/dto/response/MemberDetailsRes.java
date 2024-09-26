@@ -12,6 +12,7 @@ import java.util.Set;
 public class MemberDetailsRes {
 
     private int maxSubs;
+    private int weeklyWorkload;
     private Set<String> videoTypes;
     private Set<String> editedChannels;
     private Set<String> currentChannels;
@@ -22,6 +23,7 @@ public class MemberDetailsRes {
     public static MemberDetailsRes from(MemberDetails memberDetails) {
         return new MemberDetailsRes(
                 memberDetails.getMaxSubs(),
+                memberDetails.getWeeklyWorkload(),
                 memberDetails.getVideoTypes(),
                 memberDetails.getEditedChannels(),
                 memberDetails.getCurrentChannels(),

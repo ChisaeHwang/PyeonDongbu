@@ -12,7 +12,7 @@ public interface RecruitmentPostService {
 
     RecruitmentPostRes create(final RecruitmentPostReq request, final Long memberId);
 
-    RecruitmentPostRes getPost(final Long postId, final String remoteAddr);
+    RecruitmentPostRes getPost(final Long postId, final String remoteAddr, final Long memberId);
 
     List<RecruitmentPostRes> getMyPosts(final Long memberId);
 

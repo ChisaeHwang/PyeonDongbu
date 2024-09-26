@@ -21,9 +21,8 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping
-    public ResponseEntity<ImageRes> uploadImage(@RequestPart("images") List<MultipartFile> images) {
-        final ImageRes imagesResponse = imageService.save(images);
-        final String firstImageName = imagesResponse.getImageNames().get(0);
-        return ResponseEntity.created(URI.create(firstImageName)).body(imagesResponse);
+    public ResponseEntity<ImageRes> uploadImage(@RequestPart("images") MultipartFile image) {
+        final ImageRes imagesResponse = imageService.save(image);
+        return ResponseEntity.created(URI.create(imagesResponse.getImageNames())).body(imagesResponse);
     }
 }

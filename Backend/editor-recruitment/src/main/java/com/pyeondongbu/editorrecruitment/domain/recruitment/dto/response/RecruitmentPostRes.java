@@ -3,7 +3,6 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
@@ -11,7 +10,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -27,12 +25,17 @@ public class RecruitmentPostRes {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private int viewCount;
-    private List<String> images;
+    private String imageUrl;
     private List<String> tagNames;
-    private List<PaymentDTO> payments;
+    private PaymentDTO payment;
     private RecruitmentPostDetailsRes recruitmentPostDetailsRes;
 
-    public static RecruitmentPostRes from(final RecruitmentPost post) {
+    private Boolean isAuthor;
+
+    public static RecruitmentPostRes from(
+            final RecruitmentPost post,
+            final Boolean isAuthor
+    ) {
         return RecruitmentPostRes.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -41,9 +44,28 @@ public class RecruitmentPostRes {
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
                 .viewCount(post.getViewCount())
-                .images(getImagesUrlList(post))
+                .imageUrl(post.getImageUrl())
                 .tagNames(getTagsNameList(post))
-                .payments(getPaymentsList(post))
+                .payment(PaymentDTO.from(post.getPayment()))
+                .recruitmentPostDetailsRes(RecruitmentPostDetailsRes.from(post.getDetails()))
+                .isAuthor(isAuthor)
+                .build();
+    }
+
+    public static RecruitmentPostRes from(
+            final RecruitmentPost post
+    ) {
+        return RecruitmentPostRes.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .memberName(post.getMember().getNickname())
+                .createdAt(post.getCreatedAt())
+                .modifiedAt(post.getModifiedAt())
+                .viewCount(post.getViewCount())
+                .imageUrl(post.getImageUrl())
+                .tagNames(getTagsNameList(post))
+                .payment(PaymentDTO.from(post.getPayment()))
                 .recruitmentPostDetailsRes(RecruitmentPostDetailsRes.from(post.getDetails()))
                 .build();
     }
@@ -54,12 +76,14 @@ public class RecruitmentPostRes {
                 .title(this.title)
                 .content(this.content)
                 .member(member)
+                .imageUrl(member.getImageUrl())
                 .tags(this.tagNames.stream()
                         .map(Tag::new)
                         .collect(Collectors.toSet()))
-                .payments(this.payments.stream()
-                        .map(paymentDTO -> new Payment(paymentDTO.getType(), paymentDTO.getAmount()))
-                        .collect(Collectors.toSet()))
+                .payment(new Payment(
+                        this.payment.getType(),
+                        this.payment.getAmount()
+                ))
                 .build();
 
         if (this.recruitmentPostDetailsRes != null) {
@@ -67,20 +91,7 @@ public class RecruitmentPostRes {
             post.setDetails(details);
         }
 
-        if (this.images != null && !this.images.isEmpty()) {
-            List<PostImage> postImages = this.images.stream()
-                    .map(url -> new PostImage(url, post))
-                    .collect(Collectors.toList());
-            post.addImages(postImages);
-        }
-
         return post;
-    }
-
-    private static List<String> getImagesUrlList(RecruitmentPost post) {
-        return post.getImages().stream()
-                .map(PostImage::getImageUrl)
-                .collect(Collectors.toList());
     }
 
     private static List<String> getTagsNameList(RecruitmentPost post) {
@@ -89,9 +100,4 @@ public class RecruitmentPostRes {
                 .collect(Collectors.toList());
     }
 
-    private static List<PaymentDTO> getPaymentsList(RecruitmentPost post) {
-        return post.getPayments().stream()
-                .map(payment -> new PaymentDTO(payment.getType(), payment.getAmount()))
-                .collect(Collectors.toList());
-    }
 }

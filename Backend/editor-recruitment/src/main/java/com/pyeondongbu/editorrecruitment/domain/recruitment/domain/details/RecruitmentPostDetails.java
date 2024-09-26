@@ -29,12 +29,13 @@ public class RecruitmentPostDetails extends Details {
     @Builder
     public RecruitmentPostDetails(
             int maxSubs,
+            int weeklyWorkload,
             String remarks,
             Set<String> skills,
             Set<String> videoTypes,
             RecruitmentPost recruitmentPost
     ) {
-        super(maxSubs, remarks, skills, videoTypes);
+        super(maxSubs, weeklyWorkload, remarks, skills, videoTypes);
         this.recruitmentPost = recruitmentPost;
     }
 
@@ -46,6 +47,7 @@ public class RecruitmentPostDetails extends Details {
                 .recruitmentPost(recruitmentPost)
                 .remarks(req.getRemarks())
                 .maxSubs(req.getMaxSubs())
+                .weeklyWorkload(req.getWeeklyWorkload())
                 .skills(req.getSkills())
                 .videoTypes(req.getVideoTypes())
                 .build();
@@ -57,6 +59,7 @@ public class RecruitmentPostDetails extends Details {
 
     public void update(RecruitmentPostDetailsReq req) {
         this.maxSubs = req.getMaxSubs();
+        this.weeklyWorkload = req.getWeeklyWorkload();
         this.remarks = req.getRemarks();
         this.skills = req.getSkills();
         this.videoTypes = req.getVideoTypes();
