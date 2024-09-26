@@ -36,6 +36,7 @@ public class CommunityPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<CommunityPostRes>> getPost(
             @PathVariable("postId") Long postId,
+            @Auth final Accessor accessor,
             HttpServletRequest request,
             @RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor) {
         String remoteAddr = request.getRemoteAddr();
@@ -43,7 +44,7 @@ public class CommunityPostController {
             remoteAddr = forwardedFor.split(",")[0].trim();
         }
 
-        CommunityPostRes postResponseDTO = communityPostService.getPost(postId, remoteAddr);
+        CommunityPostRes postResponseDTO = communityPostService.getPost(postId, remoteAddr, accessor.getMemberId());
         return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
     }
 

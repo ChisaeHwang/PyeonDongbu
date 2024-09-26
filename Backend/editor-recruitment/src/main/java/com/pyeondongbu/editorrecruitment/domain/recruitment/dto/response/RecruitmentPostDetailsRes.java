@@ -18,6 +18,8 @@ import java.util.Set;
 public class RecruitmentPostDetailsRes {
 
     private int maxSubs;
+
+    private int weeklyWorkload;
     private Set<String> videoTypes;
     private Set<String> skills;
     private String remarks;
@@ -27,6 +29,7 @@ public class RecruitmentPostDetailsRes {
     ) {
         return new RecruitmentPostDetailsRes(
                 details.getMaxSubs(),
+                details.getWeeklyWorkload(),
                 details.getVideoTypes(),
                 details.getSkills(),
                 details.getRemarks()
@@ -36,6 +39,7 @@ public class RecruitmentPostDetailsRes {
     public RecruitmentPostDetails toEntity() {
         return RecruitmentPostDetails.builder()
                 .maxSubs(this.maxSubs)
+                .weeklyWorkload(this.weeklyWorkload)
                 .videoTypes(this.videoTypes)
                 .skills(this.skills)
                 .remarks(this.remarks)

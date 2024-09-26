@@ -33,7 +33,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
     @Override
     @Transactional
-    public CommunityPostRes create(CommunityPostReq request, Long memberId) {
+    public CommunityPostRes create(final CommunityPostReq request, final Long memberId) {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
         final CommunityPost post = CommunityPost.builder()
@@ -45,7 +45,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
     @Override
     @Transactional
-    public CommunityPostRes update(Long postId, CommunityPostReq request, Long memberId) {
+    public CommunityPostRes update(final Long postId, final CommunityPostReq request, final Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
         return createOrUpdatePost(post, request);
@@ -54,7 +54,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     @Override
     @Transactional(readOnly = true)
     @DistributedLock
-    public CommunityPostRes getPost(Long postId, String remoteAddr) {
+    public CommunityPostRes getPost(final Long postId, final String remoteAddr, final Long memberId) {
         final CommunityPost post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
 
@@ -63,12 +63,15 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             postRepository.save(post);
         }
 
-        return CommunityPostRes.from(post);
+        boolean isAuthor = post.getMember().getId().equals(memberId);
+
+
+        return CommunityPostRes.from(post, isAuthor);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommunityPostRes> getMyPosts(Long memberId) {
+    public List<CommunityPostRes> getMyPosts(final Long memberId) {
         final List<CommunityPost> posts = postRepository.findByMemberId(memberId);
         return posts.stream()
                 .map(CommunityPostRes::from)
@@ -86,7 +89,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
     @Override
     @Transactional
-    public void deletePost(Long postId, Long memberId) {
+    public void deletePost(final Long postId, final Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
         postRepository.delete(post);

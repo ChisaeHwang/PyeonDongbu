@@ -35,7 +35,6 @@ public class PostValidationUtils {
     private final PostViewRepository postViewRepository;
     private final Validator validator;
 
-
     public Boolean validatePostView(Long postId, String remoteAddr) {
         isValidIp(remoteAddr);
 
@@ -52,14 +51,15 @@ public class PostValidationUtils {
 
     public ValidationResult validateRecruitmentPostReq(RecruitmentPostReq postReq) {
         Set<ConstraintViolation<RecruitmentPostReq>> violations = validator.validate(postReq);
+
         if (!violations.isEmpty()) {
             throw new BadRequestException(INVALID_POST_DETAILS);
         }
 
         Set<Tag> tags = validateTagNames(postReq.getTagNames());
-        Set<Payment> payments = validatePayments(postReq.getPayments());
+        Payment payment = validatePayment(postReq.getPayment());
 
-        return new ValidationResult(tags, payments);
+        return new ValidationResult(tags, payment);
     }
 
     private Set<Tag> validateTagNames(List<String> tagNames) {
@@ -74,13 +74,11 @@ public class PostValidationUtils {
         return tags;
     }
 
-    private Set<Payment> validatePayments(List<PaymentDTO> paymentDTOs) {
-        if (paymentDTOs == null || paymentDTOs.isEmpty()) {
+    private Payment validatePayment(PaymentDTO paymentDTO) {
+        if (paymentDTO == null) {
             throw new InvalidDomainException(INVALID_PAYMENT);
         }
-        return paymentDTOs.stream()
-                .map(PaymentDTO::toEntity)
-                .collect(Collectors.toSet());
+        return paymentDTO.toEntity();
     }
 
     private void isValidIp(String ip) {
@@ -102,6 +100,6 @@ public class PostValidationUtils {
     }
 
 
-    public record ValidationResult(Set<Tag> tags, Set<Payment> payments) {
+    public record ValidationResult(Set<Tag> tags, Payment payment) {
     }
 }

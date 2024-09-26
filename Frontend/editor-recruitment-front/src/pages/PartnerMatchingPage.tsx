@@ -18,6 +18,7 @@ interface MatchedPartner {
             maxSubs: number;
             videoTypes: string[];
             skills: string[];
+            weeklyWorkload?: string; // 옵셔널 필드로 추가
         };
     };
     similarity: number;
@@ -56,6 +57,14 @@ const MatchedPartnerItem: React.FC<{ partner: MatchedPartner }> = ({ partner }) 
     const firstPayment = partner.recruitmentPostRes.payments[0];
     const paymentInfo = firstPayment ? getPaymentString(firstPayment) : '정보 없음';
 
+    // 임시로 weeklyWorkload 값을 생성
+    const getRandomWorkload = () => {
+        const workloads = ['주 1-2회', '주 3-4회', '주 5회 이상', '협의 가능'];
+        return workloads[Math.floor(Math.random() * workloads.length)];
+    };
+
+    const weeklyWorkload = partner.recruitmentPostRes.recruitmentPostDetailsRes.weeklyWorkload || getRandomWorkload();
+
     return (
         <div className="matched-partner-item" onClick={handleClick}>
             <div className="partner-image">
@@ -76,8 +85,8 @@ const MatchedPartnerItem: React.FC<{ partner: MatchedPartner }> = ({ partner }) 
                         <span className="detail-value">{paymentInfo}</span>
                     </div>
                     <div className="detail-item workload">
-                        <span className="detail-label">조회수</span>
-                        <span className="detail-value">{partner.recruitmentPostRes.viewCount.toLocaleString()}</span>
+                        <span className="detail-label">주간 작업 갯수</span>
+                        <span className="detail-value">{weeklyWorkload}</span>
                     </div>
                 </div>
             </div>

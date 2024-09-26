@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Builder
@@ -23,12 +22,12 @@ public class RecruitmentPostReq {
     @NotBlank(message = "내용은 공백이 될 수 없습니다.")
     private String content;
 
-    private List<String> images;
+    private String imageUrl;
 
     private List<String> tagNames;
 
     @Valid
-    private List<PaymentDTO> payments;
+    private PaymentDTO payment;
 
     private RecruitmentPostDetailsReq recruitmentPostDetailsReq;
 
@@ -36,12 +35,14 @@ public class RecruitmentPostReq {
         return RecruitmentPostReq.builder()
                 .title(recruitmentPost.getTitle())
                 .content(recruitmentPost.getContent())
+                .imageUrl(recruitmentPost.getImageUrl())
+                .payment(PaymentDTO.from(recruitmentPost.getPayment()))
                 .recruitmentPostDetailsReq(RecruitmentPostDetailsReq.of(recruitmentPost.getDetails()))
                 .build();
     }
 
-    public List<String> getImages() {
-        return this.images;
+    public String getImageUrl() {
+        return this.imageUrl;
     }
 
     public String getTitle() {
@@ -56,12 +57,11 @@ public class RecruitmentPostReq {
         return tagNames;
     }
 
-    public List<PaymentDTO> getPayments() {
-        return payments;
+    public PaymentDTO getPayment() {
+        return payment;
     }
 
     public RecruitmentPostDetailsReq getRecruitmentPostDetailsReq() {
         return recruitmentPostDetailsReq;
     }
 }
-

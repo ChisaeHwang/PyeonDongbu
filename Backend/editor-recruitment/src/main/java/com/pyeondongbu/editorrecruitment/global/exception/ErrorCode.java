@@ -31,11 +31,13 @@ public enum ErrorCode {
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
     EMPTY_IMAGE_LIST(5003, "최소 한 장 이상의 이미지를 업로드해야합니다."),
+
     EXCEED_IMAGE_LIST_SIZE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
     INVALID_IMAGE_URL(5005, "요청한 이미지 URL의 형식이 잘못되었습니다."),
     INVALID_IMAGE_PATH(5101, "이미지를 저장할 경로가 올바르지 않습니다."),
     FAIL_IMAGE_NAME_HASH(5102, "이미지 이름을 해싱하는 데 실패했습니다."),
     INVALID_IMAGE(5103, "올바르지 않은 이미지 파일입니다."),
+    EMPTY_IMAGE(5104, "이미지가 없습니다"),
 
 
     INVALID_SHARE_CODE(7002, "공유가 허용되지 않은 코드입니다."),

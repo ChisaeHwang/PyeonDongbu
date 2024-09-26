@@ -33,13 +33,7 @@ public class ImageUploader {
     @Value("${cloud.aws.s3.folder}")
     private String folder;
 
-    public List<String> uploadImages(final List<ImageFile> imageFiles) {
-        return imageFiles.stream()
-                .map(this::uploadImage)
-                .toList();
-    }
-
-    private String uploadImage(final ImageFile imageFile) {
+    public String uploadImage(final ImageFile imageFile) {
         final String path = folder + imageFile.getHashedName();
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());

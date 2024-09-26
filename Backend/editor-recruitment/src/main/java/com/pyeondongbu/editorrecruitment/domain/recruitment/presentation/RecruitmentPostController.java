@@ -36,6 +36,7 @@ public class RecruitmentPostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<RecruitmentPostRes>> getPost(
             @PathVariable("postId") Long postId,
+            @Auth final Accessor accessor,
             HttpServletRequest request,
             @RequestHeader(value = "X-Forwarded-For", required = false) String forwardedFor) {
         String remoteAddr = request.getRemoteAddr();
@@ -43,7 +44,7 @@ public class RecruitmentPostController {
             remoteAddr = forwardedFor.split(",")[0].trim();
         }
 
-        RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr);
+        RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr, accessor.getMemberId());
         return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
     }
 

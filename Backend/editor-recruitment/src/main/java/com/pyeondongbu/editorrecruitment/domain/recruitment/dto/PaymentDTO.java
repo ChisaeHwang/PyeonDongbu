@@ -24,4 +24,10 @@ public class PaymentDTO {
     public Payment toEntity() {
         return new Payment(type, amount);
     }
+
+    public static PaymentDTO from (
+            final Payment payment
+    ) {
+        return new PaymentDTO(payment.getType(), payment.getAmount());
+    }
 }

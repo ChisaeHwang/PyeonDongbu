@@ -24,6 +24,7 @@ public class MemberDetailsReq extends DetailsReq {
     @Builder
     public MemberDetailsReq(
             final int maxSubs,
+            final int weeklyWorkload,
             final Set<String> videoTypes,
             final Set<String> skills,
             final String remarks,
@@ -31,7 +32,7 @@ public class MemberDetailsReq extends DetailsReq {
             final Set<String> currentChannels,
             final String portfolio
     ) {
-        super(maxSubs, videoTypes, skills, remarks);
+        super(maxSubs, weeklyWorkload, videoTypes, skills, remarks);
         this.editedChannels = editedChannels;
         this.currentChannels = currentChannels;
         this.portfolio = portfolio;
@@ -40,6 +41,7 @@ public class MemberDetailsReq extends DetailsReq {
     public static MemberDetailsReq of(final MemberDetails memberDetails) {
         return MemberDetailsReq.builder()
                 .maxSubs(memberDetails.getMaxSubs())
+                .weeklyWorkload(memberDetails.getWeeklyWorkload())
                 .videoTypes(memberDetails.getVideoTypes())
                 .editedChannels(memberDetails.getEditedChannels())
                 .currentChannels(memberDetails.getCurrentChannels())

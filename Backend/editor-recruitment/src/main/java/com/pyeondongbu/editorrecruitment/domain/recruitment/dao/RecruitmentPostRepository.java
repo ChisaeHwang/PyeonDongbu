@@ -25,8 +25,7 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
             "details.skills",
             "details.videoTypes",
             "tags",
-            "payments",
-            "images"
+            "payment",
     })
     List<RecruitmentPost> findAll(Specification<RecruitmentPost> spec);
 
@@ -37,8 +36,7 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
     @Query("SELECT rp FROM RecruitmentPost rp " +
             "LEFT JOIN FETCH rp.details d " +
             "LEFT JOIN FETCH rp.tags t " +
-            "LEFT JOIN FETCH rp.payments p " +
-            "LEFT JOIN FETCH rp.images i " +
+            "LEFT JOIN FETCH rp.payment p " +
             "LEFT JOIN FETCH d.skills s " +
             "LEFT JOIN FETCH d.videoTypes v " +
             "WHERE rp.id = :id")
@@ -47,11 +45,10 @@ public interface RecruitmentPostRepository extends JpaRepository<RecruitmentPost
     @Query("SELECT rp FROM RecruitmentPost rp " +
             "LEFT JOIN FETCH rp.details d " +
             "LEFT JOIN FETCH rp.tags t " +
-            "LEFT JOIN FETCH rp.images i " +
             "LEFT JOIN FETCH d.skills s " +
             "LEFT JOIN FETCH d.videoTypes v " +
             "WHERE rp.id IN (SELECT DISTINCT rp.id FROM RecruitmentPost rp " +
-            "LEFT JOIN rp.payments p)")
+            "LEFT JOIN rp.payment p)")
     List<RecruitmentPost> findAllWithDetails();
 
 }

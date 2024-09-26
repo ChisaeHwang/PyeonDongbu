@@ -14,16 +14,18 @@ public class RecruitmentPostDetailsReq extends DetailsReq {
     @Builder
     public RecruitmentPostDetailsReq(
             final int maxSubs,
+            final int weeklyWorkload,
             final Set<String> videoTypes,
             final Set<String> skills,
             final String remarks
     ) {
-        super(maxSubs, videoTypes, skills, remarks);
+        super(maxSubs, weeklyWorkload, videoTypes, skills, remarks);
     }
 
     public static RecruitmentPostDetailsReq of(final RecruitmentPostDetails details) {
         return RecruitmentPostDetailsReq.builder()
                 .maxSubs(details.getMaxSubs())
+                .weeklyWorkload(details.getWeeklyWorkload())
                 .videoTypes(details.getVideoTypes())
                 .skills(details.getSkills())
                 .remarks(details.getRemarks())

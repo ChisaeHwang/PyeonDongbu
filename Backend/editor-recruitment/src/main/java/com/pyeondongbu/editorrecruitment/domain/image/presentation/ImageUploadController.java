@@ -19,8 +19,6 @@ public class ImageUploadController {
     @PostMapping("/upload")
     public String uploadImage(@RequestParam("file") MultipartFile file) {
         ImageFile imageFile = new ImageFile(file);
-        List<ImageFile> imageFiles = List.of(imageFile);
-        List<String> uploadedImageNames = imageUploader.uploadImages(imageFiles);
-        return "Uploaded: " + uploadedImageNames.get(0);
+        return "Uploaded: " + imageUploader.uploadImage(imageFile);
     }
 }

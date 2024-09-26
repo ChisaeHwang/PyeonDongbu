@@ -16,6 +16,6 @@ import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.EMPTY
 import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.EXCEED_IMAGE_LIST_SIZE;
 
 public interface ImageService {
-    ImageRes save(final List<MultipartFile> images);
+    ImageRes save(final MultipartFile image);
 
 }

@@ -1,13 +1,7 @@
 package com.pyeondongbu.editorrecruitment.domain.listner;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.pyeondongbu.editorrecruitment.domain.member.domain.MemberDeleteEvent;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.PostImageRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.PostImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,28 +15,15 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 public class DeleteEventListener {
 
     private final RecruitmentPostRepository postRepository;
-    private final PostImageRepository postImageRepository;
 
     @Async
     @Transactional(propagation = REQUIRES_NEW)
     @TransactionalEventListener(fallbackExecution = true)
     public void deleteMember(final MemberDeleteEvent event) {
 
-        final List<RecruitmentPost> posts = postRepository.findByMemberId(event.getMemberId());
-
-        for (RecruitmentPost post : posts) {
-            deletePostImages((List<PostImage>) post.getImages());
-        }
-
         postRepository.deleteByMemberId(event.getMemberId());
     }
 
-    private void deletePostImages(final List<PostImage> postImages) {
-        final List<Long> postImageIds = postImages.stream()
-                .map(PostImage::getId)
-                .collect(Collectors.toList());
 
-        postImageRepository.deleteByIds(postImageIds);
-    }
 
 }
