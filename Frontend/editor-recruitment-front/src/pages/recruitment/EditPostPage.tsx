@@ -4,6 +4,18 @@ import axios from 'axios';
 import PostEditor from '../../components/PostEditor';
 import { useToast } from '../../hooks/useToast';
 
+enum PaymentType {
+    PER_HOUR = 'PER_HOUR',
+    PER_PROJECT = 'PER_PROJECT',
+    MONTHLY_SALARY = 'MONTHLY_SALARY',
+    NEGOTIABLE = 'NEGOTIABLE'
+}
+
+interface Payment {
+    type: PaymentType;
+    amount: number;
+}
+
 const EditPostPage: React.FC = () => {
     const { postId } = useParams<{ postId: string }>();
     const [initialData, setInitialData] = useState<any>(null);
@@ -38,7 +50,14 @@ const EditPostPage: React.FC = () => {
         fetchPostData();
     }, [postId, navigate, showErrorToast]);
 
-    const handlePostSubmit = async (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => {
+    const handlePostSubmit = async (
+        title: string,
+        content: string,
+        imageUrl: string,
+        tagNames: string[],
+        payment: Payment,
+        recruitmentPostDetailsReq: any
+    ) => {
         try {
             const accessToken = sessionStorage.getItem('access-token');
             if (!accessToken) {
@@ -48,9 +67,9 @@ const EditPostPage: React.FC = () => {
             const requestData = {
                 title,
                 content,
-                images,
+                imageUrl,
                 tagNames,
-                payments,
+                payment,
                 recruitmentPostDetailsReq,
             };
 

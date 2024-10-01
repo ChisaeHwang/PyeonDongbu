@@ -26,11 +26,11 @@ interface RecruitmentPostRes {
     createdAt: string;
     modifiedAt: string;
     viewCount: number;
-    images: string[];
+    imageUrl: string;
     tagNames: string[];
-    payments: PaymentDTO[];
+    payment: PaymentDTO;
     recruitmentPostDetailsRes: RecruitmentPostDetailsRes;
-    isAuthor: boolean; // 서버에서 판단한 작성자 여부
+    isAuthor: boolean; 
 }
 
 interface ApiResponse<T> {
@@ -80,9 +80,8 @@ const PostDetailPage: React.FC = () => {
         return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
     };
 
-    const getPaymentString = (payments: PaymentDTO[]) => {
-        if (payments.length === 0) return '정보 없음';
-        const payment = payments[0];
+    const getPaymentString = (payment: PaymentDTO) => {
+        if (!payment) return '정보 없음';
         const formattedAmount = payment.amount.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
         switch (payment.type) {
             case 'MONTHLY_SALARY':
@@ -152,11 +151,11 @@ const PostDetailPage: React.FC = () => {
                 </div>
                 <div className="detail-item payment">
                     <span className="detail-label">페이</span>
-                    <span className="detail-value">{getPaymentString(post.payments)}</span>
+                    <span className="detail-value">{getPaymentString(post.payment)}</span>
                 </div>
                 <div className="detail-item workload">
                     <span className="detail-label">주간 작업량</span>
-                    <span className="detail-value">{post.recruitmentPostDetailsRes.weeklyWorkload}</span>
+                    <span className="detail-value">{post.recruitmentPostDetailsRes.weeklyWorkload} 개</span>
                 </div>
             </div>
             <div className="post-skills">

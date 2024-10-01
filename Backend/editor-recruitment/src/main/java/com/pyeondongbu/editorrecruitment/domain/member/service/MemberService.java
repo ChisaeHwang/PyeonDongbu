@@ -22,4 +22,6 @@ public interface MemberService {
             List<String> videoTypes
     );
 
+    MyPageRes getPublicProfile(String nickname);
+
 }

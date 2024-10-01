@@ -7,8 +7,8 @@ import { FilterOptions } from '../../utils/FilterOptions';
 const JobsPage = () => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
     const [selectedVideoTypes, setSelectedVideoTypes] = useState<string[]>([]);
-    const [selectedSubscribers, setSelectedSubscribers] = useState('');
-    const [selectedPayment, setSelectedPayment] = useState('');
+    const [selectedMaxSubs, setSelectedMaxSubs] = useState('');
+    const [selectedPaymentType, setSelectedPaymentType] = useState('');
     const [selectedWorkload, setSelectedWorkload] = useState('');
 
     const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
@@ -23,18 +23,22 @@ const JobsPage = () => {
         }
     };
 
-    const subscriberOptions = [
+    const maxSubsOptions = [
         { value: '', label: '선택하세요' },
+        { value: '0-1', label: '1만 이하' },
+        { value: '1-5', label: '1~5만' },
+        { value: '5-10', label: '5~10만' },
         { value: '10-50', label: '10~50만' },
         { value: '50-100', label: '50~100만' },
-        { value: '100+', label: '100만+' },
+        { value: '100+', label: '100만 이상' },
     ];
 
-    const paymentOptions = [
+    const paymentTypeOptions = [
         { value: '', label: '선택하세요' },
-        { value: '0-10', label: '분당 10만원 이하' },
-        { value: '10-15', label: '분당 10~15만원' },
-        { value: '15+', label: '분당 15만원 이상' },
+        { value: 'PER_HOUR', label: '시간당' },
+        { value: 'PER_PROJECT', label: '건당' },
+        { value: 'MONTHLY_SALARY', label: '월급' },
+        { value: 'NEGOTIABLE', label: '협의' },
     ];
 
     const workloadOptions = [
@@ -60,27 +64,27 @@ const JobsPage = () => {
                 
                 <div className="jobs-page-select-filters">
                     <div className="select-filter">
-                        <label htmlFor="subscribers">구독자 수</label>
+                        <label htmlFor="maxSubs">최대 구독자 수</label>
                         <select
-                            id="subscribers"
-                            value={selectedSubscribers}
-                            onChange={(e) => setSelectedSubscribers(e.target.value)}
+                            id="maxSubs"
+                            value={selectedMaxSubs}
+                            onChange={(e) => setSelectedMaxSubs(e.target.value)}
                             className="details-select"
                         >
-                            {subscriberOptions.map(option => (
+                            {maxSubsOptions.map(option => (
                                 <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
                         </select>
                     </div>
                     <div className="select-filter">
-                        <label htmlFor="payment">페이</label>
+                        <label htmlFor="paymentType">급여 유형</label>
                         <select
-                            id="payment"
-                            value={selectedPayment}
-                            onChange={(e) => setSelectedPayment(e.target.value)}
+                            id="paymentType"
+                            value={selectedPaymentType}
+                            onChange={(e) => setSelectedPaymentType(e.target.value)}
                             className="details-select"
                         >
-                            {paymentOptions.map(option => (
+                            {paymentTypeOptions.map(option => (
                                 <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
                         </select>
@@ -106,6 +110,9 @@ const JobsPage = () => {
                     skills={selectedSkills}
                     videoTypes={selectedVideoTypes}
                     tagNames={['구인', '크롤링']}
+                    maxSubs={selectedMaxSubs}
+                    paymentType={selectedPaymentType}
+                    workload={selectedWorkload}
                     variant="jobs"
                 />
             </div>

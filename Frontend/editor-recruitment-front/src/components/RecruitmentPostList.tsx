@@ -15,7 +15,7 @@ interface RecruitmentPostDetailsRes {
     videoTypes: string[];
     skills: string[];
     remarks: string;
-    weeklyWorkload: string; // 추가된 필드
+    weeklyWorkload: string;
 }
 
 interface RecruitmentPost {
@@ -26,9 +26,9 @@ interface RecruitmentPost {
     createdAt: string;
     modifiedAt: string;
     viewCount: number;
-    images: string[];
+    imageUrl: string;
     tagNames: string[];
-    payments: PaymentDTO[];
+    payment: PaymentDTO;
     recruitmentPostDetailsRes: RecruitmentPostDetailsRes;
 }
 
@@ -44,9 +44,8 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
         navigate(`/post/${post.id}`);
     };
 
-    const getPaymentString = (payments: PaymentDTO[]) => {
-        if (payments.length === 0) return '정보 없음';
-        const payment = payments[0];
+    const getPaymentString = (payment: PaymentDTO) => {
+        if (!payment) return '정보 없음';
         const formattedAmount = payment.amount.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
         switch (payment.type) {
             case 'MONTHLY_SALARY':
@@ -75,9 +74,9 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
     return (
         <div className="recruitment-post-item" onClick={handleClick}>
             <div className="post-image">
-                {post.images && post.images.length > 0 && (
+                {post.imageUrl && (
                     <img 
-                        src={post.images[0]} 
+                        src={post.imageUrl} 
                         alt={`게시글 이미지`} 
                         loading="lazy"
                         onError={(e) => {
@@ -105,7 +104,7 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
                     <div className="post-details">
                         <div className="detail-item payment">
                             <span className="detail-label">페이</span>
-                            <span className="detail-value">{getPaymentString(post.payments)}</span>
+                            <span className="detail-value">{getPaymentString(post.payment)}</span>
                         </div>
                         <div className="detail-item subscribers">
                             <span className="detail-label">구독자 수</span>
@@ -113,7 +112,7 @@ const RecruitmentPostItem: React.FC<RecruitmentPostItemProps> = ({ post, variant
                         </div>
                         <div className="detail-item workload">
                             <span className="detail-label">작업 갯수</span>
-                            <span className="detail-value">{post.recruitmentPostDetailsRes.weeklyWorkload}</span>
+                            <span className="detail-value">{post.recruitmentPostDetailsRes.weeklyWorkload}개</span>
                         </div>
                     </div>
                 )}
@@ -128,9 +127,21 @@ interface RecruitmentPostListProps {
     tagNames: string[];
     sliderSettings?: any;
     variant: 'main' | 'jobs';
+    maxSubs?: string;
+    paymentType?: string;
+    workload?: string;
 }
 
-const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, videoTypes, tagNames, sliderSettings, variant }) => {
+const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ 
+    skills, 
+    videoTypes, 
+    tagNames, 
+    sliderSettings, 
+    variant,
+    maxSubs,
+    paymentType,
+    workload
+}) => {
     const [posts, setPosts] = useState<RecruitmentPost[]>([]);
     const [filteredPosts, setFilteredPosts] = useState<RecruitmentPost[]>([]);
     const [loading, setLoading] = useState(false);
@@ -140,7 +151,16 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, video
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?skills=${skills.join(',')}&videoTypes=${videoTypes.join(',')}&tagNames=${tagNames.join(',')}`, {
+            const params = new URLSearchParams({
+                skills: skills.join(','),
+                videoTypes: videoTypes.join(','),
+                tagNames: tagNames.join(','),
+                ...(maxSubs && { maxSubs }),
+                ...(paymentType && { paymentType }),
+                ...(workload && { workload })
+            });
+
+            const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?${params}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +178,7 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ skills, video
         } finally {
             setLoading(false);
         }
-    }, [skills, videoTypes, tagNames]);
+    }, [skills, videoTypes, tagNames, maxSubs, paymentType, workload]);
 
     useEffect(() => {
         fetchPosts();

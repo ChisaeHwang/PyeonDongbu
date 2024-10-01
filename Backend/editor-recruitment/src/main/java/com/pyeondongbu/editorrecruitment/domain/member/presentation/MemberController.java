@@ -52,4 +52,14 @@ public class MemberController {
         );
     }
 
+    @GetMapping("/profile/{nickname}")
+    public ResponseEntity<ApiResponse<MyPageRes>> getPublicProfile(
+            @PathVariable("nickname") String nickname
+    ) {
+        MyPageRes profile = memberService.getPublicProfile(nickname);
+        return ResponseEntity.ok(
+                ApiResponse.success(profile, 200)
+        );
+    }
+
 }

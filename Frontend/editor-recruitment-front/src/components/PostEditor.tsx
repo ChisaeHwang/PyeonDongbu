@@ -16,17 +16,36 @@ import reviewIcon from '../assets/reviewIcon';
 import { formatNumber } from '../utils/FormatNumber';
 import Modal from './Modal';
 
+enum PaymentType {
+    PER_HOUR = 'PER_HOUR',
+    PER_PROJECT = 'PER_PROJECT',
+    MONTHLY_SALARY = 'MONTHLY_SALARY',
+    NEGOTIABLE = 'NEGOTIABLE'
+}
+
+interface Payment {
+    type: PaymentType;
+    amount: number;
+}
+
 interface PostEditorProps {
-    onSubmit?: (title: string, content: string, images: string[], tagNames: string[], payments: any[], recruitmentPostDetailsReq: any) => void;
+    onSubmit?: (
+        title: string,
+        content: string,
+        imageUrl: string,
+        tagNames: string[],
+        payment: Payment,
+        recruitmentPostDetailsReq: any
+    ) => void;
     initialData?: RecruitmentPostRes;
 }
 
 interface RecruitmentPostRes {
     title: string;
     content: string;
-    images: string[];
+    imageUrl: string;
     tagNames: string[];
-    payments: Array<{type: string, amount: number}>;
+    payment: Payment;
     recruitmentPostDetailsRes: {
         maxSubs: number;
         videoTypes: string[];
@@ -36,19 +55,19 @@ interface RecruitmentPostRes {
 }
 
 const paymentTypes = [
-    { label: '분당', value: 'PER_HOUR' },
-    { label: '건당', value: 'PER_PROJECT' },
-    { label: '월급', value: 'MONTHLY_SALARY' },
-    { label: '협의', value: 'NEGOTIABLE' }
+    { label: '분당', value: PaymentType.PER_HOUR },
+    { label: '건당', value: PaymentType.PER_PROJECT },
+    { label: '월급', value: PaymentType.MONTHLY_SALARY },
+    { label: '협의', value: PaymentType.NEGOTIABLE }
 ];
 
 const recruitmentTypes = ['구인', '구직'];
 
 const weeklyWorkOptions = [
-    { value: '1-2', label: '1~2개' },
-    { value: '3-4', label: '3~4개' },
-    { value: '5-6', label: '5~6개' },
-    { value: '7+', label: '7개 이상' }
+    { value: '1', label: '1~2개' },
+    { value: '3', label: '3~4개' },
+    { value: '5', label: '5~6개' },
+    { value: '7', label: '7개 이상' }
 ];
 
 type FilterOption = {
@@ -74,19 +93,19 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
     const [title, setTitle] = useState(initialData?.title || '');
     const [recruitmentType, setRecruitmentType] = useState('구인');
     const [content, setContent] = useState(initialData?.content || '');
-    const [payments, setPayments] = useState<Array<{type: string, amount: number}>>(initialData?.payments || []);
-    const [paymentType, setPaymentType] = useState('');
-    const [paymentAmount, setPaymentAmount] = useState('');
+    const [payment, setPayment] = useState<Payment>(initialData?.payment || { type: PaymentType.PER_HOUR, amount: 0 });
+    const [paymentType, setPaymentType] = useState<PaymentType>(initialData?.payment?.type || PaymentType.PER_HOUR);
+    const [paymentAmount, setPaymentAmount] = useState(initialData?.payment?.amount.toString() || '');
     const [maxSubs, setMaxSubs] = useState<number | null>(initialData?.recruitmentPostDetailsRes?.maxSubs || null);
     const [maxSubsInput, setMaxSubsInput] = useState('');
-    const [weeklyWorkCount, setWeeklyWorkCount] = useState(initialData?.recruitmentPostDetailsRes?.weeklyWorkload || '');
+    const [weeklyWorkload, setWeeklyWorkload] = useState(initialData?.recruitmentPostDetailsRes?.weeklyWorkload || '');
     const [selectedVideoGenres, setSelectedVideoGenres] = useState<string[]>(initialData?.recruitmentPostDetailsRes?.videoTypes || []);
     const [selectedSkills, setSelectedSkills] = useState<string[]>(initialData?.recruitmentPostDetailsRes?.skills || []);
-    const [isNegotiable, setIsNegotiable] = useState(false);
+    const [isNegotiable, setIsNegotiable] = useState(initialData?.payment?.type === PaymentType.NEGOTIABLE || false);
   
     const quillRef = useRef<ReactQuill>(null);
     const [showModal, setShowModal] = useState(false);
-    const [representativeImage, setRepresentativeImage] = useState<string | null>(initialData?.images[0] || null);
+    const [imageUrl, setImageUrl] = useState<string | null>(initialData?.imageUrl || null);
 
     const handleRecruitmentTypeChange = (selectedType: string) => {
         setRecruitmentType(selectedType);
@@ -144,7 +163,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
                     });
 
                     const imageUrl = response.data.replace('Uploaded: ', '').trim();
-                    setRepresentativeImage(imageUrl);
+                    setImageUrl(imageUrl);
                 } catch (error) {
                     console.error('대표 이미지 업로드 실패:', error);
                 }
@@ -152,14 +171,16 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         };
     }, []);
 
-    const handlePaymentTypeClick = (type: string) => {
+    const handlePaymentTypeClick = (type: PaymentType) => {
         setPaymentType(type);
-        if (type === 'NEGOTIABLE') {
+        if (type === PaymentType.NEGOTIABLE) {
             setPaymentAmount('협의');
             setIsNegotiable(true);
+            setPayment({ type: PaymentType.NEGOTIABLE, amount: 0 });
         } else {
             setPaymentAmount('');
             setIsNegotiable(false);
+            setPayment(prev => ({ ...prev, type }));
         }
     };
 
@@ -180,9 +201,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         if (!isNegotiable) {
             const numericValue = e.target.value.replace(/[^0-9]/g, '');
             setPaymentAmount(numericValue);
-            if (paymentType) {
-                setPayments(prev => [...prev, { type: paymentType, amount: parseInt(numericValue) }]);
-            }
+            setPayment(prev => ({ ...prev, amount: parseInt(numericValue) || 0 }));
         }
     };
 
@@ -199,30 +218,29 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
     };
 
     const handleSubmit = async () => {
-        if (!representativeImage) {
+        if (!imageUrl) {
             alert('대표 이미지를 선택해주세요.');
             return;
         }
 
-        const paymentArray = payments.map(({ type, amount }) => ({ type, amount }));
         const recruitmentPostDetailsReq = {
             maxSubs,
             videoTypes: selectedVideoGenres,
             skills: selectedSkills,
-            weeklyWorkCount,
+            weeklyWorkload,
         };
 
         const postData = {
             title,
             content,
-            images: [representativeImage], 
+            imageUrl, 
             tagNames: [recruitmentType],
-            payments: paymentArray,
+            payment,
             recruitmentPostDetailsReq,
         };
 
         if (onSubmit) {
-            onSubmit(postData.title, postData.content, postData.images, postData.tagNames, postData.payments, postData.recruitmentPostDetailsReq);
+            onSubmit(postData.title, postData.content, postData.imageUrl, postData.tagNames, postData.payment, postData.recruitmentPostDetailsReq);
         }
     };
 
@@ -315,11 +333,11 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
                             </div>
                         </div>
                         <div className="details-item">
-                            <label htmlFor="weeklyWorkCount">주간 작업 갯수</label>
+                            <label htmlFor="weeklyWorkload">주간 작업량</label>
                             <select
-                                id="weeklyWorkCount"
-                                value={weeklyWorkCount}
-                                onChange={(e) => setWeeklyWorkCount(e.target.value)}
+                                id="weeklyWorkload"
+                                value={weeklyWorkload}
+                                onChange={(e) => setWeeklyWorkload(e.target.value)}
                                 className="details-select"
                             >
                                 <option value="">선택하세요</option>
@@ -389,8 +407,8 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
             <Modal onClose={() => setShowModal(false)}>
                 <h2 className="post-editor-modal-title">대표 이미지 설정</h2>
                 <div className="post-editor-representative-image-container" onClick={handleRepresentativeImageUpload}>
-                    {representativeImage ? (
-                        <img src={representativeImage} alt="대표 이미지" className="post-editor-representative-image" />
+                    {imageUrl ? (
+                        <img src={imageUrl} alt="대표 이미지" className="post-editor-representative-image" />
                     ) : (
                         <div className="post-editor-image-placeholder">
                             <span>+</span>

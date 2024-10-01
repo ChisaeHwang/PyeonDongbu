@@ -2,7 +2,6 @@ package com.pyeondongbu.editorrecruitment.domain.recruitment.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyeondongbu.editorrecruitment.domain.global.ControllerTest;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostDetailsRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.service.RecruitmentPostService;
@@ -23,13 +22,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.pyeondongbu.editorrecruitment.domain.global.restdocs.RestDocsConfiguration.field;
-import static com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType.MONTHLY_SALARY;
-import static com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType.PER_PROJECT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -61,26 +58,12 @@ class RecruitmentPostSearchControllerTest extends ControllerTest {
     @BeforeEach
     void setUp() {
         RecruitmentPostDetailsRes detailsRes = RecruitmentPostDetailsRes.builder()
-                .maxSubs(2)
-                .skills(Arrays.asList("Java", "Spring"))
-                .videoTypes(Arrays.asList("튜토리얼", "강의"))
-                .remarks("테스트 비고")
                 .build();
 
         RecruitmentPostRes response = RecruitmentPostRes.builder()
-                .id(1L)
-                .title("샘플 게시글 제목")
-                .content("이것은 샘플 게시글 내용입니다.")
-                .authorName("작성자")
-                .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .images(Arrays.asList("image1.jpg", "image2.jpg"))
-                .tagNames(Arrays.asList("태그1", "태그2"))
-                .payments(Arrays.asList(new PaymentDTO(MONTHLY_SALARY, "5000"), new PaymentDTO(PER_PROJECT, "50")))
-                .recruitmentPostDetailsRes(detailsRes)
                 .build();
 
-        given(postService.searchRecruitmentPosts(any(), any(), any(), any(), any()))
+        given(postService.searchRecruitmentPosts(any(),any(),any(), any(), any(), any(), any()))
                 .willReturn(List.of(response));
     }
 

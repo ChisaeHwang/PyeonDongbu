@@ -1,7 +1,9 @@
 package com.pyeondongbu.editorrecruitment.domain.common.domain.specification;
 
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -50,8 +52,10 @@ public class RecruitmentPostSpecification {
     }
 
     public static Specification<RecruitmentPost> combineSpecifications(
-            Integer maxSubs,
             String title,
+            String maxSubs,
+            PaymentType paymentType,
+            String workload,
             List<String> skills,
             List<String> videoTypes,
             List<String> tagNames
@@ -60,13 +64,57 @@ public class RecruitmentPostSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
+            Join<RecruitmentPost, Payment> paymentJoin = root.join("payment", JoinType.INNER);
 
             if (maxSubs != null) {
-                predicates.add(cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs));
+                switch(maxSubs) {
+                    case "0-1":
+                        predicates.add(cb.lessThanOrEqualTo(detailsJoin.get("maxSubs"), 10000));
+                        break;
+                    case "1-5":
+                        predicates.add(cb.between(detailsJoin.get("maxSubs"), 10001, 50000));
+                        break;
+                    case "5-10":
+                        predicates.add(cb.between(detailsJoin.get("maxSubs"), 50000, 100000));
+                        break;
+                    case "10-50":
+                        predicates.add(cb.between(detailsJoin.get("maxSubs"), 100000, 500000));
+                        break;
+                    case "50-100":
+                        predicates.add(cb.between(detailsJoin.get("maxSubs"), 500000, 1000000));
+                        break;
+                    case "100+":
+                        predicates.add(cb.greaterThan(detailsJoin.get("maxSubs"), 1000000));
+                        break;
+                }
             }
 
             if (title != null && !title.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+            }
+
+            if (workload != null) {
+                switch(workload) {
+                    case "1-2":
+                        predicates.add(cb.or(
+                                cb.equal(detailsJoin.get("weeklyWorkload"), 1),
+                                cb.equal(detailsJoin.get("weeklyWorkload"), 2)
+                        ));
+                        break;
+                    case "3-4":
+                        predicates.add(cb.or(
+                                cb.equal(detailsJoin.get("weeklyWorkload"), 3),
+                                cb.equal(detailsJoin.get("weeklyWorkload"), 4)
+                        ));
+                        break;
+                    case "5+":
+                        predicates.add(cb.greaterThanOrEqualTo(detailsJoin.get("weeklyWorkload"), 5));
+                        break;
+                }
+            }
+
+            if (paymentType != null) {
+                predicates.add(cb.equal(paymentJoin.get("type"), paymentType));
             }
 
             if (skills != null && !skills.isEmpty()) {
