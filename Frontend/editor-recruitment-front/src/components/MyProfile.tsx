@@ -15,7 +15,6 @@ import educationIcon from '../assets/educationIcon';
 import reviewIcon from '../assets/reviewIcon';
 import UploadIcon from '../assets/UploadIcon';
 
-// Role 타입 정의
 type Role = 'CLIENT' | 'EDITOR' | 'ETC_WORKER' | 'GUEST';
 
 type FilterOption = {
@@ -171,6 +170,14 @@ const MyProfile = () => {
 
     const isWorker = (role: Role) => role === 'EDITOR' || role === 'ETC_WORKER';
 
+    const handleMaxSubsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        if (parseInt(value) > 10000000) {
+            value = '10000000';
+        }
+        setMaxSubs(value);
+    };
+
     return (
         <div className="profile-container">
             <div className="profile-header">
@@ -302,7 +309,7 @@ const MyProfile = () => {
                     <input
                         type="text"
                         value={isEditing ? maxSubs : formatNumber(maxSubs)}
-                        onChange={(e) => setMaxSubs(e.target.value.replace(/[^0-9]/g, ''))}
+                        onChange={handleMaxSubsChange}
                         placeholder="최고 구독자 수를 입력하세요 (최대 1,000만 명)"
                         disabled={!isEditing}
                     />

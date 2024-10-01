@@ -89,6 +89,13 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
     }
 
+    public MyPageRes getPublicProfile(String nickname) {
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
+
+        return MyPageRes.from(member);
+    }
+
     /**
      * Private 함수들
      */
@@ -123,4 +130,5 @@ public class MemberServiceImpl implements MemberService {
         memberDetailsRepository.save(memberDetails);
         return memberRepository.save(member);
     }
+
 }

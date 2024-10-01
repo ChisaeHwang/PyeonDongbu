@@ -7,6 +7,7 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostD
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.details.RecruitmentPostDetails;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.global.annotation.DistributedLock;
@@ -103,15 +104,19 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
     @Override
     @Transactional(readOnly = true)
     public List<RecruitmentPostRes> searchRecruitmentPosts(
-            final Integer maxSubs,
             final String title,
+            final String maxSubs,
+            final PaymentType paymentType,
+            final String workload,
             final List<String> skills,
             final List<String> videoTypes,
             final List<String> tagNames
     ) {
         Specification<RecruitmentPost> spec = RecruitmentPostSpecification.combineSpecifications(
-                maxSubs,
                 title,
+                maxSubs,
+                paymentType,
+                workload,
                 skills,
                 videoTypes,
                 tagNames

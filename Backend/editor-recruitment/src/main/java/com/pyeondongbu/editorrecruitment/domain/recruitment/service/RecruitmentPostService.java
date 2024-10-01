@@ -1,5 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.recruitment.service;
 
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentType;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
@@ -24,8 +25,10 @@ public interface RecruitmentPostService {
 
 
     List<RecruitmentPostRes> searchRecruitmentPosts(
-            final Integer maxSubs,
             final String title,
+            final String maxSubs,
+            final PaymentType paymentType,
+            final String workload,
             final List<String> skills,
             final List<String> videoTypes,
             final List<String> tagNames

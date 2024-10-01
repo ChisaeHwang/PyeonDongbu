@@ -15,6 +15,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
 
     boolean existsByNickname(String nickname);
 
+    Optional<Member> findByNickname(String nickname);
+
     @Modifying
     @Query("""
             UPDATE Member member

@@ -15,9 +15,10 @@ import lombok.*;
 public class Payment {
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "payment_type")
     private PaymentType type;
 
-    @Column(nullable = false)
+    @Column(name = "payment_amount", nullable = false)
     private String amount;
 
 
