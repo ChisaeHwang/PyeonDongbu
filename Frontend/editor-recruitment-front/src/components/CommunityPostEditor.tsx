@@ -4,26 +4,30 @@ import 'react-quill/dist/quill.snow.css';
 import '../styles/CommunityPostEditor.css';
 
 interface CommunityPostEditorProps {
-    onSubmit: (title: string, content: string, tag: string) => void;
+    onSubmit: (title: string, content: string, tags: string[]) => void;
 }
 
 const CommunityPostEditor: React.FC<CommunityPostEditorProps> = ({ onSubmit }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [tag, setTag] = useState('');
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [tagError, setTagError] = useState(false);
     const quillRef = useRef<ReactQuill>(null);
 
     const handleSubmit = () => {
-        if (!tag) {
+        if (selectedTags.length === 0) {
             setTagError(true);
             return;
         }
-        onSubmit(title, content, tag);
+        onSubmit(title, content, selectedTags);
     };
 
-    const handleTagSelect = (selectedTag: string) => {
-        setTag(selectedTag);
+    const handleTagToggle = (tag: string) => {
+        setSelectedTags(prevTags =>
+            prevTags.includes(tag)
+                ? prevTags.filter(t => t !== tag)
+                : [...prevTags, tag]
+        );
         setTagError(false);
     };
 
@@ -64,19 +68,19 @@ const CommunityPostEditor: React.FC<CommunityPostEditorProps> = ({ onSubmit }) =
                     className="community-post-editor__content-input"
                 />
                 <div className="community-post-editor__tag-selection">
-                    <h3>태그 선택</h3>
+                    <h3>태그 선택 (1개 이상)</h3>
                     <div className="community-post-editor__tag-buttons">
                         {tags.map((tagOption) => (
                             <button
                                 key={tagOption}
-                                className={`community-post-editor__tag-button ${tag === tagOption ? 'active' : ''}`}
-                                onClick={() => handleTagSelect(tagOption)}
+                                className={`community-post-editor__tag-button ${selectedTags.includes(tagOption) ? 'active' : ''}`}
+                                onClick={() => handleTagToggle(tagOption)}
                             >
                                 {tagOption}
                             </button>
                         ))}
                     </div>
-                    {tagError && <p className="tag-error-message">태그를 선택해 주세요.</p>}
+                    {tagError && <p className="tag-error-message">태그를 1개 이상 선택해 주세요.</p>}
                 </div>
                 <div className="button-container">
                     <button onClick={handleSubmit} className="community-post-editor__submit-button">

@@ -28,27 +28,29 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     private final CommunityPostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostValidationUtils validationUtils;
+
     private final RedisLockService redisLockService;
 
 
     @Override
     @Transactional
-    public CommunityPostRes create(final CommunityPostReq request, final Long memberId) {
+    public CommunityPostRes create(final CommunityPostReq req, final Long memberId) {
         final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
+        final PostValidationUtils.ValidationResult validationResult = validationUtils.validateCommunityPostReq(req);
         final CommunityPost post = CommunityPost.builder()
                 .member(member)
                 .build();
-
-        return createOrUpdatePost(post, request);
+        return createOrUpdatePost(post, req, validationResult);
     }
 
     @Override
     @Transactional
-    public CommunityPostRes update(final Long postId, final CommunityPostReq request, final Long memberId) {
+    public CommunityPostRes update(final Long postId, final CommunityPostReq req, final Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
                 .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
-        return createOrUpdatePost(post, request);
+        final PostValidationUtils.ValidationResult validationResult = validationUtils.validateCommunityPostReq(req);
+        return createOrUpdatePost(post, req, validationResult);
     }
 
     @Override
@@ -88,6 +90,14 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    public List<CommunityPostRes> searchPostsByTags(List<String> tagNames) {
+        List<CommunityPost> posts = postRepository.findByTagNames(tagNames);
+        return posts.stream()
+                .map(CommunityPostRes::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public void deletePost(final Long postId, final Long memberId) {
         final CommunityPost post = postRepository.findByMemberIdAndId(memberId, postId)
@@ -101,9 +111,10 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
     private CommunityPostRes createOrUpdatePost(
             final CommunityPost post,
-            final CommunityPostReq req
+            final CommunityPostReq req,
+            final PostValidationUtils.ValidationResult validationResult
     ) {
-        post.update(req);
+        post.update(req, validationResult);
         postRepository.save(post);
         return CommunityPostRes.from(post);
     }

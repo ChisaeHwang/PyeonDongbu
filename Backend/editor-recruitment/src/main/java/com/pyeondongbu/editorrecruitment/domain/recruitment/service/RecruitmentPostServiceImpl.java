@@ -57,7 +57,6 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
         return createOrUpdatePost(post, req, validationResult);
     }
 
-    // To-DO 현재 게시글 작성자인지 확인하는 거 추가 Response에 isAuthor 추가
     @Override
     @Transactional(readOnly = true)
     @DistributedLock

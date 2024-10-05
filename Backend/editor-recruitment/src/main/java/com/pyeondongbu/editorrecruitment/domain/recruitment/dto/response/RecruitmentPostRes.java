@@ -32,6 +32,10 @@ public class RecruitmentPostRes {
 
     private Boolean isAuthor;
 
+    /**
+     * 게시글 하나 조회 시
+     */
+
     public static RecruitmentPostRes from(
             final RecruitmentPost post,
             final Boolean isAuthor
@@ -51,6 +55,10 @@ public class RecruitmentPostRes {
                 .isAuthor(isAuthor)
                 .build();
     }
+
+    /**
+     * 게시글 전체 조회 시
+     */
 
     public static RecruitmentPostRes from(
             final RecruitmentPost post
