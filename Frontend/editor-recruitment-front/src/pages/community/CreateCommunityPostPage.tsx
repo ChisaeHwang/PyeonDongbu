@@ -6,7 +6,7 @@ import CommunityPostEditor from '../../components/CommunityPostEditor';
 const CreateCommunityPostPage: React.FC = () => {
     const navigate = useNavigate();
 
-    const handlePostSubmit = async (title: string, content: string, tag: string) => {
+    const handlePostSubmit = async (title: string, content: string, tags: string[]) => {
         try {
             const accessToken = sessionStorage.getItem('access-token');
             if (!accessToken) {
@@ -16,7 +16,7 @@ const CreateCommunityPostPage: React.FC = () => {
             const requestData = {
                 title,
                 content,
-                tag,
+                tagNames: tags, 
             };
 
             await axios.post('http://localhost:8080/api/community/posts', requestData, {
@@ -26,14 +26,14 @@ const CreateCommunityPostPage: React.FC = () => {
                 withCredentials: true,
             });
 
-            navigate('/community'); // 커뮤니티 탭으로 이동
+            navigate('/community');
         } catch (error) {
             console.error('게시글 작성 중 오류가 발생했습니다.', error);
             
             if (axios.isAxiosError(error) && error.response?.status === 401) {
                 alert('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
-                sessionStorage.removeItem('access-token'); // 만료된 토큰 제거
-                navigate('/'); // 메인 페이지로 이동
+                sessionStorage.removeItem('access-token');
+                navigate('/');
             } else {
                 alert('게시글 작성 중 오류가 발생했습니다.');
             }

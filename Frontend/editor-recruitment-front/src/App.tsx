@@ -15,6 +15,7 @@ import PartnerMatchingPage from './pages/PartnerMatchingPage';
 import PostDetailPage from './pages/recruitment/PostDetailPage';
 import MyPostsPage from './pages/MyPostsPage';
 import EditPostPage from './pages/recruitment/EditPostPage';
+import SearchResultsPage from './pages/SearchResultsPage';
 import './App.css';
 
 const ToastContainer = lazy(() => import('react-toastify').then(module => ({ default: module.ToastContainer })));
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path="myposts" element={<MyPostsPage />} />
                     <Route path="/post/:postId" element={<PostDetailPage />} />
                     <Route path="/post/edit/:postId" element={<EditPostPage />} />
+                    <Route path="/search" element={<SearchResultsPage />} />
                 </Route>
             </Routes>
         </Router>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 import '../../styles/CommunityPostDetailPage.css';
 
 interface CommunityPost {
@@ -53,6 +54,10 @@ const CommunityPostDetailPage: React.FC = () => {
         return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     };
 
+    const createMarkup = (html: string) => {
+        return { __html: DOMPurify.sanitize(html) };
+    };
+
     return (
         <div className="community-post-detail-page">
             <div className="post-header">
@@ -63,9 +68,7 @@ const CommunityPostDetailPage: React.FC = () => {
                     <span className="post-views">조회수: {post.viewCount}</span>
                 </div>
             </div>
-            <div className="post-content">
-                <p>{post.content}</p>
-            </div>
+            <div className="post-content" dangerouslySetInnerHTML={createMarkup(post.content)} />
         </div>
     );
 };

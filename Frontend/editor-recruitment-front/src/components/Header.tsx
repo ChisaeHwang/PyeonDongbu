@@ -107,7 +107,7 @@ const Header = () => {
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
-            navigate(`/search?query=${searchQuery}`);
+            navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
         }
     };
 

@@ -16,6 +16,8 @@ public interface CommunityPostService {
 
     List<CommunityPostRes> listPosts();
 
+    List<CommunityPostRes> searchPostsByTags(List<String> tagNames);
+
     CommunityPostRes update(final Long postId, final CommunityPostReq request, final Long memberId);
 
     void deletePost(final Long postId, final Long memberId);

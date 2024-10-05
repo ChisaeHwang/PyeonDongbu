@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/CommunityPage.css';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { extractTextFromHTML } from '../../utils/TextExtractor';
 
 interface CommunityPost {
     id: number;
@@ -31,7 +32,16 @@ const CommunityPage: React.FC = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get<ApiResponse>('http://localhost:8080/api/community/posts');
+                let url = 'http://localhost:8080/api/community/posts';
+                let response;
+
+                if (selectedCategory === 'all') {
+                    response = await axios.get<ApiResponse>(url);
+                } else {
+                    url = `${url}/search/by-tags?tagNames=${selectedCategory}`;
+                    response = await axios.get<ApiResponse>(url);
+                }
+
                 setPosts(response.data.data);
                 const sortedPosts = [...response.data.data].sort((a, b) => b.viewCount - a.viewCount);
                 setPopularPosts(sortedPosts.slice(0, 5));
@@ -41,7 +51,7 @@ const CommunityPage: React.FC = () => {
         };
 
         fetchPosts();
-    }, []);
+    }, [selectedCategory]);
 
     const categories = ['편집', '유튜버', '썸네일러', '모델링'];
 
@@ -78,7 +88,7 @@ const CommunityPage: React.FC = () => {
                     {popularPosts.map((post) => (
                         <div key={post.id} className="popular-post-item" onClick={() => handlePostClick(post.id)}>
                             <h4>{post.title}</h4>
-                            <p>{post.content.slice(0, 15)}...</p>
+                            <p>{extractTextFromHTML(post.content).slice(0, 15)}...</p>
                             <span className="popular-post-author">{post.memberName}</span>
                         </div>
                     ))}
@@ -126,7 +136,7 @@ const CommunityPage: React.FC = () => {
                                 onClick={() => handlePostClick(post.id)}
                             >
                                 <h3>{post.title}</h3>
-                                <p>{post.content}</p>
+                                <p>{extractTextFromHTML(post.content)}</p>
                                 <div className="post-info">
                                     <span className="post-author">{post.memberName}</span>
                                     <span className="post-date">{new Date(post.createdAt).toLocaleDateString()}</span>

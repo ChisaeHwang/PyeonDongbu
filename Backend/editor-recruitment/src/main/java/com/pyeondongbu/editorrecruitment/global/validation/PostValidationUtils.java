@@ -2,6 +2,7 @@ package com.pyeondongbu.editorrecruitment.global.validation;
 
 import com.pyeondongbu.editorrecruitment.domain.common.dao.PostViewRepository;
 import com.pyeondongbu.editorrecruitment.domain.common.domain.PostView;
+import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityPostReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
@@ -62,6 +63,27 @@ public class PostValidationUtils {
         return new ValidationResult(tags, payment);
     }
 
+    // To-DO 나중에 리팩토링 필요할 거 같은 부분, 마음에 안 듬
+    public ValidationResult validateCommunityPostReq(CommunityPostReq postReq) {
+        Set<ConstraintViolation<CommunityPostReq>> violations = validator.validate(postReq);
+
+        if (!violations.isEmpty()) {
+            throw new BadRequestException(INVALID_POST_DETAILS);
+        }
+
+
+        for(String s : postReq.getTagNames()) {
+            log.info("태그 이름 = " + s);
+        }
+
+        Set<Tag> tags = validateTagNames(postReq.getTagNames());
+
+        return new ValidationResult(tags, null);
+    }
+
+
+
+
     private Set<Tag> validateTagNames(List<String> tagNames) {
         if (tagNames == null || tagNames.isEmpty()) {
             throw new BadRequestException(INVALID_TAG_NAME);
@@ -102,4 +124,5 @@ public class PostValidationUtils {
 
     public record ValidationResult(Set<Tag> tags, Payment payment) {
     }
+
 }
