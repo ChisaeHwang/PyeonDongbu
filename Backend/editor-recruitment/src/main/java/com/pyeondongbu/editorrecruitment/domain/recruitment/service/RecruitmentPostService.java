@@ -5,6 +5,8 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.Recruitm
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostTagReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
@@ -24,14 +26,15 @@ public interface RecruitmentPostService {
     void deletePost(final Long postId, final Long memberId);
 
 
-    List<RecruitmentPostRes> searchRecruitmentPosts(
-            final String title,
-            final String maxSubs,
-            final PaymentType paymentType,
-            final String workload,
-            final List<String> skills,
-            final List<String> videoTypes,
-            final List<String> tagNames
+    Page<RecruitmentPostRes> searchRecruitmentPosts(
+            String title,
+            String maxSubs,
+            PaymentType paymentType,
+            String workload,
+            List<String> skills,
+            List<String> videoTypes,
+            List<String> tagNames,
+            Pageable pageable
     );
 
     List<RecruitmentPostRes> searchRecruitmentPostsByTags(

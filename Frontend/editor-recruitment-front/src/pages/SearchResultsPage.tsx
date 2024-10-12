@@ -31,24 +31,40 @@ interface SearchResult {
     recruitmentPostDetailsRes: RecruitmentPostDetailsRes;
 }
 
+interface PageInfo {
+    content: SearchResult[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+}
+
 const SearchResultsPage: React.FC = () => {
-    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [searchResults, setSearchResults] = useState<PageInfo>({
+        content: [],
+        totalPages: 0,
+        totalElements: 0,
+        size: 10,
+        number: 0
+    });
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(0);
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         const searchQuery = new URLSearchParams(location.search).get('query');
         if (searchQuery) {
-            fetchSearchResults(searchQuery);
+            fetchSearchResults(searchQuery, currentPage);
         }
-    }, [location.search]);
+    }, [location.search, currentPage]);
 
-    const fetchSearchResults = async (query: string) => {
+    const fetchSearchResults = async (query: string, page: number) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/recruitment/posts/search/by-details?title=${encodeURIComponent(query)}`);
+            const response = await axios.get(`http://localhost:8080/api/recruitment/posts/search/by-details?title=${encodeURIComponent(query)}&page=${page}&size=10`);
             setSearchResults(response.data.data);
+            setCurrentPage(page);
         } catch (error) {
             console.error('검색 결과를 가져오는데 실패했습니다:', error);
         } finally {
@@ -83,6 +99,13 @@ const SearchResultsPage: React.FC = () => {
         return num.toLocaleString('ko-KR', { maximumFractionDigits: 0 });
     };
 
+    const handlePageChange = (newPage: number) => {
+        const searchQuery = new URLSearchParams(location.search).get('query');
+        if (searchQuery) {
+            fetchSearchResults(searchQuery, newPage);
+        }
+    };
+
     if (loading) {
         return <div className="loading">검색 중...</div>;
     }
@@ -91,8 +114,8 @@ const SearchResultsPage: React.FC = () => {
         <div className="search-results-page">
             <h1 className="search-results-title">검색 결과</h1>
             <div className="search-results-list">
-                {searchResults.length > 0 ? (
-                    searchResults.map((post) => (
+                {searchResults.content.length > 0 ? (
+                    searchResults.content.map((post) => (
                         <div key={post.id} className="recruitment-post-item" onClick={() => navigate(`/post/${post.id}`)}>
                             <div className="post-image">
                                 {post.imageUrl && (
@@ -133,6 +156,27 @@ const SearchResultsPage: React.FC = () => {
                     <div className="no-results">검색 결과가 없습니다.</div>
                 )}
             </div>
+            {searchResults.totalPages > 1 && (
+                <div className="pagination">
+                    <button 
+                        onClick={() => handlePageChange(currentPage - 1)} 
+                        disabled={currentPage === 0}
+                        className="pagination-arrow prev"
+                        aria-label="이전 페이지"
+                    >
+                        &lt;
+                    </button>
+                    <span className="pagination-info">{currentPage + 1} / {searchResults.totalPages}</span>
+                    <button 
+                        onClick={() => handlePageChange(currentPage + 1)} 
+                        disabled={currentPage === searchResults.totalPages - 1}
+                        className="pagination-arrow next"
+                        aria-label="다음 페이지"
+                    >
+                        &gt;
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,24 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/CommunityPage.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { extractTextFromHTML } from '../../utils/TextExtractor';
+import { debounce } from 'lodash'; // lodash 라이브러리 사용
 
 interface CommunityPost {
     id: number;
     title: string;
     content: string;
     memberName: string;
+    tagNames: string[];
     createdAt: string;
     modifiedAt: string;
     viewCount: number;
+    isAuthor: boolean | null;
 }
 
-interface ApiResponse {
+interface PageInfo {
+    content: CommunityPost[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    number: number;
+}
+
+interface ApiResponse<T> {
     code: string;
     message: string;
-    data: CommunityPost[];
+    data: T;
 }
 
 const CommunityPage: React.FC = () => {
@@ -28,36 +39,54 @@ const CommunityPage: React.FC = () => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const [popularPosts, setPopularPosts] = useState<CommunityPost[]>([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    const fetchPosts = useCallback(async (search: string = '', page: number = 0, category: string = 'all') => {
+        try {
+            const url = 'http://localhost:8080/api/community/posts/search/by-tags';
+            let params: { search?: string; tagNames?: string; page: number; size: number } = {
+                page: page,
+                size: 10
+            };
+
+            if (search) {
+                params.search = search;
+            }
+
+            if (category !== 'all') {
+                params.tagNames = category;
+            }
+
+            const response = await axios.get<ApiResponse<PageInfo>>(url, { params });
+            setPosts(response.data.data.content);
+            setTotalPages(response.data.data.totalPages);
+            setCurrentPage(response.data.data.number);
+
+            const sortedPosts = [...response.data.data.content].sort((a, b) => b.viewCount - a.viewCount);
+            setPopularPosts(sortedPosts.slice(0, 5));
+        } catch (error) {
+            console.error('게시글을 불러오는 데 실패했습니다:', error);
+        }
+    }, []);
+
+
+    const debouncedFetchPosts = useMemo(
+        () => debounce((search: string, page: number, category: string) => {
+            fetchPosts(search, page, category);
+        }, 300),
+        [fetchPosts]
+    );
 
     useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                let url = 'http://localhost:8080/api/community/posts';
-                let response;
-
-                if (selectedCategory === 'all') {
-                    response = await axios.get<ApiResponse>(url);
-                } else {
-                    url = `${url}/search/by-tags?tagNames=${selectedCategory}`;
-                    response = await axios.get<ApiResponse>(url);
-                }
-
-                setPosts(response.data.data);
-                const sortedPosts = [...response.data.data].sort((a, b) => b.viewCount - a.viewCount);
-                setPopularPosts(sortedPosts.slice(0, 5));
-            } catch (error) {
-                console.error('게시글을 불러오는 데 실패했습니다:', error);
-            }
-        };
-
-        fetchPosts();
-    }, [selectedCategory]);
+        debouncedFetchPosts(searchTerm, 0, selectedCategory);
+    }, [debouncedFetchPosts, searchTerm, selectedCategory]);
 
     const categories = ['편집', '유튜버', '썸네일러', '모델링'];
 
     const handleSearch = () => {
-        // TO-DO 백엔드 검색 로직 추가 필요
-        console.log('Searching for:', searchTerm);
+        setCurrentPage(0);
+        debouncedFetchPosts(searchTerm, 0, selectedCategory);
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,9 +96,7 @@ const CommunityPage: React.FC = () => {
     };
 
     const handleSearchIconClick = () => {
-        if (searchInputRef.current) {
-            searchInputRef.current.focus();
-        }
+        handleSearch();
     };
 
     const handlePostClick = (postId: number) => {
@@ -80,6 +107,38 @@ const CommunityPage: React.FC = () => {
         navigate('/community/create');
     };
 
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
+        setSearchTerm('');
+        setCurrentPage(0);
+        if (searchInputRef.current) {
+            searchInputRef.current.value = '';
+        }
+        debouncedFetchPosts('', 0, category);
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+        debouncedFetchPosts(searchTerm, newPage, selectedCategory);
+    };
+
+    // 인기 게시글을 가져오는 함수 수정
+    const fetchPopularPosts = useCallback(async () => {
+        try {
+            const response = await axios.get<ApiResponse<CommunityPost[]>>('http://localhost:8080/api/community/posts/popular', {
+                params: { limit: 5 }
+            });
+            setPopularPosts(response.data.data);
+        } catch (error) {
+            console.error('인기 게시글을 불러오는데 실패했습니다:', error);
+        }
+    }, []);
+
+    // 컴포넌트 마운트 시 인기 게시글 가져오기
+    useEffect(() => {
+        fetchPopularPosts();
+    }, [fetchPopularPosts]);
+
     return (
         <div className="community-page">
             <div className="content-wrapper">
@@ -88,7 +147,7 @@ const CommunityPage: React.FC = () => {
                     {popularPosts.map((post) => (
                         <div key={post.id} className="popular-post-item" onClick={() => handlePostClick(post.id)}>
                             <h4>{post.title}</h4>
-                            <p>{extractTextFromHTML(post.content).slice(0, 15)}...</p>
+                            <p>{extractTextFromHTML(post.content).slice(0, 50)}...</p>
                             <span className="popular-post-author">{post.memberName}</span>
                         </div>
                     ))}
@@ -110,7 +169,7 @@ const CommunityPage: React.FC = () => {
                         <div className="category-buttons">
                             <button
                                 className={selectedCategory === 'all' ? 'active' : ''}
-                                onClick={() => setSelectedCategory('all')}
+                                onClick={() => handleCategoryChange('all')}
                             >
                                 전체
                             </button>
@@ -118,7 +177,7 @@ const CommunityPage: React.FC = () => {
                                 <button
                                     key={category}
                                     className={selectedCategory === category ? 'active' : ''}
-                                    onClick={() => setSelectedCategory(category)}
+                                    onClick={() => handleCategoryChange(category)}
                                 >
                                     {category}
                                 </button>
@@ -145,6 +204,27 @@ const CommunityPage: React.FC = () => {
                             </div>
                         ))}
                     </div>
+                    {totalPages > 1 && (
+                        <div className="pagination">
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)} 
+                                disabled={currentPage === 0}
+                                className="pagination-arrow prev"
+                                aria-label="이전 페이지"
+                            >
+                                &lt;
+                            </button>
+                            <span className="pagination-info">{currentPage + 1} / {totalPages}</span>
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)} 
+                                disabled={currentPage === totalPages - 1}
+                                className="pagination-arrow next"
+                                aria-label="다음 페이지"
+                            >
+                                &gt;
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

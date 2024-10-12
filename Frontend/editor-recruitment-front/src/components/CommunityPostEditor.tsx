@@ -5,12 +5,17 @@ import '../styles/CommunityPostEditor.css';
 
 interface CommunityPostEditorProps {
     onSubmit: (title: string, content: string, tags: string[]) => void;
+    initialData?: {
+        title: string;
+        content: string;
+        tags: string[];
+    };
 }
 
-const CommunityPostEditor: React.FC<CommunityPostEditorProps> = ({ onSubmit }) => {
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+const CommunityPostEditor: React.FC<CommunityPostEditorProps> = ({ onSubmit, initialData }) => {
+    const [title, setTitle] = useState(initialData?.title || '');
+    const [content, setContent] = useState(initialData?.content || '');
+    const [selectedTags, setSelectedTags] = useState<string[]>(initialData?.tags || []);
     const [tagError, setTagError] = useState(false);
     const quillRef = useRef<ReactQuill>(null);
 

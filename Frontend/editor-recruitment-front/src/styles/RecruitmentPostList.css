@@ -88,3 +88,60 @@
     width: 100%;
 }
 
+/* 기존 스타일 유지 */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;  /* 상단 마진 증가 */
+    margin-bottom: 40px;  /* 하단 마진 추가 */
+}
+
+.pagination-arrow {
+    background: none;
+    border: 2px solid #333;  /* 테두리 추가 */
+    border-radius: 50%;  /* 원형 버튼 */
+    font-size: 20px;
+    color: #333;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+    width: 40px;  /* 너비 지정 */
+    height: 40px;  /* 높이 지정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-arrow:hover:not(:disabled) {
+    background-color: #333;
+    color: #fff;
+}
+
+.pagination-arrow:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    margin: 0 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media (max-width: 768px) {
+    .pagination-arrow {
+        font-size: 18px;
+        width: 36px;
+        height: 36px;
+    }
+
+    .pagination-info {
+        font-size: 14px;
+        margin: 0 15px;
+    }
+}
+

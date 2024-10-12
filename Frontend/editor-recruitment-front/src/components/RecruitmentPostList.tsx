@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { debounce } from 'lodash';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
 import '../styles/RecruitmentPostList.css';
@@ -143,11 +142,12 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
     workload
 }) => {
     const [posts, setPosts] = useState<RecruitmentPost[]>([]);
-    const [filteredPosts, setFilteredPosts] = useState<RecruitmentPost[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
-    const fetchPosts = useCallback(async () => {
+    const fetchPosts = useCallback(async (page: number) => {
         setLoading(true);
         setError(null);
         try {
@@ -157,7 +157,9 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
                 tagNames: tagNames.join(','),
                 ...(maxSubs && { maxSubs }),
                 ...(paymentType && { paymentType }),
-                ...(workload && { workload })
+                ...(workload && { workload }),
+                page: (page).toString(), 
+                size: '10'
             });
 
             const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?${params}`, {
@@ -170,8 +172,9 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
                 throw new Error('서버 응답이 실패했습니다');
             }
             const data = await response.json();
-            setPosts(data.data);
-            setFilteredPosts(data.data);
+            
+            setPosts(data.data.content || []);
+            setTotalPages(data.data.totalPages || 0);
         } catch (error) {
             console.error('구인 게시글을 불러오는데 실패했습니다.', error);
             setError('게시글을 불러오는데 실패했습니다. 다시 시도해주세요.');
@@ -181,26 +184,15 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
     }, [skills, videoTypes, tagNames, maxSubs, paymentType, workload]);
 
     useEffect(() => {
-        fetchPosts();
-    }, [fetchPosts]);
+        fetchPosts(currentPage);
+    }, [fetchPosts, currentPage]);
 
     useEffect(() => {
-        const filterPosts = () => {
-            const filtered = posts.filter(post => 
-                (!skills.length || post.recruitmentPostDetailsRes.skills.some(skill => skills.includes(skill))) &&
-                (!videoTypes.length || post.recruitmentPostDetailsRes.videoTypes.some(type => videoTypes.includes(type))) &&
-                (!tagNames.length || post.tagNames.some(tag => tagNames.includes(tag)))
-            );
-            setFilteredPosts(filtered);
-        };
+    }, [posts]);
 
-        const debouncedFilterPosts = debounce(filterPosts, 300);
-        debouncedFilterPosts();
-
-        return () => {
-            debouncedFilterPosts.cancel();
-        };
-    }, [posts, skills, videoTypes, tagNames]);
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage);
+    };
 
     if (loading) {
         return <div className="loading">로딩 중...</div>;
@@ -212,24 +204,49 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
 
     return (
         <div className="recruitment-post-list-container">
-            {filteredPosts.length > 0 ? (
-                sliderSettings ? (
-                    <Slider {...sliderSettings}>
-                        {filteredPosts.map((post) => (
-                            <div key={post.id}>
-                                <RecruitmentPostItem post={post} variant={variant} />
-                            </div>
-                        ))}
-                    </Slider>
-                ) : (
-                    <div className="recruitment-post-list">
-                        {filteredPosts.map((post) => (
-                            <RecruitmentPostItem key={post.id} post={post} variant={variant} />
-                        ))}
-                    </div>
-                )
+            {posts.length > 0 ? (
+                <>
+                    {sliderSettings ? (
+                        <Slider {...sliderSettings}>
+                            {posts.map((post) => (
+                                <div key={post.id}>
+                                    <RecruitmentPostItem post={post} variant={variant} />
+                                </div>
+                            ))}
+                        </Slider>
+                    ) : (
+                        <div className="recruitment-post-list">
+                            {posts.map((post) => (
+                                <RecruitmentPostItem key={post.id} post={post} variant={variant} />
+                            ))}
+                        </div>
+                    )}
+                    {!sliderSettings && variant === 'jobs' && (
+                        <div className="pagination">
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)} 
+                                disabled={currentPage === 0}
+                                className="pagination-arrow prev"
+                                aria-label="이전 페이지"
+                            >
+                                &lt;
+                            </button>
+                            <span className="pagination-info">{currentPage + 1} / {Math.max(totalPages, 1)}</span>
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)} 
+                                disabled={currentPage === Math.max(totalPages - 1, 0)}
+                                className="pagination-arrow next"
+                                aria-label="다음 페이지"
+                            >
+                                &gt;
+                            </button>
+                        </div>
+                    )}
+                </>
             ) : (
-                <div className="no-posts">게시글이 없습니다.</div>
+                <div className="no-posts">
+                    게시글이 없습니다. (Posts: {posts.length}, TotalPages: {totalPages})
+                </div>
             )}
         </div>
     );

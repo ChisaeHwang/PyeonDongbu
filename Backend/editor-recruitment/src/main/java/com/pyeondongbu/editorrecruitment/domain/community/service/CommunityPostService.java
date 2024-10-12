@@ -3,6 +3,8 @@ package com.pyeondongbu.editorrecruitment.domain.community.service;
 import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityPostReq;
 import com.pyeondongbu.editorrecruitment.domain.community.dto.response.CommunityPostRes;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +17,14 @@ public interface CommunityPostService {
     List<CommunityPostRes> getMyPosts(final Long memberId);
 
     List<CommunityPostRes> listPosts();
+
+    List<CommunityPostRes> getPopularPosts(final int limit);
+
+    Page<CommunityPostRes> searchCommunityPosts(
+            final String search,
+            final List<String> tagNames,
+            final Pageable pageable
+    );
 
     List<CommunityPostRes> searchPostsByTags(List<String> tagNames);
 

@@ -45,8 +45,6 @@ const PostsPage = () => {
   };
 
   useEffect(() => {
-    console.log('선택된 스킬:', selectedSkills);
-    console.log('선택된 비디오 타입:', selectedVideoTypes);
   }, [selectedSkills, selectedVideoTypes]);
 
   const settings = {

@@ -10,6 +10,7 @@ import WorkersPage from './pages/recruitment/WorkersPage';
 import CommunityPage from './pages/community/CommunityPage';
 import CommunityPostDetailPage from './pages/community/CommunityPostDetailPage';
 import CreateCommunityPostPage from './pages/community/CreateCommunityPostPage';
+import EditCommunityPostPage from './pages/community/EditCommunityPostPage';
 import GoogleAuthRedirectHandler from './components/GoogleAuthRedirectHandler';
 import PartnerMatchingPage from './pages/PartnerMatchingPage';
 import PostDetailPage from './pages/recruitment/PostDetailPage';
@@ -37,6 +38,7 @@ const App = () => {
                     <Route path="community" element={<CommunityPage />} />
                     <Route path="/community/post/:postId" element={<CommunityPostDetailPage />} />
                     <Route path="/community/create" element={<CreateCommunityPostPage />} />
+                    <Route path="/community/edit/:postId" element={<EditCommunityPostPage />} />
                     <Route path="match" element={<PartnerMatchingPage />} />
                     <Route path="myposts" element={<MyPostsPage />} />
                     <Route path="/post/:postId" element={<PostDetailPage />} />
