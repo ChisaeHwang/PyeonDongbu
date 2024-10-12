@@ -1,5 +1,6 @@
 package com.pyeondongbu.editorrecruitment.domain.community.service;
 
+import com.pyeondongbu.editorrecruitment.domain.common.domain.specification.CommunityPostSpecification;
 import com.pyeondongbu.editorrecruitment.domain.community.dao.CommunityPostRepository;
 import com.pyeondongbu.editorrecruitment.domain.community.domain.CommunityPost;
 import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityPostReq;
@@ -12,6 +13,10 @@ import com.pyeondongbu.editorrecruitment.global.exception.PostException;
 import com.pyeondongbu.editorrecruitment.global.service.RedisLockService;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,8 +70,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             postRepository.save(post);
         }
 
-        boolean isAuthor = post.getMember().getId().equals(memberId);
-
+        boolean isAuthor = memberId != null && post.getMember().getId().equals(memberId);
 
         return CommunityPostRes.from(post, isAuthor);
     }
@@ -90,11 +94,39 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<CommunityPostRes> getPopularPosts(int limit) {
+        final Pageable topN = PageRequest.of(0, limit);
+        final List<CommunityPost> posts  = postRepository.findTopByOrderByViewCountDesc(topN);
+        return posts.stream()
+                .map(CommunityPostRes::from)
+                .collect(Collectors.toList());
+    }
+
+    // To-DO 필요 없는 로직, 나중에 필요 없는 거 확실하면 삭제
+    @Override
+    @Transactional(readOnly = true)
     public List<CommunityPostRes> searchPostsByTags(List<String> tagNames) {
         List<CommunityPost> posts = postRepository.findByTagNames(tagNames);
         return posts.stream()
                 .map(CommunityPostRes::from)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CommunityPostRes> searchCommunityPosts(
+            final String search,
+            final List<String> tagNames,
+            final Pageable pageable
+    ) {
+        Specification<CommunityPost> spec = CommunityPostSpecification.combineSpecifications(
+                search,
+                tagNames
+        );
+
+        return postRepository.findAll(spec, pageable)
+                .map(CommunityPostRes::from);
     }
 
     @Override

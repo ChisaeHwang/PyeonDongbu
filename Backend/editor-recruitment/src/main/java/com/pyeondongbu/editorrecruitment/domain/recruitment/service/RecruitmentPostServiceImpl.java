@@ -16,6 +16,8 @@ import com.pyeondongbu.editorrecruitment.global.exception.PostException;
 import com.pyeondongbu.editorrecruitment.global.service.RedisLockService;
 import com.pyeondongbu.editorrecruitment.global.validation.PostValidationUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +71,7 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
             postRepository.save(post);
         }
 
-        boolean isAuthor = post.getMember().getId().equals(memberId);
+        boolean isAuthor = memberId != null && post.getMember().getId().equals(memberId);
 
         return RecruitmentPostRes.from(post, isAuthor);
     }
@@ -102,14 +104,15 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RecruitmentPostRes> searchRecruitmentPosts(
+    public Page<RecruitmentPostRes> searchRecruitmentPosts(
             final String title,
             final String maxSubs,
             final PaymentType paymentType,
             final String workload,
             final List<String> skills,
             final List<String> videoTypes,
-            final List<String> tagNames
+            final List<String> tagNames,
+            final Pageable pageable
     ) {
         Specification<RecruitmentPost> spec = RecruitmentPostSpecification.combineSpecifications(
                 title,
@@ -121,9 +124,9 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
                 tagNames
         );
 
-        return postRepository.findAll(spec).stream()
-                .map(RecruitmentPostRes::from)
-                .collect(Collectors.toList());
+        return postRepository
+                .findAll(spec, pageable)
+                .map(RecruitmentPostRes::from);
     }
 
     @Override

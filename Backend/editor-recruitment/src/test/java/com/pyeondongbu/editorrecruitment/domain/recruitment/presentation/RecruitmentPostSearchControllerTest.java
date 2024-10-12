@@ -63,8 +63,9 @@ class RecruitmentPostSearchControllerTest extends ControllerTest {
         RecruitmentPostRes response = RecruitmentPostRes.builder()
                 .build();
 
-        given(postService.searchRecruitmentPosts(any(),any(),any(), any(), any(), any(), any()))
-                .willReturn(List.of(response));
+        given(postService.searchRecruitmentPosts(
+                any(), any(),any(),any(), any(), any(), any(), any()))
+                .willReturn(null);
     }
 
     @DisplayName("검색 가능")

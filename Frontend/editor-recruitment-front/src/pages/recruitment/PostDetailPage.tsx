@@ -51,11 +51,24 @@ const PostDetailPage: React.FC = () => {
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
+                const accessToken = sessionStorage.getItem('access-token');
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                };
+                
+                if (accessToken) {
+                    headers['Authorization'] = `Bearer ${accessToken}`;
+                }
+
                 const response = await axios.get<ApiResponse<RecruitmentPostRes>>(
-                    `http://localhost:8080/api/recruitment/posts/${postId}`
+                    `http://localhost:8080/api/recruitment/posts/${postId}`,
+                    {
+                        headers,
+                        withCredentials: true
+                    }
                 );
                 setPost(response.data.data);
-                setIsAuthor(true);  // 임시로 모든 사용자를 작성자로 설정
+                setIsAuthor(response.data.data.isAuthor);
             } catch (error) {
                 console.error('게시글을 불러오는데 실패했습니다.', error);
                 showErrorToast('게시글을 불러오는데 실패했습니다.');

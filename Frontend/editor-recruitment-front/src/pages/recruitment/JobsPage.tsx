@@ -35,7 +35,7 @@ const JobsPage = () => {
 
     const paymentTypeOptions = [
         { value: '', label: '선택하세요' },
-        { value: 'PER_HOUR', label: '시간당' },
+        { value: 'PER_HOUR', label: '분당' },
         { value: 'PER_PROJECT', label: '건당' },
         { value: 'MONTHLY_SALARY', label: '월급' },
         { value: 'NEGOTIABLE', label: '협의' },

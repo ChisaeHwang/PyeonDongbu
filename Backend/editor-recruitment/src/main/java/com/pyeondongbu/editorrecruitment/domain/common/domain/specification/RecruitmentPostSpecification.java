@@ -7,9 +7,7 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.type.PaymentT
 import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +18,10 @@ public class RecruitmentPostSpecification {
         return (root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
     }
 
-    public static Specification<RecruitmentPost> containsSkills(List<String> skills) {
+    public static Specification<RecruitmentPost> withMaxSubs(Integer maxSubs) {
         return (root, query, cb) -> {
-            query.distinct(true);
-            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-            return detailsJoin.join("skills").in(skills);
-        };
-    }
-
-    public static Specification<RecruitmentPost> containsVideoTypes(List<String> videoTypes) {
-        return (root, query, cb) -> {
-            query.distinct(true);
-            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-            return detailsJoin.join("videoTypes").in(videoTypes);
+            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.LEFT);
+            return cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
         };
     }
 
@@ -41,13 +30,6 @@ public class RecruitmentPostSpecification {
             query.distinct(true);
             Join<RecruitmentPost, Tag> tagJoin = root.join("tags", JoinType.INNER);
             return tagJoin.get("name").in(tagNames);
-        };
-    }
-
-    public static Specification<RecruitmentPost> withMaxSubs(Integer maxSubs) {
-        return (root, query, cb) -> {
-            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-            return cb.greaterThanOrEqualTo(detailsJoin.get("maxSubs"), maxSubs);
         };
     }
 
@@ -63,8 +45,12 @@ public class RecruitmentPostSpecification {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.INNER);
-            Join<RecruitmentPost, Payment> paymentJoin = root.join("payment", JoinType.INNER);
+            // 중복 제거를 위해 distinct 사용
+            query.distinct(true);
+
+            // 조인 최적화
+            Join<RecruitmentPost, RecruitmentPostDetails> detailsJoin = root.join("details", JoinType.LEFT);
+            Join<RecruitmentPost, Payment> paymentJoin = root.join("payment", JoinType.LEFT);
 
             if (maxSubs != null) {
                 switch(maxSubs) {
@@ -117,20 +103,32 @@ public class RecruitmentPostSpecification {
                 predicates.add(cb.equal(paymentJoin.get("type"), paymentType));
             }
 
+            // 서브쿼리를 사용하여 skills, videoTypes, tagNames 처리
             if (skills != null && !skills.isEmpty()) {
-                predicates.add(detailsJoin.join("skills").in(skills));
+                Subquery<Long> skillSubquery = query.subquery(Long.class);
+                Root<RecruitmentPost> subRoot = skillSubquery.from(RecruitmentPost.class);
+                skillSubquery.select(subRoot.get("id"))
+                        .where(subRoot.join("details").join("skills").in(skills));
+                predicates.add(root.get("id").in(skillSubquery));
             }
 
             if (videoTypes != null && !videoTypes.isEmpty()) {
-                predicates.add(detailsJoin.join("videoTypes").in(videoTypes));
+                Subquery<Long> videoTypeSubquery = query.subquery(Long.class);
+                Root<RecruitmentPost> subRoot = videoTypeSubquery.from(RecruitmentPost.class);
+                videoTypeSubquery.select(subRoot.get("id"))
+                        .where(subRoot.join("details").join("videoTypes").in(videoTypes));
+                predicates.add(root.get("id").in(videoTypeSubquery));
             }
 
             if (tagNames != null && !tagNames.isEmpty()) {
-                predicates.add(root.join("tags").get("name").in(tagNames));
+                Subquery<Long> tagSubquery = query.subquery(Long.class);
+                Root<RecruitmentPost> subRoot = tagSubquery.from(RecruitmentPost.class);
+                tagSubquery.select(subRoot.get("id"))
+                        .where(subRoot.join("tags").get("name").in(tagNames));
+                predicates.add(root.get("id").in(tagSubquery));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
-
 }
