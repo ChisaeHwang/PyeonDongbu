@@ -129,6 +129,8 @@ interface RecruitmentPostListProps {
     maxSubs?: string;
     paymentType?: string;
     workload?: string;
+    currentPage: number;
+    setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({ 
@@ -139,12 +141,13 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
     variant,
     maxSubs,
     paymentType,
-    workload
+    workload,
+    currentPage,
+    setCurrentPage
 }) => {
     const [posts, setPosts] = useState<RecruitmentPost[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
     const fetchPosts = useCallback(async (page: number) => {
@@ -158,16 +161,11 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
                 ...(maxSubs && { maxSubs }),
                 ...(paymentType && { paymentType }),
                 ...(workload && { workload }),
-                page: (page).toString(), 
+                page: page.toString(),
                 size: '10'
             });
 
-            const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?${params}`);
             if (!response.ok) {
                 throw new Error('서버 응답이 실패했습니다');
             }
@@ -185,7 +183,7 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
 
     useEffect(() => {
         fetchPosts(currentPage);
-    }, [fetchPosts, currentPage]);
+    }, [fetchPosts, currentPage, skills, videoTypes, tagNames, maxSubs, paymentType, workload]);
 
     useEffect(() => {
     }, [posts]);

@@ -62,14 +62,27 @@ const CommunityPage: React.FC = () => {
             setPosts(response.data.data.content);
             setTotalPages(response.data.data.totalPages);
             setCurrentPage(response.data.data.number);
-
-            const sortedPosts = [...response.data.data.content].sort((a, b) => b.viewCount - a.viewCount);
-            setPopularPosts(sortedPosts.slice(0, 5));
         } catch (error) {
             console.error('게시글을 불러오는 데 실패했습니다:', error);
         }
     }, []);
 
+    // 인기 게시글을 가져오는 함수
+    const fetchPopularPosts = useCallback(async () => {
+        try {
+            const response = await axios.get<ApiResponse<CommunityPost[]>>('http://localhost:8080/api/community/posts/search/popular', {
+                params: { limit: 5 }
+            });
+            setPopularPosts(response.data.data);
+        } catch (error) {
+            console.error('인기 게시글을 불러오는데 실패했습니다:', error);
+        }
+    }, []);
+
+    // 컴포넌트 마운트 시 인기 게시글 가져오기
+    useEffect(() => {
+        fetchPopularPosts();
+    }, [fetchPopularPosts]);
 
     const debouncedFetchPosts = useMemo(
         () => debounce((search: string, page: number, category: string) => {
@@ -121,23 +134,6 @@ const CommunityPage: React.FC = () => {
         setCurrentPage(newPage);
         debouncedFetchPosts(searchTerm, newPage, selectedCategory);
     };
-
-    // 인기 게시글을 가져오는 함수 수정
-    const fetchPopularPosts = useCallback(async () => {
-        try {
-            const response = await axios.get<ApiResponse<CommunityPost[]>>('http://localhost:8080/api/community/posts/popular', {
-                params: { limit: 5 }
-            });
-            setPopularPosts(response.data.data);
-        } catch (error) {
-            console.error('인기 게시글을 불러오는데 실패했습니다:', error);
-        }
-    }, []);
-
-    // 컴포넌트 마운트 시 인기 게시글 가져오기
-    useEffect(() => {
-        fetchPopularPosts();
-    }, [fetchPopularPosts]);
 
     return (
         <div className="community-page">

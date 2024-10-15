@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import '../../styles/JobsPage.css';
 import FilterButtonGroup from '../../components/FilterButtonGroup';
 import RecruitmentPostList from '../../components/RecruitmentPostList';
@@ -10,18 +10,31 @@ const JobsPage = () => {
     const [selectedMaxSubs, setSelectedMaxSubs] = useState('');
     const [selectedPaymentType, setSelectedPaymentType] = useState('');
     const [selectedWorkload, setSelectedWorkload] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
 
-    const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
+    const handleFilterChange = useCallback(() => {
+        setCurrentPage(0);
+    }, []);
+
+    const handleOptionToggle = useCallback((name: string, type: 'skill' | 'videoType') => {
         if (type === 'skill') {
-            setSelectedSkills(prev => 
-                prev.includes(name) ? prev.filter(skill => skill !== name) : [...prev, name]
-            );
+            setSelectedSkills(prev => {
+                const newSkills = prev.includes(name) 
+                    ? prev.filter(skill => skill !== name) 
+                    : [...prev, name];
+                handleFilterChange();
+                return newSkills;
+            });
         } else {
-            setSelectedVideoTypes(prev => 
-                prev.includes(name) ? prev.filter(videoType => videoType !== name) : [...prev, name]
-            );
+            setSelectedVideoTypes(prev => {
+                const newVideoTypes = prev.includes(name) 
+                    ? prev.filter(videoType => videoType !== name) 
+                    : [...prev, name];
+                handleFilterChange();
+                return newVideoTypes;
+            });
         }
-    };
+    }, [handleFilterChange]);
 
     const maxSubsOptions = [
         { value: '', label: '선택하세요' },
@@ -68,7 +81,10 @@ const JobsPage = () => {
                         <select
                             id="maxSubs"
                             value={selectedMaxSubs}
-                            onChange={(e) => setSelectedMaxSubs(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedMaxSubs(e.target.value);
+                                handleFilterChange();
+                            }}
                             className="details-select"
                         >
                             {maxSubsOptions.map(option => (
@@ -81,7 +97,10 @@ const JobsPage = () => {
                         <select
                             id="paymentType"
                             value={selectedPaymentType}
-                            onChange={(e) => setSelectedPaymentType(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedPaymentType(e.target.value);
+                                handleFilterChange();
+                            }}
                             className="details-select"
                         >
                             {paymentTypeOptions.map(option => (
@@ -94,7 +113,10 @@ const JobsPage = () => {
                         <select
                             id="workload"
                             value={selectedWorkload}
-                            onChange={(e) => setSelectedWorkload(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedWorkload(e.target.value);
+                                handleFilterChange();
+                            }}
                             className="details-select"
                         >
                             {workloadOptions.map(option => (
@@ -114,6 +136,8 @@ const JobsPage = () => {
                     paymentType={selectedPaymentType}
                     workload={selectedWorkload}
                     variant="jobs"
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                 />
             </div>
         </div>

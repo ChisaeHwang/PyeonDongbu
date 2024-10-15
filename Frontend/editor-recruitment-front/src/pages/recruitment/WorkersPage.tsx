@@ -10,6 +10,7 @@ const WorkersPage = () => {
     const [selectedMaxSubs, setSelectedMaxSubs] = useState('');
     const [selectedPaymentType, setSelectedPaymentType] = useState('');
     const [selectedWorkload, setSelectedWorkload] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
 
     const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
         if (type === 'skill') {
@@ -48,6 +49,10 @@ const WorkersPage = () => {
         { value: '5+', label: '주간 5개 이상' },
     ];
 
+    const handleFilterChange = () => {
+        setCurrentPage(0);  // 필터 변경 시 첫 페이지로 리셋
+    };
+
     return (
         <div className="workers-page">
             <div className="workers-page-filter">
@@ -68,7 +73,10 @@ const WorkersPage = () => {
                         <select
                             id="maxSubs"
                             value={selectedMaxSubs}
-                            onChange={(e) => setSelectedMaxSubs(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedMaxSubs(e.target.value);
+                                handleFilterChange();
+                            }}
                             className="details-select"
                         >
                             {maxSubsOptions.map(option => (
@@ -114,6 +122,8 @@ const WorkersPage = () => {
                     paymentType={selectedPaymentType}
                     workload={selectedWorkload}
                     variant="jobs"
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                 />
             </div>
         </div>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Header.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import GoogleLogo from '../assets/GoogleLogo';
+import useAxiosInterceptor from '../hooks/useAxiosInterceptor';
+import { useToast } from '../hooks/useToast';
+import 'react-toastify/dist/ReactToastify.css';
 
 const checkLoginStatus = () => {
     return sessionStorage.getItem('access-token') !== null;
@@ -45,6 +48,10 @@ const Header = () => {
         role: ''
     });
     const navigate = useNavigate();
+    const location = useLocation();
+    const { showSuccessToast } = useToast();
+
+    useAxiosInterceptor();
 
     useEffect(() => {
         const loggedIn = checkLoginStatus();
@@ -63,7 +70,7 @@ const Header = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [location]); 
 
     const fetchUserInfo = async () => {
         try {
@@ -72,7 +79,7 @@ const Header = () => {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
-                withCredentials: true // 이 옵션을 추가하여 쿠키를 포함시킵니다.
+                withCredentials: true 
             });
             const { nickname, imageUrl, role } = response.data.data;
             setUserInfo({ nickname, imageUrl, role });
@@ -93,7 +100,8 @@ const Header = () => {
         sessionStorage.removeItem('access-token');
         setIsLoggedIn(false);
         setUserInfo({ nickname: '', imageUrl: '', role: '' });
-        navigate('/');
+        showSuccessToast('로그아웃되었습니다.');
+        navigate('/', { replace: true });
     };
 
     const handlePostPage = () => {
@@ -118,66 +126,68 @@ const Header = () => {
     };
 
     return (
-        <header className={`header ${isFixed ? 'fixed' : ''}`}>
-            <div className="left-section">
-                <img src="https://ifh.cc/g/PDRy1k.png" alt="Logo" className="logo" />
-                <h1 className="header-title" onClick={() => navigate('/')}>PDB</h1>
-                <nav className="nav-menu">
-                    <span onClick={() => navigate('/jobs')}>작업 찾기</span>
-                    <span onClick={() => navigate('/workers')}>작업자 찾기</span>
-                    <span onClick={() => navigate('/community')}>커뮤니티</span>
-                </nav>
-            </div>
-            <div className="right-section">
-                <div className="search-bar">
-                    <AiOutlineSearch className="search-icon" onClick={handleSearch} />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="파트너를 찾아보세요"
-                        className="search-input"
-                    />
+        <>
+            <header className={`header ${isFixed ? 'fixed' : ''}`}>
+                <div className="left-section">
+                    <img src="https://ifh.cc/g/PDRy1k.png" alt="Logo" className="logo" />
+                    <h1 className="header-title" onClick={() => navigate('/')}>PDB</h1>
+                    <nav className="nav-menu">
+                        <span onClick={() => navigate('/jobs')}>작업 찾기</span>
+                        <span onClick={() => navigate('/workers')}>작업자 찾기</span>
+                        <span onClick={() => navigate('/community')}>커뮤니티</span>
+                    </nav>
                 </div>
-                {isLoggedIn ? (
-                    <>
-                        <button className="match-button" onClick={() => navigate('/match')}>파트너 매칭하기</button>
-                        <button className="post-button" onClick={handlePostPage}>
-                            구인 | 구직 하기
-                        </button>
-                        <div className="profile-wrap" onClick={toggleDropdown}>
-                            <img src={userInfo.imageUrl} alt="Profile" className="profile-image" />
-                            {showDropdown && (
-                                <div className="dropdown-menu">
-                                    <div className="user-info">
-                                        <img src={userInfo.imageUrl} alt="Profile" className="dropdown-profile-image" />
-                                        <div className="user-details">
-                                            <span className="user-name">{userInfo.nickname}</span>
-                                            <span className="user-position">{userInfo.role}</span>
+                <div className="right-section">
+                    <div className="search-bar">
+                        <AiOutlineSearch className="search-icon" onClick={handleSearch} />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="파트너를 찾아보세요"
+                            className="search-input"
+                        />
+                    </div>
+                    {isLoggedIn ? (
+                        <>
+                            <button className="match-button" onClick={() => navigate('/match')}>파트너 매칭하기</button>
+                            <button className="post-button" onClick={handlePostPage}>
+                                구인 | 구직 하기
+                            </button>
+                            <div className="profile-wrap" onClick={toggleDropdown}>
+                                <img src={userInfo.imageUrl} alt="Profile" className="profile-image" />
+                                {showDropdown && (
+                                    <div className="dropdown-menu">
+                                        <div className="user-info">
+                                            <img src={userInfo.imageUrl} alt="Profile" className="dropdown-profile-image" />
+                                            <div className="user-details">
+                                                <span className="user-name">{userInfo.nickname}</span>
+                                                <span className="user-position">{userInfo.role}</span>
+                                            </div>
                                         </div>
+                                        <div className="dropdown-divider"></div>
+                                        <button onClick={() => navigate('/mypage')}>마이 페이지</button>
+                                        <button onClick={() => navigate('/myposts')}>게시글 목록</button>
+                                        <div className="dropdown-divider"></div>
+                                        <button onClick={handleLogout}>로그아웃</button>
                                     </div>
-                                    <div className="dropdown-divider"></div>
-                                    <button onClick={() => navigate('/mypage')}>마이 페이지</button>
-                                    <button onClick={() => navigate('/myposts')}>게시글 목록</button>
-                                    <div className="dropdown-divider"></div>
-                                    <button onClick={handleLogout}>로그아웃</button>
-                                </div>
-                            )}
-                        </div>
-                    </>
-                ) : (
-                    <button className="google-login-button" onClick={handleLogin}>
-                        <div className="google-icon">
-                            <GoogleLogo/>
-                        </div>
-                        <div className="google-login-content">
-                            구글 로그인
-                        </div>
-                    </button>
-                )}
-            </div>
-        </header>
+                                )}
+                            </div>
+                        </>
+                    ) : (
+                        <button className="google-login-button" onClick={handleLogin}>
+                            <div className="google-icon">
+                                <GoogleLogo/>
+                            </div>
+                            <div className="google-login-content">
+                                구글 로그인
+                            </div>
+                        </button>
+                    )}
+                </div>
+            </header>
+        </>
     );
 };
 
