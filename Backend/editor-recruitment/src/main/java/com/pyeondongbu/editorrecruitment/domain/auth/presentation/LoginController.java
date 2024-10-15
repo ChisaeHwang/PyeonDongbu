@@ -51,9 +51,9 @@ public class LoginController {
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
-        final String renewalRefreshToken = loginService.renewalAccessToken(refreshToken, authorizationHeader);
+        final String renewalAccessToken = loginService.renewalAccessToken(refreshToken, authorizationHeader);
         return ResponseEntity.ok(
-                ApiResponse.success(new AccessTokenRes(renewalRefreshToken), 200)
+                ApiResponse.success(new AccessTokenRes(renewalAccessToken), 200)
         );
     }
 

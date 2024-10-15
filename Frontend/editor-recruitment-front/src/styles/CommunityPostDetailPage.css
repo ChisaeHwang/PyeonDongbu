@@ -1,76 +1,117 @@
-.community-post-detail-page {
+.community-post-detail-container {
     max-width: 800px;
     width: 100%;
     margin: 50px auto;
     padding: 40px;
     font-family: 'Pretendard', sans-serif;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     min-height: 600px;
 }
 
-.post-header {
+.community-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
     border-bottom: 1px solid #e0e0e0;
     padding-bottom: 20px;
 }
 
-.post-title {
-    font-size: 28px;
-    margin-bottom: 15px;
-    color: #333;
+.community-post-author-info {
+    display: flex;
+    align-items: center;
 }
 
-.post-meta {
+.community-post-author-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.community-post-author-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 5px 0;
+}
+
+.community-post-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.community-post-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 20px 0;
+    color: #222;
+    line-height: 1.3;
+}
+
+.community-post-meta {
     font-size: 14px;
     color: #666;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    margin-bottom: 20px;
 }
 
-.post-meta span {
-    margin-left: 15px;
+.community-post-views {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: 500;
 }
 
-.post-content {
+.community-post-content {
     font-size: 16px;
     line-height: 1.8;
     color: #444;
 }
 
-.post-author {
-    font-weight: bold;
+.community-post-content-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-.post-date {
-    color: #888;
+.community-post-actions {
+    display: flex;
+    gap: 10px;
 }
 
-.post-views {
-    color: #888;
-}
-
-.post-actions {
-    margin-top: 20px;
-}
-
-.edit-button, .delete-button {
-    padding: 10px 20px;
-    margin-right: 10px;
+.community-post-action-button {
+    padding: 8px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
-.edit-button {
+.community-post-edit-button {
     background-color: #4CAF50;
     color: white;
 }
 
-.delete-button {
+.community-post-edit-button:hover {
+    background-color: #45a049;
+}
+
+.community-post-delete-button {
     background-color: #f44336;
     color: white;
+}
+
+.community-post-delete-button:hover {
+    background-color: #d32f2f;
+}
+
+.community-post-loading, .community-post-error {
+    text-align: center;
+    font-size: 18px;
+    color: #666;
+    margin-top: 50px;
 }

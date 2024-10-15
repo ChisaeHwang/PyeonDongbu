@@ -31,6 +31,7 @@ const PrevArrow = (props: CustomArrowProps) => (
 const PostsPage = () => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedVideoTypes, setSelectedVideoTypes] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
     if (type === 'skill') {
@@ -111,6 +112,8 @@ const PostsPage = () => {
           tagNames={['크롤링', '구인']}
           sliderSettings={settings}
           variant="main"
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       </div>
       <div className='posts-container worker-section'>
@@ -120,7 +123,9 @@ const PostsPage = () => {
           videoTypes={selectedVideoTypes}
           tagNames={['구직']}
           sliderSettings={settings}
-            variant="main"
+          variant="main"
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       </div>
     </div>
