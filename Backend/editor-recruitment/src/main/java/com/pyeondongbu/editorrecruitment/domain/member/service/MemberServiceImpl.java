@@ -39,8 +39,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-        public MemberRes getMember(final Long memberId) {
-        Member member = memberRepository.findByIdWithDetails(memberId)
+    public MemberRes getMember(final Long memberId) {
+        final Member member = memberRepository.findByIdWithDetails(memberId)
                 .orElseThrow(() -> new AuthException(INVALID_USER_NAME));
 
         return new MemberRes(member);
@@ -67,7 +67,6 @@ public class MemberServiceImpl implements MemberService {
         return MyPageRes.from(updatedMember);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public List<MyPageRes> searchMembers(
@@ -89,8 +88,10 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
     }
 
-    public MyPageRes getPublicProfile(String nickname) {
-        Member member = memberRepository.findByNickname(nickname)
+    @Override
+    @Transactional(readOnly = true)
+    public MyPageRes getPublicProfile(final String nickname) {
+        Member member = memberRepository.findByNicknameWithDetails(nickname)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
 
         return MyPageRes.from(member);

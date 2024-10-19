@@ -16,12 +16,12 @@ public interface MemberService {
     MyPageRes updateMyPage(final Long memberId, final MyPageReq myPageReq);
 
     List<MyPageRes> searchMembers(
-            Integer maxSubs,
-            String role,
-            List<String> skills,
-            List<String> videoTypes
+            final Integer maxSubs,
+            final String role,
+            final List<String> skills,
+            final List<String> videoTypes
     );
 
-    MyPageRes getPublicProfile(String nickname);
+    MyPageRes getPublicProfile(final String nickname);
 
 }
