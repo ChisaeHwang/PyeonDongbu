@@ -21,6 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    //TO-DO: 나중에 없애도 될 거 같은 메서드임
     @GetMapping("/{memberId}")
     public ResponseEntity<ApiResponse<MemberRes>> findMember(
             @PathVariable("memberId") Long memberId

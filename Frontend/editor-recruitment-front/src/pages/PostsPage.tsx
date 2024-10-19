@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import NextArrowIcon from '../assets/NextArrowIcon';
@@ -9,6 +9,8 @@ import RecruitmentPostList from '../components/RecruitmentPostList';
 import FilterButtonGroup from '../components/FilterButtonGroup';
 import { FilterOptions } from '../utils/FilterOptions';
 import '../styles/PostsPage.css';
+import { useAuth } from '../hooks/useAuth';
+import ProfileSetupModal from '../components/ProfileSetupModal';
 
 // NextArrow와 PrevArrow 컴포넌트 추가
 const NextArrow = (props: CustomArrowProps) => (
@@ -32,6 +34,8 @@ const PostsPage = () => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedVideoTypes, setSelectedVideoTypes] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { userInfo, isLoading } = useAuth();
 
   const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
     if (type === 'skill') {
@@ -46,7 +50,10 @@ const PostsPage = () => {
   };
 
   useEffect(() => {
-  }, [selectedSkills, selectedVideoTypes]);
+    if (!isLoading && userInfo && userInfo.role === 'GUEST') {
+      setIsModalOpen(true);
+    }
+  }, [isLoading, userInfo]);
 
   const settings = {
     dots: false,
@@ -128,6 +135,7 @@ const PostsPage = () => {
           setCurrentPage={setCurrentPage}
         />
       </div>
+      <ProfileSetupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

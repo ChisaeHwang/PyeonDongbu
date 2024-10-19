@@ -49,47 +49,26 @@ const MyProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const { showSuccessToast, showErrorToast } = useToast();
 
-    const handleImageUpload = useCallback(() => {
-        console.log('Image upload button clicked'); // 디버깅용 로그
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
-
-        input.onchange = async (event) => {
-            console.log('File selected'); // 디버깅용 로그
-            const file = (event.target as HTMLInputElement).files?.[0];
-            if (file) {
-                console.log('File:', file); // 디버깅용 로그
-                const formData = new FormData();
-                formData.append('file', file);  
-
-                try {
-                    const accessToken = sessionStorage.getItem('access-token');
-                    console.log('Access token:', accessToken); // 디버깅용 로그
-                    const response = await axios.post('http://localhost:8080/upload', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                        withCredentials: true,
-                    });
-
-                    console.log('Upload response:', response); // 디버깅용 로그
-                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
-                    setImageUrl(imageUrl);
-                    console.log('New image URL:', imageUrl); // 디버깅용 로그
-                } catch (error) {
-                    console.error('이미지 업로드 실패:', error);
-                    showErrorToast('프로필 이미지 업로드에 실패했습니다.');
-                }
+    const checkAndShowToast = useCallback(() => {
+        const toastMessage = sessionStorage.getItem('profileSaveMessage');
+        if (toastMessage) {
+            if (toastMessage === 'success') {
+                showSuccessToast('프로필이 성공적으로 저장되었습니다.');
+            } else if (toastMessage === 'error') {
+                showErrorToast('프로필 저장에 실패했습니다.');
             }
-        };
-    }, [showErrorToast]);
+            sessionStorage.removeItem('profileSaveMessage');
+        }
+    }, [showSuccessToast, showErrorToast]);
 
     useEffect(() => {
         fetchProfileData();
-    }, []);
+        const timer = setTimeout(() => {
+            checkAndShowToast();
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [checkAndShowToast]);
 
     const fetchProfileData = async () => {
         try {
@@ -137,24 +116,67 @@ const MyProfile = () => {
                 },
                 withCredentials: true,
             });
-            showSuccessToast('프로필이 성공적으로 저장되었습니다.');
+            
+            sessionStorage.setItem('profileSaveMessage', 'success');
+            
+            // 페이지 새로고침 대신 상태 업데이트
+            fetchProfileData();
             setIsEditing(false);
-            // 페이지 새로고침
-            window.location.reload();
         } catch (error) {
             console.error('프로필 저장 중 오류가 발생했습니다:', error);
-            showErrorToast('프로필 저장에 실패했습니다.');
+            sessionStorage.setItem('profileSaveMessage', 'error');
         }
+        
+        // 페이지 새로고침
+        setTimeout(() => {
+            window.location.reload();
+        }, 100);
     };
+
+    const handleImageUpload = useCallback(() => {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = async (event) => {
+            const file = (event.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);  
+
+                try {
+                    const accessToken = sessionStorage.getItem('access-token');
+                    const response = await axios.post('http://localhost:8080/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                        withCredentials: true,
+                    });
+
+                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
+                    setImageUrl(imageUrl);
+                } catch (error) {
+                    console.error('이미지 업로드 실패:', error);
+                    showErrorToast('프로필 이미지 업로드에 실패했습니다.');
+                }
+            }
+        };
+    }, [showErrorToast]);
 
     const handleFilterOptionClick = (option: FilterOption) => {
         if (option.type === 'skill') {
-            setSelectedSkills(prev => 
-                prev.includes(option.name) ? prev.filter(skill => skill !== option.name) : [...prev, option.name]
+            setSelectedSkills(prev =>
+                prev.includes(option.name)
+                    ? prev.filter(skill => skill !== option.name)
+                    : [...prev, option.name]
             );
         } else {
-            setSelectedVideoTypes(prev => 
-                prev.includes(option.name) ? prev.filter(genre => genre !== option.name) : [...prev, option.name]
+            setSelectedVideoTypes(prev =>
+                prev.includes(option.name)
+                    ? prev.filter(type => type !== option.name)
+                    : [...prev, option.name]
             );
         }
     };
@@ -163,30 +185,28 @@ const MyProfile = () => {
         if (newRole === 'CLIENT') {
             setRole('CLIENT');
         } else {
-            // 작업자로 설정할 때는 기존 역할이 EDITOR나 ETC_WORKER면 그대로 유지, 아니면 EDITOR로 설정
-            setRole(prevRole => (prevRole === 'EDITOR' || prevRole === 'ETC_WORKER') ? prevRole : 'EDITOR');
+            setRole('EDITOR');
         }
     };
 
     const isWorker = (role: Role) => role === 'EDITOR' || role === 'ETC_WORKER';
 
     const handleMaxSubsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value.replace(/[^0-9]/g, '');
-        if (parseInt(value) > 10000000) {
-            value = '10000000';
+        const value = e.target.value.replace(/[^0-9]/g, '');
+        if (value === '' || parseInt(value) <= 10000000) {
+            setMaxSubs(value);
         }
-        setMaxSubs(value);
     };
 
     return (
         <div className="profile-container">
             <div className="profile-header">
-                <h2 className="page-title">마이 페이지</h2>
+                <h2 className="page-title">내 프로필</h2>
                 <button 
                     className="save-profile-button"
                     onClick={isEditing ? handleSaveProfile : () => setIsEditing(true)}
                 >
-                    {isEditing ? '저장하기' : '수정하기'}
+                    {isEditing ? '저장' : '수정'}
                 </button>
             </div>
             
@@ -204,18 +224,16 @@ const MyProfile = () => {
                 </div>
                 <div className="nickname-container">
                     <label htmlFor="nickname">닉네임</label>
-                    <div className="input-with-count">
-                        <input
-                            id="nickname"
-                            type="text"
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            placeholder="닉네임 (최대 8자)"
-                            maxLength={8}
-                            disabled={!isEditing}
-                        />
-                        <span className="char-count">{nickname.length}/8</span>
-                    </div>
+                    <input
+                        id="nickname"
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        placeholder="닉네임 (최대 8자)"
+                        maxLength={8}
+                        disabled={!isEditing}
+                    />
+                    <span className="char-count">{nickname.length}/8</span>
                 </div>
             </div>
 
@@ -241,11 +259,11 @@ const MyProfile = () => {
 
             <div className="profile-section">
                 <h3>선호하는 영상 타입</h3>
-                <div className="button-group">
+                <div className="profile-button-group">
                     {filterOptions.filter(option => option.type === 'videoGenre').map((option) => (
                         <button
                             key={option.name}
-                            className={`filter-button ${selectedVideoTypes.includes(option.name) ? 'active' : ''}`}
+                            className={`profile-filter-button ${selectedVideoTypes.includes(option.name) ? 'active' : ''}`}
                             onClick={() => handleFilterOptionClick(option)}
                             disabled={!isEditing}
                         >
@@ -258,11 +276,11 @@ const MyProfile = () => {
 
             <div className="profile-section">
                 <h3>사용하는 기술</h3>
-                <div className="button-group">
+                <div className="profile-button-group">
                     {filterOptions.filter(option => option.type === 'skill').map((option) => (
                         <button
                             key={option.name}
-                            className={`filter-button ${selectedSkills.includes(option.name) ? 'active' : ''}`}
+                            className={`profile-filter-button ${selectedSkills.includes(option.name) ? 'active' : ''}`}
                             onClick={() => handleFilterOptionClick(option)}
                             disabled={!isEditing}
                         >
@@ -275,32 +293,28 @@ const MyProfile = () => {
 
             <div className="profile-section">
                 <h3>편집했던 채널</h3>
-                <div className="input-with-count">
-                    <input
-                        type="text"
-                        value={editedChannels}
-                        onChange={(e) => setEditedChannels(e.target.value.slice(0, 48))}
-                        placeholder="편집했던 채널을 입력하세요 (최대 48자)"
-                        maxLength={48}
-                        disabled={!isEditing}
-                    />
-                    <span className="char-count">{editedChannels.length}/48</span>
-                </div>
+                <input
+                    type="text"
+                    value={editedChannels}
+                    onChange={(e) => setEditedChannels(e.target.value.slice(0, 48))}
+                    placeholder="편집했던 채널을 입력하세요 (최대 48자)"
+                    maxLength={48}
+                    disabled={!isEditing}
+                />
+                <span className="char-count">{editedChannels.length}/48</span>
             </div>
 
             <div className="profile-section">
                 <h3>작업 중인 채널</h3>
-                <div className="input-with-count">
-                    <input
-                        type="text"
-                        value={currentChannels}
-                        onChange={(e) => setCurrentChannels(e.target.value.slice(0, 48))}
-                        placeholder="작업 중인 채널을 입력하세요 (최대 48자)"
-                        maxLength={48}
-                        disabled={!isEditing}
-                    />
-                    <span className="char-count">{currentChannels.length}/48</span>
-                </div>
+                <input
+                    type="text"
+                    value={currentChannels}
+                    onChange={(e) => setCurrentChannels(e.target.value.slice(0, 48))}
+                    placeholder="작업 중인 채널을 입력하세요 (최대 48자)"
+                    maxLength={48}
+                    disabled={!isEditing}
+                />
+                <span className="char-count">{currentChannels.length}/48</span>
             </div>
 
             <div className="profile-section">

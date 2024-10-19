@@ -14,6 +14,7 @@ import GoogleAuthRedirectHandler from './components/GoogleAuthRedirectHandler';
 import PartnerMatchingPage from './pages/PartnerMatchingPage';
 import PostDetailPage from './pages/recruitment/PostDetailPage';
 import MyPostsPage from './pages/MyPostsPage';
+import MemberProfilePage from './pages/member/MemberProfilePage';
 import EditPostPage from './pages/recruitment/EditPostPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,6 +45,7 @@ const App: React.FC = () => {
           <Route path="/post/:postId" element={<PostDetailPage />} />
           <Route path="/post/edit/:postId" element={<EditPostPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/member/:nickname" element={<MemberProfilePage />} />
         </Route>
       </Routes>
     </Router>

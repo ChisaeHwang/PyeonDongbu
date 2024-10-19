@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import '../../styles/CommunityPostDetailPage.css';
@@ -102,7 +102,7 @@ const CommunityPostDetailPage: React.FC = () => {
             <div className="post-header">
                 <div className="author-info">
                     <div className="author-details">
-                        <h2 className="author-name">{post.memberName}</h2>
+                        <Link to={`/member/${post.memberName}`} className="author-name">{post.memberName}</Link>
                         <span className="post-date">{formatDate(post.createdAt)}</span>
                     </div>
                 </div>

@@ -1,0 +1,77 @@
+.profile-setup-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+  }
+  
+  .profile-setup-modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 100%;
+    font-family: 'Pretendard', sans-serif;
+  }
+  
+  .profile-setup-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .profile-setup-modal-content p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  
+  .profile-setup-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+  
+  .profile-setup-button {
+    padding: 13px 15px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: 'Pretendard', sans-serif;
+    flex: 1;
+  }
+  
+  .primary-button {
+    background-color: white;
+    border: 1px solid #B3B3B3;
+    color: #333;
+  }
+  
+  .primary-button:hover {
+    background-color: #00CBD6;
+    color: white;
+  }
+  
+  .secondary-button {
+    background-color: white;
+    border: 1px solid #B3B3B3;
+    color: #333;
+  }
+  
+  .secondary-button:hover {
+    background-color: #00CBD6;
+    color: white;
+  }

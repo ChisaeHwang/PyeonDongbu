@@ -33,4 +33,13 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
             "LEFT JOIN FETCH d.currentChannels c " +
             "WHERE m.id = :id")
     Optional<Member> findByIdWithDetails(@Param("id") Long id);
+
+    @Query("SELECT m FROM Member m " +
+            "LEFT JOIN FETCH m.details d " +
+            "LEFT JOIN FETCH d.skills s " +
+            "LEFT JOIN FETCH d.videoTypes v " +
+            "LEFT JOIN FETCH d.editedChannels e " +
+            "LEFT JOIN FETCH d.currentChannels c " +
+            "WHERE m.nickname = :nickname")
+    Optional<Member> findByNicknameWithDetails(@Param("nickname") String nickname);
 }
