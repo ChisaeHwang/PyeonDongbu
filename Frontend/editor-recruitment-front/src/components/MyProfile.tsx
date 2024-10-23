@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import '../styles/MyProfile.css';
 import { formatNumber } from '../utils/FormatNumber';
 import { useToast } from '../hooks/useToast';
+import api from '../api/axios';  // 중앙화된 api 인스턴스 import
 import premierProIcon from '../assets/premierProIcon';
 import photoshopIcon from '../assets/photoshopIcon';
 import afterEffectsIcon from '../assets/afterEffectsIcon';
@@ -72,13 +72,7 @@ const MyProfile = () => {
 
     const fetchProfileData = async () => {
         try {
-            const accessToken = sessionStorage.getItem('access-token');
-            const response = await axios.get('http://localhost:8080/api/member', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                withCredentials: true,
-            });
+            const response = await api.get('/api/member');
             const data = response.data.data;
             setNickname(data.nickname);
             setImageUrl(data.imageUrl);
@@ -96,7 +90,6 @@ const MyProfile = () => {
 
     const handleSaveProfile = async () => {
         try {
-            const accessToken = sessionStorage.getItem('access-token');
             const profileData = {
                 nickname,
                 imageUrl,
@@ -110,16 +103,10 @@ const MyProfile = () => {
                     remarks: introduction,
                 },
             };
-            await axios.put('http://localhost:8080/api/member', profileData, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-                withCredentials: true,
-            });
+            await api.put('/api/member', profileData);
             
             sessionStorage.setItem('profileSaveMessage', 'success');
             
-            // 페이지 새로고침 대신 상태 업데이트
             fetchProfileData();
             setIsEditing(false);
         } catch (error) {
@@ -127,7 +114,6 @@ const MyProfile = () => {
             sessionStorage.setItem('profileSaveMessage', 'error');
         }
         
-        // 페이지 새로고침
         setTimeout(() => {
             window.location.reload();
         }, 100);
@@ -146,13 +132,10 @@ const MyProfile = () => {
                 formData.append('file', file);  
 
                 try {
-                    const accessToken = sessionStorage.getItem('access-token');
-                    const response = await axios.post('http://localhost:8080/upload', formData, {
+                    const response = await api.post('/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
-                            Authorization: `Bearer ${accessToken}`,
                         },
-                        withCredentials: true,
                     });
 
                     const imageUrl = response.data.replace('Uploaded: ', '').trim();

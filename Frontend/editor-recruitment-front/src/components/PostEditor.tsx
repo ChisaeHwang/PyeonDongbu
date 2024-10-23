@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef } from 'react';
-import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../styles/PostEditor.css';
@@ -15,6 +14,8 @@ import educationIcon from '../assets/educationIcon';
 import reviewIcon from '../assets/reviewIcon';
 import { formatNumber } from '../utils/FormatNumber';
 import Modal from './Modal';
+import api from '../api/axios';
+import { useToast } from '../hooks/useToast';
 
 enum PaymentType {
     PER_HOUR = 'PER_HOUR',
@@ -106,6 +107,7 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
     const quillRef = useRef<ReactQuill>(null);
     const [showModal, setShowModal] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(initialData?.imageUrl || null);
+    const { showErrorToast } = useToast();
 
     const handleRecruitmentTypeChange = (selectedType: string) => {
         setRecruitmentType(selectedType);
@@ -120,28 +122,29 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         input.onchange = async () => {
             const file = input.files?.[0];
             if (file) {
-                const formData = new FormData();
-                formData.append('file', file);  
-
                 try {
-                    const response = await axios.post('http://localhost:8080/upload', formData, {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await api.post('/api/images/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
 
-                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
+                    const imageUrl = response.data.imageUrl;
                     const quill = quillRef.current?.getEditor();
-                    if (quill) {
-                        const range = quill.getSelection(true);
+                    const range = quill?.getSelection(true);
+                    if (quill && range) {
                         quill.insertEmbed(range.index, 'image', imageUrl);
                     }
                 } catch (error) {
                     console.error('이미지 업로드 실패:', error);
+                    showErrorToast('이미지 업로드에 실패했습니다.');
                 }
             }
         };
-    }, []);
+    }, [showErrorToast]);
 
     const handleRepresentativeImageUpload = useCallback(() => {
         const input = document.createElement('input');
@@ -152,24 +155,24 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         input.onchange = async () => {
             const file = input.files?.[0];
             if (file) {
-                const formData = new FormData();
-                formData.append('file', file);  
-
                 try {
-                    const response = await axios.post('http://localhost:8080/upload', formData, {
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await api.post('/api/images/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
 
-                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
-                    setImageUrl(imageUrl);
+                    setImageUrl(response.data.imageUrl);
                 } catch (error) {
                     console.error('대표 이미지 업로드 실패:', error);
+                    showErrorToast('대표 이미지 업로드에 실패했습니다.');
                 }
             }
         };
-    }, []);
+    }, [showErrorToast]);
 
     const handlePaymentTypeClick = (type: PaymentType) => {
         setPaymentType(type);

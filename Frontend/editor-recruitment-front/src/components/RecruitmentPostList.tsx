@@ -3,6 +3,8 @@ import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
 import '../styles/RecruitmentPostList.css';
 import { extractTextFromHTML } from '../utils/TextExtractor';
+import api from '../api/axios';
+import { useToast } from '../hooks/useToast';
 
 interface PaymentDTO {
     type: string;
@@ -149,12 +151,13 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [totalPages, setTotalPages] = useState(0);
+    const { showErrorToast } = useToast();
 
     const fetchPosts = useCallback(async (page: number) => {
         setLoading(true);
         setError(null);
         try {
-            const params = new URLSearchParams({
+            const params = {
                 skills: skills.join(','),
                 videoTypes: videoTypes.join(','),
                 tagNames: tagNames.join(','),
@@ -163,30 +166,24 @@ const RecruitmentPostList: React.FC<RecruitmentPostListProps> = ({
                 ...(workload && { workload }),
                 page: page.toString(),
                 size: '10'
-            });
+            };
 
-            const response = await fetch(`http://localhost:8080/api/recruitment/posts/search/by-details?${params}`);
-            if (!response.ok) {
-                throw new Error('서버 응답이 실패했습니다');
-            }
-            const data = await response.json();
+            const response = await api.get('/api/recruitment/posts/search/by-details', { params });
             
-            setPosts(data.data.content || []);
-            setTotalPages(data.data.totalPages || 0);
+            setPosts(response.data.data.content || []);
+            setTotalPages(response.data.data.totalPages || 0);
         } catch (error) {
             console.error('구인 게시글을 불러오는데 실패했습니다.', error);
             setError('게시글을 불러오는데 실패했습니다. 다시 시도해주세요.');
+            showErrorToast('게시글을 불러오는데 실패했습니다.');
         } finally {
             setLoading(false);
         }
-    }, [skills, videoTypes, tagNames, maxSubs, paymentType, workload]);
+    }, [skills, videoTypes, tagNames, maxSubs, paymentType, workload, showErrorToast]);
 
     useEffect(() => {
         fetchPosts(currentPage);
-    }, [fetchPosts, currentPage, skills, videoTypes, tagNames, maxSubs, paymentType, workload]);
-
-    useEffect(() => {
-    }, [posts]);
+    }, [fetchPosts, currentPage]);
 
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
