@@ -216,7 +216,7 @@ textarea {
 .profile-button-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .profile-section .button-group .filter-button {
@@ -309,11 +309,6 @@ textarea:focus,
 
 .filter-button:hover {
     background-color: #f0f0f0;
-}
-
-.filter-button.active {
-    background-color: #007bff;
-    color: white;
 }
 
 .filter-button svg {

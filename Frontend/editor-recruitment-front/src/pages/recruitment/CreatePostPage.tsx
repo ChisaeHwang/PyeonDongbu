@@ -1,8 +1,10 @@
 import React from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import PostEditor from '../../components/PostEditor';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../hooks/useToast';
+import api from '../../api/axios';
+import { clearAccessToken } from '../../utils/auth';
 
 enum PaymentType {
     PER_HOUR = 'PER_HOUR',
@@ -34,11 +36,6 @@ const CreatePostPage = () => {
         recruitmentPostDetailsReq: any
     ) => {
         try {
-            const accessToken = sessionStorage.getItem('access-token');
-            if (!accessToken) {
-                throw new Error('액세스 토큰이 없습니다.');
-            }
-
             const requestData = {
                 title,
                 content,
@@ -48,20 +45,14 @@ const CreatePostPage = () => {
                 recruitmentPostDetailsReq,
             };
 
-            const response = await axios.post('http://localhost:8080/api/recruitment/posts', requestData, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true
-            });
+            const response = await api.post('/api/recruitment/posts', requestData);
 
             if (response.status === 200) {
                 showSuccessToast('게시글이 성공적으로 작성되었습니다.');
                 navigate('/');
             }
         } catch (error) {
-            if (axios.isAxiosError(error)) {
+            if (error instanceof AxiosError) {
                 const axiosError = error as AxiosError<ExceptionResponse>;
                 if (axiosError.response) {
                     if (axiosError.response.status === 400) {
@@ -69,7 +60,7 @@ const CreatePostPage = () => {
                         showWarningToast(errorMessage);
                     } else if (axiosError.response.status === 401) {
                         showErrorToast('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
-                        sessionStorage.removeItem('access-token');
+                        clearAccessToken();
                         navigate('/login');
                     } else {
                         showErrorToast('게시글 작성 중 오류가 발생했습니다.');
