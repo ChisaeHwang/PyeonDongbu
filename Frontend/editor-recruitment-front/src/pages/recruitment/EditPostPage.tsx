@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import PostEditor from '../../components/PostEditor';
 import { useToast } from '../../hooks/useToast';
+import api from '../../api/axios';
+import { AxiosError } from 'axios';
 
 enum PaymentType {
     PER_HOUR = 'PER_HOUR',
@@ -26,18 +27,7 @@ const EditPostPage: React.FC = () => {
     useEffect(() => {
         const fetchPostData = async () => {
             try {
-                const accessToken = sessionStorage.getItem('access-token');
-                if (!accessToken) {
-                    throw new Error('액세스 토큰이 없습니다.');
-                }
-
-                const response = await axios.get(`http://localhost:8080/api/recruitment/posts/${postId}/edit`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true
-                });
+                const response = await api.get(`/api/recruitment/posts/${postId}/edit`);
                 setInitialData(response.data.data);
                 setLoading(false);
             } catch (error) {
@@ -59,11 +49,6 @@ const EditPostPage: React.FC = () => {
         recruitmentPostDetailsReq: any
     ) => {
         try {
-            const accessToken = sessionStorage.getItem('access-token');
-            if (!accessToken) {
-                throw new Error('토큰이 없습니다.');
-            }
-
             const requestData = {
                 title,
                 content,
@@ -73,19 +58,22 @@ const EditPostPage: React.FC = () => {
                 recruitmentPostDetailsReq,
             };
 
-            await axios.put(`http://localhost:8080/api/recruitment/posts/${postId}`, requestData, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true
-            });
+            await api.put(`/api/recruitment/posts/${postId}`, requestData);
 
             showSuccessToast('게시글이 성공적으로 수정되었습니다.');
             navigate(`/post/${postId}`);
         } catch (error) {
             console.error('게시글 수정 중 오류가 발생했습니다.', error);
-            showErrorToast('게시글 수정 중 오류가 발생했습니다.');
+            if (error instanceof AxiosError) {
+                if (error.response?.status === 401) {
+                    showErrorToast('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
+                    navigate('/login');
+                } else {
+                    showErrorToast('게시글 수정 중 오류가 발생했습니다.');
+                }
+            } else {
+                showErrorToast('알 수 없는 오류가 발생했습니다.');
+            }
         }
     };
 

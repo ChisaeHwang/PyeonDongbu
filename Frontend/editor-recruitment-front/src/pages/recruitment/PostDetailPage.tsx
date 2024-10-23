@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import DOMPurify from 'dompurify';
 import '../../styles/PostDetailPage.css';
 import { useToast } from '../../hooks/useToast';
+import api from '../../api/axios';
+import { AxiosError } from 'axios';
 
 interface PaymentDTO {
     type: string;
@@ -45,28 +46,13 @@ const PostDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { showSuccessToast, showErrorToast } = useToast();
-    const [isAuthor, setIsAuthor] = useState(true);  // 임시로 모든 사용자를 작성자로 설정
+    const [isAuthor, setIsAuthor] = useState(false);
 
     useEffect(() => {
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
-                const accessToken = sessionStorage.getItem('access-token');
-                const headers: Record<string, string> = {
-                    'Content-Type': 'application/json',
-                };
-                
-                if (accessToken) {
-                    headers['Authorization'] = `Bearer ${accessToken}`;
-                }
-
-                const response = await axios.get<ApiResponse<RecruitmentPostRes>>(
-                    `http://localhost:8080/api/recruitment/posts/${postId}`,
-                    {
-                        headers,
-                        withCredentials: true
-                    }
-                );
+                const response = await api.get<ApiResponse<RecruitmentPostRes>>(`/api/recruitment/posts/${postId}`);
                 setPost(response.data.data);
                 setIsAuthor(response.data.data.isAuthor);
             } catch (error) {
@@ -79,14 +65,6 @@ const PostDetailPage: React.FC = () => {
 
         fetchPostDetail();
     }, [postId, showErrorToast]);
-
-    if (loading) {
-        return <div className="loading">로딩 중...</div>;
-    }
-
-    if (!post) {
-        return <div className="error">게시글을 찾을 수 없습니다.</div>;
-    }
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -117,22 +95,32 @@ const PostDetailPage: React.FC = () => {
     const handleDelete = async () => {
         if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
             try {
-                const accessToken = sessionStorage.getItem('access-token');
-                await axios.delete(`http://localhost:8080/api/recruitment/posts/${postId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true
-                });
+                await api.delete(`/api/recruitment/posts/${postId}`);
                 showSuccessToast('게시글이 성공적으로 삭제되었습니다.');
                 navigate('/');
             } catch (error) {
                 console.error('게시글 삭제 중 오류가 발생했습니다.', error);
-                showErrorToast('게시글 삭제 중 오류가 발생했습니다.');
+                if (error instanceof AxiosError) {
+                    if (error.response?.status === 401) {
+                        showErrorToast('로그인 세션이 만료되었습니다. 다시 로그인해 주세요.');
+                        navigate('/login');
+                    } else {
+                        showErrorToast('게시글 삭제 중 오류가 발생했습니다.');
+                    }
+                } else {
+                    showErrorToast('알 수 없는 오류가 발생했습니다.');
+                }
             }
         }
     };
+
+    if (loading) {
+        return <div className="loading">로딩 중...</div>;
+    }
+
+    if (!post) {
+        return <div className="error">게시글을 찾을 수 없습니다.</div>;
+    }
 
     return (
         <div className="post-detail-page">

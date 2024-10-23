@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../styles/SearchResultsPage.css';
 import { extractTextFromHTML } from '../utils/TextExtractor';
+import api from '../api/axios';
+import { useToast } from '../hooks/useToast';
 
 interface PaymentDTO {
     type: string;
@@ -51,26 +52,34 @@ const SearchResultsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const location = useLocation();
     const navigate = useNavigate();
+    const { showErrorToast } = useToast();
+
+    const fetchSearchResults = useCallback(async (query: string, page: number) => {
+        setLoading(true);
+        try {
+            const response = await api.get('/api/recruitment/posts/search/by-details', {
+                params: {
+                    title: query,
+                    page: page,
+                    size: 10
+                }
+            });
+            setSearchResults(response.data.data);
+            setCurrentPage(page);
+        } catch (error) {
+            console.error('검색 결과를 가져오는데 실패했습니다:', error);
+            showErrorToast('검색 결과를 가져오는데 실패했습니다.');
+        } finally {
+            setLoading(false);
+        }
+    }, [showErrorToast]);
 
     useEffect(() => {
         const searchQuery = new URLSearchParams(location.search).get('query');
         if (searchQuery) {
             fetchSearchResults(searchQuery, currentPage);
         }
-    }, [location.search, currentPage]);
-
-    const fetchSearchResults = async (query: string, page: number) => {
-        setLoading(true);
-        try {
-            const response = await axios.get(`http://localhost:8080/api/recruitment/posts/search/by-details?title=${encodeURIComponent(query)}&page=${page}&size=10`);
-            setSearchResults(response.data.data);
-            setCurrentPage(page);
-        } catch (error) {
-            console.error('검색 결과를 가져오는데 실패했습니다:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [location.search, currentPage, fetchSearchResults]);
 
     const getPaymentString = (payment: PaymentDTO) => {
         if (!payment) return '정보 없음';
