@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../../styles/CommunityPage.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { extractTextFromHTML } from '../../utils/TextExtractor';
-import { debounce } from 'lodash'; // lodash 라이브러리 사용
+import { debounce } from 'lodash';
+import api from '../../api/axios';
+import { useToast } from '../../hooks/useToast';
 
 interface CommunityPost {
     id: number;
@@ -41,10 +42,11 @@ const CommunityPage: React.FC = () => {
     const [popularPosts, setPopularPosts] = useState<CommunityPost[]>([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const { showErrorToast } = useToast();
 
     const fetchPosts = useCallback(async (search: string = '', page: number = 0, category: string = 'all') => {
         try {
-            const url = 'http://localhost:8080/api/community/posts/search/by-tags';
+            const url = '/api/community/posts/search/by-tags';
             let params: { search?: string; tagNames?: string; page: number; size: number } = {
                 page: page,
                 size: 10
@@ -58,28 +60,28 @@ const CommunityPage: React.FC = () => {
                 params.tagNames = category;
             }
 
-            const response = await axios.get<ApiResponse<PageInfo>>(url, { params });
+            const response = await api.get<ApiResponse<PageInfo>>(url, { params });
             setPosts(response.data.data.content);
             setTotalPages(response.data.data.totalPages);
             setCurrentPage(response.data.data.number);
         } catch (error) {
             console.error('게시글을 불러오는 데 실패했습니다:', error);
+            showErrorToast('게시글을 불러오는 데 실패했습니다.');
         }
-    }, []);
+    }, [showErrorToast]);
 
-    // 인기 게시글을 가져오는 함수
     const fetchPopularPosts = useCallback(async () => {
         try {
-            const response = await axios.get<ApiResponse<CommunityPost[]>>('http://localhost:8080/api/community/posts/search/popular', {
+            const response = await api.get<ApiResponse<CommunityPost[]>>('/api/community/posts/search/popular', {
                 params: { limit: 5 }
             });
             setPopularPosts(response.data.data);
         } catch (error) {
             console.error('인기 게시글을 불러오는데 실패했습니다:', error);
+            showErrorToast('인기 게시글을 불러오는데 실패했습니다.');
         }
-    }, []);
+    }, [showErrorToast]);
 
-    // 컴포넌트 마운트 시 인기 게시글 가져오기
     useEffect(() => {
         fetchPopularPosts();
     }, [fetchPopularPosts]);

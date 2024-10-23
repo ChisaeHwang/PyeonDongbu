@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
 import '../styles/Header.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import GoogleLogo from '../assets/GoogleLogo';
 import useAxiosInterceptor from '../hooks/useAxiosInterceptor';
 import { useToast } from '../hooks/useToast';
 import 'react-toastify/dist/ReactToastify.css';
+import api from '../api/axios';
+import { getApiBaseUrl } from '../utils/env';
+import { getAccessToken, clearAccessToken } from '../utils/auth';
 
 const checkLoginStatus = () => {
-    return sessionStorage.getItem('access-token') !== null;
+    return getAccessToken() !== null;
 };
 
 interface UserInfo {
@@ -74,13 +76,7 @@ const Header = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const token = sessionStorage.getItem('access-token');
-            const response = await axios.get<ApiResponse>('http://localhost:8080/api/member', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-                withCredentials: true 
-            });
+            const response = await api.get<ApiResponse>('/api/member');
             const { nickname, imageUrl, role } = response.data.data;
             setUserInfo({ nickname, imageUrl, role });
         } catch (error) {
@@ -93,11 +89,11 @@ const Header = () => {
     };
 
     const handleLogin = () => {
-        window.location.href = `http://localhost:8080/auth/google`;
+        window.location.href = `${getApiBaseUrl()}/auth/google`;
     };
 
     const handleLogout = () => {
-        sessionStorage.removeItem('access-token');
+        clearAccessToken();
         setIsLoggedIn(false);
         setUserInfo({ nickname: '', imageUrl: '', role: '' });
         showSuccessToast('로그아웃되었습니다.');

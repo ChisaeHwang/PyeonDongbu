@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import DOMPurify from 'dompurify';
 import '../../styles/CommunityPostDetailPage.css';
+import api from '../../api/axios';
+import { useToast } from '../../hooks/useToast';
 
 interface CommunityPost {
     id: number;
@@ -26,37 +27,24 @@ const CommunityPostDetailPage: React.FC = () => {
     const [post, setPost] = useState<CommunityPost | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { showSuccessToast, showErrorToast } = useToast();
 
     useEffect(() => {
         const fetchPostDetail = async () => {
             setLoading(true);
             try {
-                const accessToken = sessionStorage.getItem('access-token');
-                const headers: Record<string, string> = {
-                    'Content-Type': 'application/json',
-                };
-                
-                if (accessToken) {
-                    headers['Authorization'] = `Bearer ${accessToken}`;
-                }
-
-                const response = await axios.get<ApiResponse>(
-                    `http://localhost:8080/api/community/posts/${postId}`,
-                    {
-                        headers,
-                        withCredentials: true
-                    }
-                );
+                const response = await api.get<ApiResponse>(`/api/community/posts/${postId}`);
                 setPost(response.data.data);
             } catch (error) {
                 console.error('게시글을 불러오는데 실패했습니다.', error);
+                showErrorToast('게시글을 불러오는데 실패했습니다.');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchPostDetail();
-    }, [postId]);
+    }, [postId, showErrorToast]);
 
     const handleEdit = () => {
         navigate(`/community/edit/${postId}`);
@@ -65,17 +53,12 @@ const CommunityPostDetailPage: React.FC = () => {
     const handleDelete = async () => {
         if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
             try {
-                const accessToken = sessionStorage.getItem('access-token');
-                await axios.delete(`http://localhost:8080/api/community/posts/${postId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true
-                });
+                await api.delete(`/api/community/posts/${postId}`);
+                showSuccessToast('게시글이 성공적으로 삭제되었습니다.');
                 navigate('/community');
             } catch (error) {
                 console.error('게시글 삭제 중 오류가 발생했습니다.', error);
+                showErrorToast('게시글 삭제 중 오류가 발생했습니다.');
             }
         }
     };
