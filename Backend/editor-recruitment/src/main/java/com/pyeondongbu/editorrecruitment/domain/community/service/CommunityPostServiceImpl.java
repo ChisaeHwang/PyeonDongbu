@@ -70,7 +70,10 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             postRepository.save(post);
         }
 
-        boolean isAuthor = memberId != null && post.getMember().getId().equals(memberId);
+        boolean isAuthor = false;
+        if(memberId != null && post.getMember().getId().equals(memberId)){
+            isAuthor = true;
+        }
 
         return CommunityPostRes.from(post, isAuthor);
     }
