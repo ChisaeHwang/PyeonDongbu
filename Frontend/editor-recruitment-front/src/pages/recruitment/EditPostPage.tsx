@@ -31,7 +31,7 @@ const EditPostPage: React.FC = () => {
                     throw new Error('액세스 토큰이 없습니다.');
                 }
 
-                const response = await axios.get(`http://localhost:8080/api/recruitment/posts/${postId}`, {
+                const response = await axios.get(`http://localhost:8080/api/recruitment/posts/${postId}/edit`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',

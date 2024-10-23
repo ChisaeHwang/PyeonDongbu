@@ -14,6 +14,8 @@ public interface CommunityPostService {
 
     CommunityPostRes getPost(final Long postId, final String remoteAddr, final Long memberId);
 
+    CommunityPostRes getPostForEdit(final Long postId, final Long memberId);
+
     List<CommunityPostRes> getMyPosts(final Long memberId);
 
     List<CommunityPostRes> listPosts();

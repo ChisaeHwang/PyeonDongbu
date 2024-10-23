@@ -14,7 +14,7 @@ const EditCommunityPostPage: React.FC = () => {
         const fetchPostData = async () => {
             try {
                 const accessToken = sessionStorage.getItem('access-token');
-                const response = await axios.get(`http://localhost:8080/api/community/posts/${postId}`, {
+                const response = await axios.get(`http://localhost:8080/api/community/posts/${postId}/edit`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
@@ -28,12 +28,17 @@ const EditCommunityPostPage: React.FC = () => {
                 });
             } catch (error) {
                 console.error('게시글 데이터를 불러오는데 실패했습니다.', error);
-                showErrorToast('게시글 데이터를 불러오는데 실패했습니다.');
+                if (axios.isAxiosError(error) && error.response?.status === 400) {
+                    showErrorToast('게시글을 수정할 권한이 없습니다.');
+                    navigate('/'); 
+                } else {
+                    showErrorToast('게시글 데이터를 불러오는데 실패했습니다.');
+                }
             }
         };
 
         fetchPostData();
-    }, [postId, showErrorToast]);
+    }, [postId, showErrorToast, navigate]);
 
     const handleSubmit = async (title: string, content: string, tags: string[]) => {
         try {
@@ -52,7 +57,12 @@ const EditCommunityPostPage: React.FC = () => {
             navigate(`/community/post/${postId}`);
         } catch (error) {
             console.error('게시글 수정 중 오류가 발생했습니다.', error);
-            showErrorToast('게시글 수정 중 오류가 발생했습니다.');
+            if (axios.isAxiosError(error) && error.response?.status === 403) {
+                showErrorToast('게시글을 수정할 권한이 없습니다.');
+                navigate('/'); // 메인 페이지로 리다이렉트
+            } else {
+                showErrorToast('게시글 수정 중 오류가 발생했습니다.');
+            }
         }
     };
 

@@ -71,9 +71,25 @@ public class RecruitmentPostServiceImpl implements RecruitmentPostService {
             postRepository.save(post);
         }
 
-        boolean isAuthor = memberId != null && post.getMember().getId().equals(memberId);
+        boolean isAuthor = false;
+        if(memberId != null && post.getMember().getId().equals(memberId)){
+            isAuthor = true;
+        }
 
         return RecruitmentPostRes.from(post, isAuthor);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RecruitmentPostRes getPostForEdit(final Long postId, final Long memberId) {
+        final RecruitmentPost post = postRepository.findByIdWithDetails(postId)
+                .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
+
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new AuthException(INVALID_AUTHORITY);
+        }
+
+        return RecruitmentPostRes.from(post, true);
     }
 
     @Override

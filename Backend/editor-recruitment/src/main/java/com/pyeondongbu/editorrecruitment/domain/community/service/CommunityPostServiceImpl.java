@@ -7,6 +7,8 @@ import com.pyeondongbu.editorrecruitment.domain.community.dto.request.CommunityP
 import com.pyeondongbu.editorrecruitment.domain.community.dto.response.CommunityPostRes;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
+import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.response.RecruitmentPostRes;
 import com.pyeondongbu.editorrecruitment.global.annotation.DistributedLock;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
 import com.pyeondongbu.editorrecruitment.global.exception.PostException;
@@ -23,8 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.INVALID_USER_NAME;
-import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.NOT_FOUND_POST_NAME;
+import static com.pyeondongbu.editorrecruitment.global.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -70,9 +71,25 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             postRepository.save(post);
         }
 
-        boolean isAuthor = memberId != null && post.getMember().getId().equals(memberId);
+        boolean isAuthor = false;
+        if (memberId != null && post.getMember().getId().equals(memberId)) {
+            isAuthor = true;
+        }
 
         return CommunityPostRes.from(post, isAuthor);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CommunityPostRes getPostForEdit(final Long postId, final Long memberId) {
+        final CommunityPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(NOT_FOUND_POST_NAME));
+
+        if (!post.getMember().getId().equals(memberId)) {
+            throw new AuthException(INVALID_AUTHORITY);
+        }
+
+        return CommunityPostRes.from(post, true);
     }
 
     @Override
@@ -97,7 +114,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     @Transactional(readOnly = true)
     public List<CommunityPostRes> getPopularPosts(int limit) {
         final Pageable topN = PageRequest.of(0, limit);
-        final List<CommunityPost> posts  = postRepository.findTopByOrderByViewCountDesc(topN);
+        final List<CommunityPost> posts = postRepository.findTopByOrderByViewCountDesc(topN);
         return posts.stream()
                 .map(CommunityPostRes::from)
                 .collect(Collectors.toList());
