@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/MyPostsPage.css';
 import { extractTextFromHTML } from '../utils/TextExtractor';
+import api from '../api/axios';
+import { useToast } from '../hooks/useToast';
 
 interface Post {
     id: number;
@@ -18,25 +19,14 @@ const MyPostsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(10);
     const navigate = useNavigate();
+    const { showErrorToast } = useToast();
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const accessToken = sessionStorage.getItem('access-token');
-            if (!accessToken) {
-                console.error('액세스 토큰이 없습니다.');
-                return;
-            }
-
             try {
                 const [communityResponse, recruitmentResponse] = await Promise.all([
-                    axios.get('http://localhost:8080/api/community/posts/me', {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                        withCredentials: true,
-                    }),
-                    axios.get('http://localhost:8080/api/recruitment/posts/me', {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                        withCredentials: true,
-                    })
+                    api.get('/api/community/posts/me'),
+                    api.get('/api/recruitment/posts/me')
                 ]);
 
                 const communityPosts = communityResponse.data.data.map((post: any) => ({ ...post, type: 'community' }));
@@ -45,11 +35,12 @@ const MyPostsPage: React.FC = () => {
                 setPosts(allPosts);
             } catch (error) {
                 console.error('게시글을 가져오는 중 오류 발생:', error);
+                showErrorToast('게시글을 가져오는 중 오류가 발생했습니다.');
             }
         };
 
         fetchPosts();
-    }, []);
+    }, [showErrorToast]);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../styles/PartnerMatchingPage.css';
-import { getAccessToken } from '../utils/auth';
 import { extractTextFromHTML } from '../utils/TextExtractor';
+import api from '../api/axios';
+import { useToast } from '../hooks/useToast';
 
 interface MatchedPartner {
     recruitmentPostRes: {
@@ -110,24 +110,13 @@ const PartnerMatchingPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const partnersPerPage = 10;
+    const { showErrorToast } = useToast();
 
     const fetchMatchedPartners = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const accessToken = getAccessToken();
-            
-            if (!accessToken) {
-                throw new Error('액세스 토큰이 없습니다.');
-            }
-
-            const response = await axios.get('http://localhost:8080/api/match', {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true
-            });
+            const response = await api.get('/api/match');
 
             if (response.data.code === "200" && response.data.message === "success") {
                 setMatchedPartners(response.data.data.matchingResults);
@@ -135,17 +124,13 @@ const PartnerMatchingPage: React.FC = () => {
                 throw new Error(response.data.message || '매칭 정보를 가져오는데 실패했습니다.');
             }
         } catch (err) {
-            if (axios.isAxiosError(err)) {
-                console.error('Axios 에러:', err.response?.data || err.message);
-                setError(`매칭 정보를 가져오는데 실패했습니다: ${err.response?.data?.message || err.message}`);
-            } else {
-                console.error('알 수 없는 에러:', err);
-                setError('매칭 정보를 가져오는데 실패했습니다. 다시 시도해주세요.');
-            }
+            console.error('매칭 정보를 가져오는데 실패했습니다:', err);
+            setError('매칭 정보를 가져오는데 실패했습니다. 다시 시도해주세요.');
+            showErrorToast('매칭 정보를 가져오는데 실패했습니다.');
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [showErrorToast]);
 
     useEffect(() => {
         fetchMatchedPartners();

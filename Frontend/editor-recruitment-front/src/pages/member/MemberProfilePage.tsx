@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import '../../styles/MyProfile.css';
 import { formatNumber } from '../../utils/FormatNumber';
+import api from '../../api/axios';
+import { useToast } from '../../hooks/useToast';
 import premierProIcon from '../../assets/premierProIcon';
 import photoshopIcon from '../../assets/photoshopIcon';
 import afterEffectsIcon from '../../assets/afterEffectsIcon';
@@ -50,15 +51,17 @@ const MemberProfilePage: React.FC = () => {
     const [profile, setProfile] = useState<MemberProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { showErrorToast } = useToast();
 
     useEffect(() => {
         const fetchMemberProfile = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`http://localhost:8080/api/member/profile/${nickname}`);
+                const response = await api.get(`/api/member/profile/${nickname}`);
                 setProfile(response.data.data);
             } catch (error) {
                 console.error('프로필을 불러오는데 실패했습니다.', error);
+                showErrorToast('프로필을 불러오는데 실패했습니다.');
                 navigate('/not-found');
             } finally {
                 setLoading(false);
@@ -66,7 +69,7 @@ const MemberProfilePage: React.FC = () => {
         };
 
         fetchMemberProfile();
-    }, [nickname, navigate]);
+    }, [nickname, navigate, showErrorToast]);
 
     if (loading) {
         return <div className="loading">로딩 중...</div>;
