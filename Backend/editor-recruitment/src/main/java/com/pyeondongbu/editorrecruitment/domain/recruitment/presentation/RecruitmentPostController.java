@@ -44,7 +44,9 @@ public class RecruitmentPostController {
         }
 
         RecruitmentPostRes postResponseDTO = postService.getPost(postId, remoteAddr, accessor.getMemberId());
-        return ResponseEntity.ok(ApiResponse.success(postResponseDTO, 200));
+        return ResponseEntity.ok(ApiResponse.success(
+                postResponseDTO, 200)
+        );
     }
 
 
@@ -53,7 +55,9 @@ public class RecruitmentPostController {
             @PathVariable("postId") Long postId,
             @Auth final Accessor accessor) {
         RecruitmentPostRes post = postService.getPostForEdit(postId, accessor.getMemberId());
-        return ResponseEntity.ok(ApiResponse.success(post, 200));
+        return ResponseEntity.ok(
+                ApiResponse.success(post, 200)
+        );
     }
 
     @GetMapping("/me")
