@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/CommunityPage.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { extractTextFromHTML } from '../../utils/TextExtractor';
-import { debounce } from 'lodash';
 import api from '../../api/axios';
 import { useToast } from '../../hooks/useToast';
 
@@ -84,24 +83,14 @@ const CommunityPage: React.FC = () => {
 
     useEffect(() => {
         fetchPopularPosts();
-    }, [fetchPopularPosts]);
-
-    const debouncedFetchPosts = useMemo(
-        () => debounce((search: string, page: number, category: string) => {
-            fetchPosts(search, page, category);
-        }, 300),
-        [fetchPosts]
-    );
-
-    useEffect(() => {
-        debouncedFetchPosts(searchTerm, 0, selectedCategory);
-    }, [debouncedFetchPosts, searchTerm, selectedCategory]);
+        fetchPosts('', 0, selectedCategory);
+    }, [fetchPopularPosts, fetchPosts, selectedCategory]);
 
     const categories = ['편집', '유튜버', '썸네일러', '모델링'];
 
     const handleSearch = () => {
         setCurrentPage(0);
-        debouncedFetchPosts(searchTerm, 0, selectedCategory);
+        fetchPosts(searchTerm, 0, selectedCategory);
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,12 +118,12 @@ const CommunityPage: React.FC = () => {
         if (searchInputRef.current) {
             searchInputRef.current.value = '';
         }
-        debouncedFetchPosts('', 0, category);
+        fetchPosts('', 0, category);
     };
 
     const handlePageChange = (newPage: number) => {
         setCurrentPage(newPage);
-        debouncedFetchPosts(searchTerm, newPage, selectedCategory);
+        fetchPosts(searchTerm, newPage, selectedCategory);
     };
 
     return (
