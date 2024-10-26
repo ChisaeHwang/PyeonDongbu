@@ -1,11 +1,30 @@
 
-편동부 레포지토리
+## 편동부
+
+![image](https://github.com/user-attachments/assets/66c4159d-72bf-4877-8a0a-b59c777cb645)
+
+### 유명 유튜버의 작업자 모집, 한 번에 확인하는 방법
+금방 올라왔다가, 금방 내려가는 유명 유튜버의 구인 정보들을 수집하여\
+한 번에 확인할 수 있는 플랫폼입니다. (2024.05.26 ~ 진행 중)
+
+![시퀀스 01_1 (2)](https://github.com/user-attachments/assets/43acb106-dc58-4098-9c9f-bc597777dee3)
 
 
-![image](https://github.com/user-attachments/assets/65be5f8d-a1fd-4eb5-bf92-fef4846d9478)
+![시퀀스 01_1 (1)](https://github.com/user-attachments/assets/66107266-6241-4a9d-b05f-1f879f569f98)
 
-![image](https://github.com/user-attachments/assets/46e7bb9f-2173-49a0-b2d0-3fa49f73585e)
 
-![image](https://github.com/user-attachments/assets/1fe5f9d7-9d45-4036-91ed-45a583a62df4)
+![시퀀스 01_1 (4)](https://github.com/user-attachments/assets/fd3edcb6-5528-47b0-891d-77ef5998d943)
 
-![image](https://github.com/user-attachments/assets/7768fed1-bec9-4487-af76-ebf681add394)
+
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Language | Java 17 |
+| Framework | Spring Boot 3.2.2 |
+| ORM | Spring Data JPA |
+| DB | MySQL |
+| External | Docker(진행 중), Redis(진행 중) |
+| CI/CD | Github Action (진행 중) |
+| Others | Figma |
