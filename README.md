@@ -27,4 +27,4 @@
 | DB | MySQL |
 | External | Docker(진행 중), Redis(진행 중) |
 | CI/CD | Github Action (진행 중) |
-| Others | Figma |
+| Others | Figma, Notion |
