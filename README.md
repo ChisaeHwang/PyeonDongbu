@@ -17,7 +17,7 @@
 
 ## Architecture
 
-![편동부 아키텍처 drawio (6)](https://github.com/user-attachments/assets/39e0e1d8-36cf-4c6f-a2e3-e4c9af141daf)
+![편동부 아키텍처 drawio (7)](https://github.com/user-attachments/assets/3c52214e-0e03-49d9-a399-7d59af6912dd)
 
 
 ## Tech Stack
