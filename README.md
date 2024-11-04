@@ -27,7 +27,7 @@
 | Language | Java 17 |
 | Framework | Spring Boot 3.2.2 |
 | ORM | Spring Data JPA |
-| DB | MySQL |
-| External | Docker(진행 중), Redis(진행 중) |
+| DB | MySQL, Redis |
+| External | Docker(진행 중) |
 | CI/CD | Github Action (진행 중) |
 | Others | Figma, Notion |
