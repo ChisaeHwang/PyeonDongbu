@@ -15,6 +15,9 @@
 
 ![시퀀스 01_1 (4)](https://github.com/user-attachments/assets/fd3edcb6-5528-47b0-891d-77ef5998d943)
 
+## Architecture
+
+![편동부 아키텍처 drawio (6)](https://github.com/user-attachments/assets/39e0e1d8-36cf-4c6f-a2e3-e4c9af141daf)
 
 
 ## Tech Stack
