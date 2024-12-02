@@ -223,10 +223,15 @@ textarea {
     font-size: 14px;
 }
 
+.profile-filter-button svg {
+    width: 20px;
+    height: 20px;
+}
+
 .profile-role-button, 
 .profile-filter-button {
     border: 1px solid #B3B3B3 !important;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 20px;
     background-color: white;
     cursor: pointer;

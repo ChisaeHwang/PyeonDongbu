@@ -122,20 +122,20 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         input.onchange = async () => {
             const file = input.files?.[0];
             if (file) {
-                try {
-                    const formData = new FormData();
-                    formData.append('image', file);
+                const formData = new FormData();
+                formData.append('file', file);  
 
+                try {
                     const response = await api.post('/api/images/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
 
-                    const imageUrl = response.data.imageUrl;
+                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
                     const quill = quillRef.current?.getEditor();
-                    const range = quill?.getSelection(true);
-                    if (quill && range) {
+                    if (quill) {
+                        const range = quill.getSelection(true);
                         quill.insertEmbed(range.index, 'image', imageUrl);
                     }
                 } catch (error) {
@@ -155,24 +155,24 @@ const PostEditor: React.FC<PostEditorProps> = ({ onSubmit, initialData }) => {
         input.onchange = async () => {
             const file = input.files?.[0];
             if (file) {
-                try {
-                    const formData = new FormData();
-                    formData.append('image', file);
+                const formData = new FormData();
+                formData.append('file', file);  
 
+                try {
                     const response = await api.post('/api/images/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
 
-                    setImageUrl(response.data.imageUrl);
+                    const imageUrl = response.data.replace('Uploaded: ', '').trim();
+                    setImageUrl(imageUrl);
                 } catch (error) {
                     console.error('대표 이미지 업로드 실패:', error);
-                    showErrorToast('대표 이미지 업로드에 실패했습니다.');
                 }
             }
         };
-    }, [showErrorToast]);
+    }, []);
 
     const handlePaymentTypeClick = (type: PaymentType) => {
         setPaymentType(type);

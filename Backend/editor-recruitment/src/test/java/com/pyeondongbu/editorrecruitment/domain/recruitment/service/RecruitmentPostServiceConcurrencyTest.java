@@ -4,7 +4,6 @@ import com.pyeondongbu.editorrecruitment.domain.common.dao.PostViewRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.PostImageRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostDetailsRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.Payment;
@@ -14,22 +13,16 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.PaymentDTO;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostDetailsReq;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.RecruitmentPostReq;
 import com.pyeondongbu.editorrecruitment.domain.tag.dao.TagRepository;
-import com.pyeondongbu.editorrecruitment.domain.tag.domain.Tag;
 import com.pyeondongbu.editorrecruitment.global.exception.PostException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.redisson.api.RKeys;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,8 +44,6 @@ public class RecruitmentPostServiceConcurrencyTest {
     private TagRepository tagRepository;
     @Autowired
     private PostViewRepository postViewRepository;
-    @Autowired
-    private PostImageRepository postImageRepository;
     @Autowired
     private RecruitmentPostDetailsRepository postDetailsRepository;
     @Autowired
@@ -86,7 +77,7 @@ public class RecruitmentPostServiceConcurrencyTest {
             final String remoteAddr = "192.168.0." + i;
             executorService.submit(() -> {
                 try {
-                    postService.getPost(postId, remoteAddr);
+                    postService.getPost(postId, remoteAddr, 1L);
                 } finally {
                     latch.countDown();
                 }

@@ -1,0 +1,30 @@
+services:
+  mysql:
+    container_name: pyeon_mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: pyeon
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1142
+      MYSQL_ROOT_PASSWORD: 1142
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - pyeon-network
+
+  redis:
+    container_name: pyeon_redis
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    networks:
+      - pyeon-network
+
+networks:
+  pyeon-network:
+
+volumes:
+  mysql_data:

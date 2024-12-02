@@ -1,0 +1,47 @@
+services:
+  app:
+    image: pyeon
+    container_name: pyeon_core
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pyeon?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - pyeon-network
+
+  mysql:
+    container_name: pyeon_mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: pyeon
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - pyeon-network
+
+  redis:
+    container_name: pyeon_redis
+    image: redis:alpine
+    networks:
+      - pyeon-network
+
+networks:
+  pyeon-network:
+
+volumes:
+  mysql_data:
