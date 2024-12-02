@@ -28,8 +28,8 @@
 }
 
 .filter-button:hover {
-  background-color: #00CBD6;
-  color: white;
+  background-color: #00CBD6 !important;
+  color: white !important;
 }
 
 .filter-button.active {

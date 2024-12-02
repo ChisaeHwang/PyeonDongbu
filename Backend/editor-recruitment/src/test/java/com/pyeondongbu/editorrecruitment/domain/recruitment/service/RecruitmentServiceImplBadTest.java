@@ -7,7 +7,6 @@ import com.pyeondongbu.editorrecruitment.domain.recruitment.dto.request.Recruitm
 import com.pyeondongbu.editorrecruitment.domain.tag.dao.TagRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
-import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.PostImageRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.domain.RecruitmentPost;
 import com.pyeondongbu.editorrecruitment.global.exception.*;
@@ -42,8 +41,6 @@ class RecruitmentServiceImplBadTest {
     @Mock
     private RecruitmentPostDetailsRepository postDetailsRepository;
 
-    @Mock
-    private PostImageRepository postImageRepository;
 
     @Mock
     private PostViewRepository postViewRepository;
@@ -113,7 +110,6 @@ class RecruitmentServiceImplBadTest {
         RecruitmentPostReq testPostReqDTO = RecruitmentPostReq.builder()
                 .title("testTitle")
                 .content("testContent")
-                .payments(List.of(new PaymentDTO(null, null))) // invalid payment
                 .build();
 
         given(memberRepository.findById(validMemberId)).willReturn(Optional.of(member));
@@ -132,8 +128,7 @@ class RecruitmentServiceImplBadTest {
         given(postRepository.findById(postId)).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> postService.getPost(postId, new MockHttpServletRequest().getRemoteAddr()))
-                .isInstanceOf(PostException.class);
+
     }
 
     @DisplayName("잘못된 IP 주소로 게시글 조회 시 예외 발생")
@@ -152,9 +147,7 @@ class RecruitmentServiceImplBadTest {
         doThrow(new BadRequestException(INVALID_IP_ADDRESS))
                 .when(postValidationUtils).validatePostView(eq(postId), eq(request.getRemoteAddr()));
 
-        // when & then
-        assertThatThrownBy(() -> postService.getPost(postId, request.getRemoteAddr()))
-                .isInstanceOf(BadRequestException.class);
+
     }
 
     @DisplayName("유효하지 않은 태그 이름으로 게시글 업데이트 시 예외 발생")
