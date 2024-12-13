@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pyeon?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
+    data: classpath:data.sql
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  oauth2:
+    provider:
+      google:
+        client-id: ${DEV_GOOGLE_CLIENT_ID}
+        client-secret: ${DEV_GOOGLE_CLIENT_SECRET}
+        redirect-uri: ${DEV_GOOGLE_REDIRECT_URI}
+        token-uri: https://oauth2.googleapis.com/token
+        user-info: https://www.googleapis.com/oauth2/v2/userinfo
+  redis:
+    host: ${DEV_REDIS_HOST}
+    port: ${DEV_REDIS_PORT}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${DEV_AWS_ACCESS_KEY}
+      secret-key: ${DEV_AWS_SECRET_KEY}
+    region:
+      static: ${DEV_AWS_REGION}
+    s3:
+      bucket: ${DEV_S3_BUCKET}
+      folder: images/
+
+cors:
+  allowed-origin: ${DEV_CORS_ORIGIN}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging.level:
+  org.hibernate.SQL: debug
+
+app:
+  database:
+    seeding:
+      enabled: true
+
+security:
+  jwt:
+    secret-key: ${DEV_JWT_SECRET_KEY}
+    access-expiration-time: ${DEV_JWT_ACCESS_EXPIRATION}
+    refresh-expiration-time: ${DEV_JWT_REFRESH_EXPIRATION}

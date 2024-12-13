@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pyeon?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${TEST_DB_USERNAME:root}
+    password: ${TEST_DB_PASSWORD:1142}
+    data: classpath:data.sql
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create    # 테스트 환경에서는 create 유지
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        format_sql: true
+  oauth2:
+    provider:
+      google:
+        client-id: ${TEST_GOOGLE_CLIENT_ID}
+        client-secret: ${TEST_GOOGLE_CLIENT_SECRET}
+        redirect-uri: ${TEST_GOOGLE_REDIRECT_URI}
+        token-uri: https://oauth2.googleapis.com/token
+        user-info: https://www.googleapis.com/oauth2/v2/userinfo
+  redis:
+    host: ${TEST_REDIS_HOST:localhost}
+    port: ${TEST_REDIS_PORT:6379}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${TEST_AWS_ACCESS_KEY}
+      secret-key: ${TEST_AWS_SECRET_KEY}
+    region:
+      static: ${TEST_AWS_REGION:ap-northeast-2}
+    s3:
+      bucket: ${TEST_S3_BUCKET:pyeondongbu}
+      folder: images/
+
+cors:
+  allowed-origin: ${TEST_CORS_ORIGIN:http://localhost:3000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging.level:
+  org.hibernate.SQL: debug
+
+app:
+  database:
+    seeding:
+      enabled: true
+
+security:
+  jwt:
+    secret-key: ${TEST_JWT_SECRET_KEY}
+    access-expiration-time: ${TEST_JWT_ACCESS_EXPIRATION:3600000}
+    refresh-expiration-time: ${TEST_JWT_REFRESH_EXPIRATION:86400000}

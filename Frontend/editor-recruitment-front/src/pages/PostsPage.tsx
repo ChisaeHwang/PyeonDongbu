@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import NextArrowIcon from '../assets/NextArrowIcon';
-import PrevArrowIcon from '../assets/PrevArrowIcon';
-import Banner from '../components/Banner';
+import NextArrowIcon from "../assets/NextArrowIcon";
+import PrevArrowIcon from "../assets/PrevArrowIcon";
+import Banner from "../components/Banner";
 import { CustomArrowProps } from "react-slick";
-import RecruitmentPostList from '../components/RecruitmentPostList';
-import FilterButtonGroup from '../components/FilterButtonGroup';
-import { FilterOptions } from '../utils/FilterOptions';
-import '../styles/PostsPage.css';
-import { useAuth } from '../hooks/useAuth';
-import ProfileSetupModal from '../components/ProfileSetupModal';
+import RecruitmentPostList from "../components/RecruitmentPostList";
+import FilterButtonGroup from "../components/FilterButtonGroup";
+import { FilterOptions } from "../utils/FilterOptions";
+import "../styles/PostsPage.css";
+import { useAuth } from "../hooks/useAuth";
+import ProfileSetupModal from "../components/ProfileSetupModal";
 
 // NextArrow와 PrevArrow 컴포넌트 추가
 const NextArrow = (props: CustomArrowProps) => (
@@ -29,7 +29,6 @@ const PrevArrow = (props: CustomArrowProps) => (
   </div>
 );
 
-
 const PostsPage = () => {
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedVideoTypes, setSelectedVideoTypes] = useState<string[]>([]);
@@ -37,20 +36,25 @@ const PostsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userInfo, isLoading } = useAuth();
 
-  const handleOptionToggle = (name: string, type: 'skill' | 'videoType') => {
-    if (type === 'skill') {
-      setSelectedSkills(prev => 
-        prev.includes(name) ? prev.filter(skill => skill !== name) : [...prev, name]
+  const handleOptionToggle = (name: string, type: "skill" | "videoType") => {
+    if (type === "skill") {
+      setSelectedSkills((prev) =>
+        prev.includes(name)
+          ? prev.filter((skill) => skill !== name)
+          : [...prev, name]
       );
     } else {
-      setSelectedVideoTypes(prev => 
-        prev.includes(name) ? prev.filter(videoType => videoType !== name) : [...prev, name]
+      setSelectedVideoTypes((prev) =>
+        prev.includes(name)
+          ? prev.filter((videoType) => videoType !== name)
+          : [...prev, name]
       );
     }
   };
 
   useEffect(() => {
-    if (!isLoading && userInfo && userInfo.role === 'GUEST') {
+    if (!isLoading && userInfo && userInfo.role === "GUEST") {
+      console.log(userInfo);
       setIsModalOpen(true);
     }
   }, [isLoading, userInfo]);
@@ -59,55 +63,56 @@ const PostsPage = () => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 6,  // 1920x1080에서 더 많은 아이템 표시
+    slidesToShow: 6, // 1920x1080에서 더 많은 아이템 표시
     slidesToScroll: 3,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-        {
-            breakpoint: 1600,
-            settings: {
-                slidesToShow: 5,
-                slidesToScroll: 3,
-            }
+      {
+        breakpoint: 1600,
+        settings: {
+          slidesToShow: 5,
+          slidesToScroll: 3,
         },
-        {
-            breakpoint: 1400,
-            settings: {
-                slidesToShow: 4,
-                slidesToScroll: 2,
-            }
+      },
+      {
+        breakpoint: 1400,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 2,
         },
-        {
-            breakpoint: 1100,
-            settings: {
-                slidesToShow: 3,
-                slidesToScroll: 2,
-            }
+      },
+      {
+        breakpoint: 1100,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 2,
         },
-        {
-            breakpoint: 800,
-            settings: {
-                slidesToShow: 2,
-                slidesToScroll: 1,
-            }
+      },
+      {
+        breakpoint: 800,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
         },
-        {
-            breakpoint: 480,
-            settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1
-            }
-        }
-    ]
-};
-
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
 
   return (
     <div className="posts-page">
       <Banner />
-      <div className='posts-container youtuber-section'>
-        <h2 className="current-partners-title">현재 파트너를 찾고 있는 유튜버 분들</h2>
+      <div className="posts-container youtuber-section">
+        <h2 className="current-partners-title">
+          현재 파트너를 찾고 있는 유튜버 분들
+        </h2>
         <FilterButtonGroup
           options={FilterOptions}
           selectedOptions={[...selectedSkills, ...selectedVideoTypes]}
@@ -116,26 +121,31 @@ const PostsPage = () => {
         <RecruitmentPostList
           skills={selectedSkills}
           videoTypes={selectedVideoTypes}
-          tagNames={['크롤링', '구인']}
+          tagNames={["크롤링", "구인"]}
           sliderSettings={settings}
           variant="main"
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
       </div>
-      <div className='posts-container worker-section'>
-        <h2 className="current-partners-title workers-title">현재 파트너를 찾고 있는 작업자 분들</h2>
+      <div className="posts-container worker-section">
+        <h2 className="current-partners-title workers-title">
+          현재 파트너를 찾고 있는 작업자 분들
+        </h2>
         <RecruitmentPostList
           skills={selectedSkills}
           videoTypes={selectedVideoTypes}
-          tagNames={['구직']}
+          tagNames={["구직"]}
           sliderSettings={settings}
           variant="main"
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
       </div>
-      <ProfileSetupModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ProfileSetupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

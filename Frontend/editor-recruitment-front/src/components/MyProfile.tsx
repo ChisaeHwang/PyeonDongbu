@@ -132,7 +132,7 @@ const MyProfile = () => {
                 formData.append('file', file);  
 
                 try {
-                    const response = await api.post('/upload', formData, {
+                    const response = await api.post('/api/images/upload', formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
