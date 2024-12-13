@@ -11,9 +11,11 @@ import com.pyeondongbu.editorrecruitment.domain.auth.domain.OauthUserInfo;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.MemberTokens;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.dao.RefreshTokenRepository;
 import com.pyeondongbu.editorrecruitment.domain.auth.domain.RefreshToken;
+import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberDetailsRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.dao.MemberRepository;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.Member;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.MemberDeleteEvent;
+import com.pyeondongbu.editorrecruitment.domain.member.domain.details.MemberDetails;
 import com.pyeondongbu.editorrecruitment.domain.member.domain.role.Role;
 import com.pyeondongbu.editorrecruitment.domain.recruitment.dao.RecruitmentPostRepository;
 import com.pyeondongbu.editorrecruitment.global.exception.AuthException;
@@ -24,6 +26,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -35,6 +38,8 @@ public class LoginServiceImpl implements LoginService {
 
 
     private final MemberRepository memberRepository;
+
+    private final MemberDetailsRepository memberDetailsRepository;
     private final RecruitmentPostRepository postRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final OauthProviders oauthProviders;
@@ -80,12 +85,31 @@ public class LoginServiceImpl implements LoginService {
         while (tryCount < MAX_TRY_COUNT) {
             final String RandomName = nickname + generateRandomFourDigitCode();
             if (!memberRepository.existsByNickname(RandomName)) {
-                return memberRepository.save(Member.of(
+                // 멤버 생성
+                Member member = memberRepository.save(Member.of(
                         socialLoginId,
                         RandomName,
                         imageUrl,
                         Role.GUEST
                 ));
+
+                // 기본 MemberDetails 생성 및 연결
+                MemberDetails memberDetails = MemberDetails.builder()
+                        .member(member)
+                        .maxSubs(0)
+                        .weeklyWorkload(0)
+                        .videoTypes(new HashSet<>())
+                        .editedChannels(new HashSet<>())
+                        .currentChannels(new HashSet<>())
+                        .portfolio("")
+                        .skills(new HashSet<>())
+                        .remarks("")
+                        .build();
+
+                memberDetailsRepository.save(memberDetails);
+                member.setDetails(memberDetails);
+
+                return memberRepository.save(member);
             }
             tryCount += 1;
         }

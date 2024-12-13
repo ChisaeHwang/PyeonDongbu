@@ -4,8 +4,6 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_DATABASE: pyeon
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 1142
       MYSQL_ROOT_PASSWORD: 1142
     ports:
       - '3306:3306'

@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${PROD_DB_URL}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+    initialization-mode: never
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: false
+  oauth2:
+    provider:
+      google:
+        client-id: ${PROD_GOOGLE_CLIENT_ID}
+        client-secret: ${PROD_GOOGLE_CLIENT_SECRET}
+        redirect-uri: ${PROD_GOOGLE_REDIRECT_URI}
+        token-uri: https://oauth2.googleapis.com/token
+        user-info: https://www.googleapis.com/oauth2/v2/userinfo
+  redis:
+    host: ${PROD_REDIS_HOST}
+    port: ${PROD_REDIS_PORT}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${PROD_AWS_ACCESS_KEY}
+      secret-key: ${PROD_AWS_SECRET_KEY}
+    region:
+      static: ${PROD_AWS_REGION}
+    s3:
+      bucket: ${PROD_S3_BUCKET}
+      folder: images/
+
+cors:
+  allowed-origin: ${PROD_CORS_ORIGIN}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+logging.level:
+  org.hibernate.SQL: warn
+
+app:
+  database:
+    seeding:
+      enabled: false
+
+security:
+  jwt:
+    secret-key: ${PROD_JWT_SECRET_KEY}
+    access-expiration-time: ${PROD_JWT_ACCESS_EXPIRATION}
+    refresh-expiration-time: ${PROD_JWT_REFRESH_EXPIRATION}

@@ -1,24 +1,17 @@
-Backend/editor-recruitment/src/main/resources/application.yml
-
-Backend/editor-recruitment/src/test/resources/application-test.yml
-
-Backend/editor-recruitment/out/
-
+# IDE 및 빌드 관련 파일
 Backend/editor-recruitment/.idea/
-
 Backend/editor-recruitment/.gradle/
+Backend/editor-recruitment/out/
+Backend/editor-recruitment/build/
+bin/
 
+# Gradle 관련 파일
 Backend/editor-recruitment/gradle/wrapper/
 
-Backend/editor-recruitment/build.gradle
-
+# 환경 변수 및 민감 정보 파일
+.env
 Backend/editor-recruitment/.env
 
-Backend/editor-recruitment/build/**
-
-.env
-application-dev.yml
-
-application-prod.yml
-
+# Properties 파일
 *.properties
+
